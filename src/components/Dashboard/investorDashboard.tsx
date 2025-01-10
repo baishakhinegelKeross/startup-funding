@@ -1,10 +1,12 @@
-'use client'
+"use client";
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import MyInvestments from '@/components/Investor/MyInvestments/MyInvestment';
-import ProfileUpdate from '@/components/Investor/myProfile/myProfile';
-import authStore from '@/store/authStore';
+import React, { useState } from "react";
+import Link from "next/link";
+import MyInvestments from "@/components/Investor/MyInvestments/MyInvestment";
+import ProfileUpdate from "@/components/Investor/myProfile/myProfile";
+import authStore from "@/store/authStore";
+
+import Admin from "@/components/founder/Admin/Admin";
 
 // Define the Sidebar class to handle toggling and manage state
 class SidebarState {
@@ -26,14 +28,14 @@ class SidebarState {
 const sidebarState = new SidebarState();
 
 interface SidebarProps {
-  userRole: 'investor'; // Only investor role is considered
+  userRole: "investor"; // Only investor role is considered
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
-  const [selectedSection, setSelectedSection] = useState<string>('My Investments');
+  const [selectedSection, setSelectedSection] =
+    useState<string>("My Investments");
   const { clearUserData } = authStore();
-
 
   const handleToggleSidebar = () => {
     sidebarState.toggleCollapse();
@@ -46,10 +48,12 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
 
   const renderContent = () => {
     switch (selectedSection) {
-      case 'My Investments':
+      case "My Investments":
         return <MyInvestments />;
-      case 'My Profile':
+      case "My Profile":
         return <ProfileUpdate />;
+      case "Admin":
+        return <Admin />;
       default:
         return <h1 className="text-3xl">Select a section to view content</h1>;
     }
@@ -68,15 +72,19 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
   };
 
   return (
-    <div className="flex">
-      {/* Sidebar */}
+    <div className="flex w-full">
+     
       <div
-        className={`${isSidebarOpen ? 'w-64' : 'w-16'} transition-all duration-300 bg-gray-800 text-white h-screen p-4 space-y-6 flex-shrink-0 flex flex-col`}
+        className={`${
+          isSidebarOpen ? "w-64" : "w-16"
+        } transition-all duration-300 bg-gray-800 text-white h-screen p-4 space-y-6 flex-shrink-0 flex flex-col`}
       >
         <div className="flex items-center justify-between">
           <Link
             href="/"
-            className={`text-2xl font-bold text-white ${isSidebarOpen ? 'block' : 'hidden'} flex items-center space-x-2 transition-all duration-300 transform hover:scale-105 hover:text-indigo-400`}
+            className={`text-2xl font-bold text-white ${
+              isSidebarOpen ? "block" : "hidden"
+            } flex items-center space-x-2 transition-all duration-300 transform hover:scale-105 hover:text-indigo-400`}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -94,55 +102,12 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
             </svg>
             <span>Back</span>
           </Link>
-
-          <button
-            onClick={handleToggleSidebar}
-            className="lg:hidden text-white"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M3 12h18M3 6h18M3 18h18"
-              />
-            </svg>
-          </button>
         </div>
 
         <div className="space-y-4 mt-8 flex-1">
-          {/* My Investments Link (only for Investor) */}
           <button
-            onClick={() => handleSelectSection('My Investments')}
-            className={getButtonClass('My Investments')}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M5 3v18m0 0l7-7m-7 7l7 7"
-              />
-            </svg>
-            <span className={isSidebarOpen ? 'block' : 'hidden'}>My Investments</span>
-          </button>
-
-          {/* My Profile Link (for Investor) */}
-          <button
-            onClick={() => handleSelectSection('My Profile')}
-            className={getButtonClass('My Profile')}
+            onClick={() => handleSelectSection("Admin")}
+            className={getButtonClass("Admin")}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -158,40 +123,38 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
                 d="M12 3v12M3 12h12"
               />
             </svg>
-            <span className={isSidebarOpen ? 'block' : 'hidden'}>My Profile</span>
+            <span className={isSidebarOpen ? "block" : "hidden"}>Admin</span>
           </button>
         </div>
 
-        {/* Logout Link (at the bottom) */}
-      <button
-        onClick={() => {
-          handleSelectSection('Logout');
-          clearUserData();
-        }}
-        className={getButtonClass('Logout')}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
+        
+        <button
+          onClick={() => {
+            handleSelectSection("Logout");
+            clearUserData();
+          }}
+          className={getButtonClass("Logout")}
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M16 17l4-4m0 0l-4-4m4 4H7"
-          />
-        </svg>
-        <span className={isSidebarOpen ? 'block' : 'hidden'}>Logout</span>
-      </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M16 17l4-4m0 0l-4-4m4 4H7"
+            />
+          </svg>
+          <span className={isSidebarOpen ? "block" : "hidden"}>Logout</span>
+        </button>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 p-8">
-        {renderContent()}
-      </div>
+     
+      <div className="flex-1 p-8">{renderContent()}</div>
     </div>
   );
 };
