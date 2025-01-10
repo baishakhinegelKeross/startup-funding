@@ -56,7 +56,7 @@ export default function CampaignCard({ campaign, onDonate }: CampaignCardProps) 
             onClick={() => onDonate(campaign._id)}
             className="w-full py-3 px-4 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors"
           >
-            Donate Now
+            Invest
           </button>
         </div>
       </div>

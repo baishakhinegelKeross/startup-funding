@@ -80,7 +80,7 @@ const Navbar: React.FC = () => {
         <>
           <NavLink to="/campaigns">Campaigns</NavLink>
           <NavLink to="/dashboard">Dashboard</NavLink>
-          <NavLink to="/login"> <button style={{ marginLeft: '10px' }}>Sign Up</button></NavLink>
+          <NavLink to="/role"> <button style={{ marginLeft: '10px' }}>Sign Up</button></NavLink>
         </>
       );
     }

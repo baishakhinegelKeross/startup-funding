@@ -34,31 +34,27 @@ type PropsArgs = {
 };
 
 const fetchCampaignDetailsForId = async function (id: string): Promise<Campaign> {
-    const apiUrl = `http://192.168.3.7:5000/api/fundraiser/campaign/${id}`;
+    const apiUrl = `http://192.168.3.7:8080/api/fundraiser/campaign/${id}`;
 
-    const fetchtedDetails = await fetch(apiUrl, {
+    const fetchedDetails = await fetch(apiUrl, {
         method: 'GET', // Use 'GET' method for fetching data
         headers: {
             'Content-Type': 'application/json', // Indicate that the request expects JSON data
         },
     });
 
-    if (!fetchtedDetails.ok) {
+    if (!fetchedDetails.ok) {
         throw new Error(`Failed to fetch campaign details for ID: ${id}`);
     }
 
-    const fetchedData = await fetchtedDetails.json();
+    const fetchedData = await fetchedDetails.json();
     return fetchedData;
 };
 
 export default async function CampaignDetails({ params }: PropsArgs): Promise<JSX.Element> {
-    const campaignDetails = await fetchCampaignDetailsForId("677cc652db18e4735880622b");
-    // Use params.id to fetch campaign details dynamically
-    //const campaignDetails = await fetchCampaignDetailsForId(params.id);
-    
-    const {id} = await params;
-    console.log(id)
-    
+    const { id } = params;
+    const campaignDetails = await fetchCampaignDetailsForId(id);
+
     return (
         <main className="p-10 mt-20">
             <h1>{campaignDetails.title}</h1>
@@ -68,11 +64,10 @@ export default async function CampaignDetails({ params }: PropsArgs): Promise<JS
                     <Image src={campaignDetails.image_url} alt={campaignDetails.title} height={800} width={800} />
                 </div>
                 <div>
-                    <input type="text" />
-                    <textarea>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quod modi harum eos nemo reprehenderit aperiam iste illo sint cumque eligendi. Modi dolorum minima maiores est, natus incidunt inventore sunt laboriosam!</textarea>
+                    <input type="text" defaultValue="Default text" />
+                    <textarea defaultValue="Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quod modi harum eos nemo reprehenderit aperiam iste illo sint cumque eligendi. Modi dolorum minima maiores est, natus incidunt inventore sunt laboriosam!"></textarea>
                 </div>
             </div>
-            
         </main>
     );
 }

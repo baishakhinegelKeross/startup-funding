@@ -39,7 +39,7 @@ const MyCampaignPage: React.FC = () => {
   useEffect(() => {
     const fetchCampaigns = async () => {
       try {
-        const response = await fetch('http://192.168.3.7:5000/api/fundraiser');
+        const response = await fetch('http://192.168.3.7:8080/api/fundraiser');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -65,7 +65,7 @@ const MyCampaignPage: React.FC = () => {
     console.log('Creating campaign:', newCampaign);
 
     try {
-      const response = await fetch('http://192.168.3.7:5000/api/fundraiser', {
+      const response = await fetch('http://192.168.3.7:8080/api/fundraiser', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -90,30 +90,30 @@ const MyCampaignPage: React.FC = () => {
   const handleCompleteDonation = async (amount: number, donorName: string, message: string) => {
     console.log('Processing donation:', { amount, donorName, message });
 
-    try {
-      const response = await fetch('http://192.168.3.7:5000/api/fundraiser/campaign/contribution', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          fundraiserId: selectedCampaignId,
-          amount,
-          donorName,
-          message
-        })
-      });
+    // try {
+    //   const response = await fetch('http://192.168.3.7:8080/api/fundraiser/campaign/contribution', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify({
+    //       fundraiserId: selectedCampaignId,
+    //       amount,
+    //       donorName,
+    //       message
+    //     })
+    //   });
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
+    //   if (!response.ok) {
+    //     throw new Error('Network response was not ok');
+    //   }
 
-      const result = await response.json();
-      console.log('Donation successful:', result);
-    } catch (error) {
-      console.error('Error processing donation:', error);
-      setError(error.message);
-    }
+    //   const result = await response.json();
+    //   console.log('Donation successful:', result);
+    // } catch (error) {
+    //   console.error('Error processing donation:', error);
+    //   setError(error.message);
+    // }
 
     setSelectedCampaignId(null);
   };

@@ -1,6 +1,6 @@
 "use client";
-
 import React, { useState } from "react";
+import axios from "axios";
 import { X } from "lucide-react";
 
 interface DonationModalProps {
@@ -9,41 +9,60 @@ interface DonationModalProps {
     onDonate: (amount: number, donorName: string, message: string) => void;
 }
 
-const DonationModal: React.FC<DonationModalProps> = ({
-    campaignId,
-    onClose,
-    onDonate,
-}) => {
+const DonationModal: React.FC<DonationModalProps> = ({ campaignId, onClose, onDonate }) => {
     const [amount, setAmount] = useState("");
     const [donorName, setDonorName] = useState("");
     const [message, setMessage] = useState("");
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         // Convert amount to number and pass it to the onDonate callback
-        onDonate(Number(amount), donorName, message);
+        const donationAmount = Number(amount);
+        onDonate(donationAmount, donorName, message);
+
+        const axiosData = {
+            amount: donationAmount,
+            fullName: donorName,
+            message: message,
+        };
+
+        try {
+            const response = await axios.post(
+                "http://192.168.3.7:8080/api/fundraiser/campaign/checkout",
+                axiosData,
+                { headers: { "Content-Type": "application/json" } }
+            );
+            console.log("Form submitted successfully", response);
+
+            if (response.status === 200 && response.data.url) { window.open(response.data.url, "_blank"); }
+        } catch (error) {
+            console.error("Form submission error", error);
+        }
 
         // Close the modal after donation submission
         onClose();
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-xl max-w-md w-full p-6 relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral/60 backdrop-blur-sm">
+            {/* Modal container with height limiting and scrolling */}
+            <div className="card w-full max-w-2xl bg-base-100 shadow-2xl animate-in fade-in zoom-in p-4 relative max-h-[80vh] overflow-y-auto">
+                {/* Close Button */}
                 <button
                     onClick={onClose}
-                    className="absolute right-4 top-4 text-gray-400 hover:text-gray-600"
+                    className="btn btn-ghost absolute right-2 top-2 text-xl text-neutral-400 hover:text-neutral-700"
                 >
                     <X className="w-6 h-6" />
                 </button>
 
-                <h2 className="text-2xl font-bold mb-6">Make a Donation</h2>
+                <h2 className="mt-6 text-3xl font-bold text-center">Make a Donation</h2>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Amount ($)
+                <form onSubmit={handleSubmit} className="card-body space-y-4 pb-6">
+                    {/* Donation Amount */}
+                    <div className="form-control">
+                        <label className="label">
+                            <span className="label-text font-semibold">Amount ($)</span>
                         </label>
                         <input
                             type="number"
@@ -51,41 +70,44 @@ const DonationModal: React.FC<DonationModalProps> = ({
                             required
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                            className="input input-bordered w-full focus:outline-none text-[#fff]"
                             placeholder="Enter amount"
                         />
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Your Name
+                    {/* Donor Name */}
+                    <div className="form-control">
+                        <label className="label">
+                            <span className="label-text font-semibold">Your Name</span>
                         </label>
                         <input
                             type="text"
                             required
                             value={donorName}
                             onChange={(e) => setDonorName(e.target.value)}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                            className="input input-bordered w-full focus:outline-none text-[#fff]"
                             placeholder="Enter your name"
                         />
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Message (Optional)
+                    {/* Message */}
+                    <div className="form-control">
+                        <label className="label">
+                            <span className="label-text font-semibold">Message (Optional)</span>
                         </label>
                         <textarea
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                            className="textarea textarea-bordered w-full focus:outline-none text-[#fff]"
                             placeholder="Leave a message of support"
                             rows={3}
                         />
                     </div>
 
+                    {/* Submit */}
                     <button
                         type="submit"
-                        className="w-full py-3 px-4 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors"
+                        className="btn btn-primary w-full mt-4 uppercase tracking-wide font-semibold"
                     >
                         Complete Donation
                     </button>
