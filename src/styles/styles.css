@@ -5,7 +5,7 @@
 
 
 .landing-page {
-    padding-top: 150px;
+   
     justify-content: center;
     align-items: center;
     height: 100vh;
@@ -18,7 +18,7 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 2rem;
+   
 
 }
 
@@ -117,7 +117,7 @@ button.find_investor_btn {
     }
 
     .sub-heading h1 {
-        font-size: 3rem;
+        font-size: 72px;
         margin-bottom: 0.5rem;
     }
 

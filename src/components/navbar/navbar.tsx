@@ -80,6 +80,7 @@ const Navbar: React.FC = () => {
         <>
           <NavLink to="/campaigns">Campaigns</NavLink>
           <NavLink to="/dashboard">Dashboard</NavLink>
+          <NavLink to="/login"> <button style={{ marginLeft: '10px' }}>Sign Up</button></NavLink>
         </>
       );
     }
@@ -110,8 +111,8 @@ const Navbar: React.FC = () => {
           {/* Logo and brand name */}
           <div className="flex items-center">
             <NavLink to="/">
-              <div className="flex items-center justify-center text-xl font-bold">
-                Fundraising
+              <div className="flex items-center justify-center text-4xl font-bold">
+                QuantM
               </div>
             </NavLink>
           </div>
@@ -132,7 +133,7 @@ const Navbar: React.FC = () => {
           </div>
 
           {/* Desktop navigation links */}
-          <div className="hidden md:flex space-x-4">
+          <div className="hidden items-center md:flex space-x-4">
             {renderAuthLinks()}
           </div>
         </div>
