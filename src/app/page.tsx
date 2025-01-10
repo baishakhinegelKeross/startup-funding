@@ -33,26 +33,26 @@ const LandingPage = () => {
     };
 
     return (
-        <div className="landing-page">
-            <div className="header-container">
-                <div className="sub-heading">
-                    <h1>Funding Platforms for Startups</h1>
-                    <p>Fundraising platforms connect ambitious startups with accredited investors, providing tools to pitch ideas, research companies, and manage investments.</p>
+        <div className="landing-page p-0">
+            <div className="header-container p-0 h-screen" >
+                <div className="sub-heading w-1/2 min-w-[50%] p-14 gap-8 flex flex-col ">
+                    <h1 className='text-[72px]'>Funding Platforms for Startups</h1>
+                    <h3 className='color-[#aaaa]'>Fundraising platforms connect ambitious startups with accredited investors, providing tools to pitch ideas, research companies, and manage investments.</h3>
                     <div className="py-4">
                         <Link href="/role">
-                            <button className="explore-btn">
+                            <button className="explore-btn py-4 px-8">
                                 Explore Platforms
                             </button>
                         </Link>
                         <Link href="/role">
-                            <button className="find_investor_btn">
+                            <button className="find_investor_btn py-4 px-8">
                                 Find Investors
                             </button>
                         </Link>
                     </div>
                 </div>
-                <div className="image-container">
-                    <Image src={meeting} width={400} height={400} alt="Meeting illustration" />
+                <div className=" w-1/2">
+                        <Image className='w-full h-screen object-cover' src={meeting} width={400} height={400} alt="Meeting illustration" style={{clipPath: "polygon(25% 0%, 100% 0%, 100% 99%, 0% 100%)"}} />
                 </div>
             </div>
 
@@ -171,7 +171,7 @@ const LandingPage = () => {
                 </div>
             </div>
 
-            <div className="faq-top-container">
+            {/* <div className="faq-top-container">
                 <div id="faq" className="faq-container">
                     {faqs.map((faq) => (
                         <div key={faq.id} className="faq-item">
@@ -186,6 +186,28 @@ const LandingPage = () => {
                             </div>
                             {faq.isOpen && <h4 className="answer">{faq.answer}</h4>}
                         </div>
+                    ))}
+                </div>
+            </div> */}
+            <div className=" px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+                <div id="faq" className=" grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
+                    {faqs.map((faq) => (
+                        <a className="group flex flex-col bg-white border shadow-sm rounded-xl hover:shadow-md focus:outline-none focus:shadow-md transition dark:bg-neutral-900 dark:border-neutral-800" href="#">
+                        <div className="p-4 md:p-5">
+                          <div className="flex gap-x-5">
+                            {/* <svg className="mt-1 shrink-0 size-5 text-gray-800 dark:text-neutral-200" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                   */}
+                            <div className="grow">
+                              <h3 className="group-hover:text-blue-600 font-semibold text-gray-800 dark:group-hover:text-neutral-400 dark:text-neutral-200">
+                              {faq.question}
+                              </h3>
+                              <p className="text-sm text-gray-500 dark:text-neutral-500">
+                              {faq.answer}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </a>
                     ))}
                 </div>
             </div>
@@ -281,7 +303,7 @@ const LandingPage = () => {
                 </div>
             </div>
 
-            <div className="footer-container">
+            {/* <div className="footer-container">
                 <div className="footer-sub">
                     <h1>Funding Platforms for Startups</h1>
                     <p>Fundraising platforms connect ambitious startups with accredited investors, providing tools to pitch ideas, research companies, and manage investments.</p>
@@ -298,7 +320,7 @@ const LandingPage = () => {
                         </Link>
                     </div>
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 };
