@@ -54,13 +54,13 @@ const fetchCampaignDetailsForId = async function (id: string): Promise<Campaign>
 };
 
 export default async function CampaignDetails({ params }: PropsArgs): Promise<JSX.Element> {
-    const campaignDetails = await fetchCampaignDetailsForId("677cc652db18e4735880622b");
+    //const campaignDetails = await fetchCampaignDetailsForId("677cc652db18e4735880622b");
     // Use params.id to fetch campaign details dynamically
     //const campaignDetails = await fetchCampaignDetailsForId(params.id);
     
     const {id} = await params;
     console.log(id)
-    
+    /*
     return (
         <main className="p-10 mt-20">
             <h1>{campaignDetails.title}</h1>
