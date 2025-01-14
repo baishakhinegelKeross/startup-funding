@@ -3,6 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
+import Header from '../header/header';
+import TopMenuUser from '../top-menu-user';
+import { Button } from '../ui/button';
 
 interface NavbarProps {
   userRole: 'unauthorized' | 'founder' | 'investor' | 'admin';
@@ -60,6 +63,7 @@ const Navbar: React.FC = () => {
           >
             Sign Up for Free
           </Link>
+
         </>
       );
     }
@@ -80,7 +84,9 @@ const Navbar: React.FC = () => {
         <>
           <NavLink to="/campaigns">Campaigns</NavLink>
           <NavLink to="/dashboard">Dashboard</NavLink>
-          <NavLink to="/role"> <button style={{ marginLeft: '10px' }}>Sign Up</button></NavLink>
+          <NavLink to="/role"> <Button variant="profilebtn">Sign Up</Button></NavLink>
+          <TopMenuUser />
+
         </>
       );
     }
@@ -112,7 +118,7 @@ const Navbar: React.FC = () => {
           <div className="flex items-center">
             <NavLink to="/">
               <div className="flex items-center justify-center text-4xl font-bold">
-                QuantM
+                QuantM AI
               </div>
             </NavLink>
           </div>
@@ -151,6 +157,7 @@ const Navbar: React.FC = () => {
             renderAuthLinks()
           )}
         </div>
+
       </div>
     </nav>
   );

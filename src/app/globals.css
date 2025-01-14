@@ -167,7 +167,7 @@ option:hover {
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 240 10% 3.9%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
@@ -219,6 +219,8 @@ option:hover {
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
+  
+
 }
 
 @layer base {
