@@ -5,7 +5,6 @@ import CampaignCard from '@/components/CampaignCard/campaignCard';
 import DonationModal from './DonationModal'; // Import the DonationModal
 import { CreateCampaignModal } from './CreateCampaignModal';
 import { Campaign } from '@/types';
-import { Button } from '@/components/ui/button';
 
 // You can define an interface for type safety if desired
 // interface Campaign {
@@ -139,19 +138,18 @@ const MyCampaignPage: React.FC = () => {
 
   return (
     <div className="p-10 pt-20">
-      <div className='flex justify-center gap-10 '>
+      <div className='flex justify-between space-y-4'>
         <h2 className="text-xl md:text-4xl">My Campaigns</h2>
-        <Button
-        variant={"profilebtn"}
+        <button
           onClick={() => setIsModalOpen(true)}
-          className="cta  text-white py-2 px-4 rounded"
+          className="cta bg-blue-500 text-white py-2 px-4 rounded"
         >
           Start a Campaign
-        </Button>
+        </button>
       </div>
 
 
-      <div className="mt-10 grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2 gap-7">
+      <div className="mt-10 grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 gap-7">
         {/* {campaignData.map((campaign: any, index: number) => (
           <CampaignCard key={campaign._id} campaign={campaign} index={index} />
         ))} */}
