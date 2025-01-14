@@ -45,6 +45,7 @@ const MyCampaignPage: React.FC = () => {
         }
         const result = await response.json();
         setCampaignData(result);
+        console.log(result);
       } catch (error: any) {
         setError(error.message);
       } finally {
