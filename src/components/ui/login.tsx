@@ -1,151 +1,135 @@
-'use client'
-import Link from 'next/link';
-import React, { useRef, useState } from 'react';
-import axios from 'axios';
-import { Lock, Mail, LogIn } from 'lucide-react';
+"use client"
 
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 
-const Login: React.FC = () => {
-    const usernameRef = useRef<HTMLInputElement>(null);
-    const passwordRef = useRef<HTMLInputElement>(null);
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { User, Lock, ArrowRight,LogIn } from "lucide-react";
+import { ToastContainer, toast } from 'react-toastify';
 
-    const [userDetails, setUserDetails] = useState({
-        username: {
-            value: null,
-            ref: usernameRef,
-        },
-        password: {
-            value: null,
-            ref: passwordRef,
-        },
-    });
+import { Button } from "@/components/ui/button"
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import axios from "axios";
 
-    const userFields = Object.keys(userDetails);
-    const missingFields = userFields.filter(e => !userDetails[e].value);
+//axios.defaults.withCredentials = true;
 
-    const [hasError, setHasError] = useState(false);
+const formSchema = z.object({
+  username: z.string().min(1, {
+    message: "Username must be provided.",
+  }),
+  password: z.string().min(1, {
+    message: "Password must be provided.",
+  }),
+})
 
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault();
+export default function  ProfileForm() {
+  // ...
+  // 1. Define your form.
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: "",
+    },
+  })
+ 
+  // 2. Define a submit handler.
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    // Do something with the form values.
+    // ✅ This will be type-safe and validated.
+    debugger
+    const submittedData = {username: values.username, password: values.password}
 
-        const hasMissingFields = userFields.some(key => !userDetails[key].value);
-        setHasError(hasMissingFields);
+    axios.post('http://192.168.3.7:8080/auth/login', JSON.stringify(submittedData), {
+      headers: { 'Content-Type': 'application/json' },
+      withCredentials: true
+    }).then((response) => {
+      
+      toast.success('Login Successful');
+      window.location.href = '/';
+    }).catch((error) => {
+      toast.error(error.response.data.message);
+    }); 
+    console.log(values)
+  }
 
-        if (hasMissingFields) {
-            const invalidFields = userFields.filter(key => !userDetails[key].value);
-            invalidFields.forEach(key => {
-                const ref = userDetails[key].ref;
-                if (ref && ref.current) {
-                    ref.current.focus();
-                }
-            });
-            return;
-        }
-
-        const userDetails_ = new Object();
-        userDetails_.username = userDetails.username.value
-        userDetails_.password = userDetails.password.value
-
-        const submittedData = JSON.stringify(userDetails_)
-
-        // Submit the form or proceed with the login
-        try {
-            const response = await axios.post('http://192.168.3.7:8080/auth/login', submittedData, { headers: { 'Content-Type': 'application/json', }, });
-            console.log('Form submitted successfully', response);
-        }
-        catch (error) {
-            console.error('Form submission error', error);
-        }
-    };
-
-    return (
-        <div className="min-h-screen from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-            <div className="max-w-md w-full space-y-8 bg-white p-8 border-e-slate-800 rounded-lg shadow-lg">
-                <div className="text-center">
-                    <LogIn className="mx-auto h-12 w-12 text-indigo-600" />
-                    <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Welcome back</h2>
-                    <p className="mt-2 text-sm text-gray-600">Please sign in to your account</p>
-                </div>
-                {/* {hasError  && missingFields.length > 0 && <MissingFields fields={missingFields} />} */}
-                <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-                    <div className="space-y-4">
-                        <div>
-                            <label htmlFor="username" className="sr-only">Username</label>
-                            <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <Mail className="h-5 w-5 text-gray-400" />
-                                </div>
-                                <input
-                                    id="username"
-                                    name="username"
-                                    type="username"
-                                    data-tip="hey"
-                                    ref={usernameRef}
-                                    onChange={(event) => {
-                                        setUserDetails((prev) => {
-                                            const newestUserDetails = { ...prev };
-                                            newestUserDetails.username.value = event.target.value;
-                                            return newestUserDetails;
-                                        });
-                                    }}
-                                    className="bg-[#d9e1ff] appearance-none relative block w-full px-2 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                                    placeholder="Username"
-                                />
-                            </div>
-                        </div>
-                        <div>
-                            <label htmlFor="password" className="sr-only">Password</label>
-                            <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <Lock className="h-5 w-5 text-gray-400" />
-                                </div>
-                                <input
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    ref={passwordRef}
-                                    onChange={(event) => {
-                                        setUserDetails((prev) => {
-                                            const newestUserDetails = { ...prev };
-                                            newestUserDetails.password.value = event.target.value;
-                                            return newestUserDetails;
-                                        });
-                                    }}
-                                    className="bg-[#d9e1ff] appearance-none relative block w-full px-2 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                                    placeholder="Password"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                            <input
-                                id="remember-me"
-                                name="remember-me"
-                                type="checkbox"
-                                className="bg-[#d9e1ff] h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded mb-1"
-                            />
-                            <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">Remember me</label>
-                        </div>
-                        <div className="text-sm">
-                            <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">Forgot your password?</a>
-                        </div>
-                    </div>
-                    <button
-                        type="submit"
-                        className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
-                    >
-                        Sign in
-                    </button>
-                    <p className="text-center text-sm text-gray-600">
-                        Don't have an account?{' '}
-                        <Link href="/role" className="font-medium text-indigo-600 hover:text-indigo-500">Sign up</Link>
-                    </p>
-
-                </form>
+  return (
+    <div className="flex items-center justify-center h-screen bg-black">
+      <ToastContainer />
+      <Card className="w-full max-w-md">
+          <CardHeader className="space-y-1">
+            <div className="flex justify-center mb-2">
+              <LogIn className="h-10 w-10 text-primary" />
             </div>
-        </div>
-    );
+            <CardTitle className="text-2xl font-bold text-center">Welcome to QuantM.AI</CardTitle>
+            <CardDescription className="text-center">
+              Enter your details to LogIn
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
+                <FormField
+                  control={form.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Username</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <User className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                          <Input placeholder="johndoe" className="pl-10" {...field} />
+                        </div>
+                      </FormControl>
+                      <FormDescription>
+                        This is your public display name.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Lock className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                          <Input 
+                            type="password" 
+                            placeholder="••••••••" 
+                            className="pl-10"
+                            {...field} 
+                          />
+                        </div>
+                      </FormControl>
+                      <FormDescription>
+                        Enter a secure password for your account.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit"  className="w-full">
+                  Continue
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </form>
+            </Form>
+          </CardContent>
+      </Card>
+    </div>
+    
+  )
 }
-
-export default Login;

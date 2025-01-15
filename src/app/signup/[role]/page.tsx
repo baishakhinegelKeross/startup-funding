@@ -1,185 +1,320 @@
-'use client';
-import React, { useEffect, useRef, useState } from 'react';
-import { UserPlus, Mail, Lock, User, Building } from 'lucide-react';
-import Link from 'next/link';
-import axios from 'axios';
+'use client'
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { type CarouselApi } from "@/components/ui/carousel"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel"
+
+import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription, Form } from "@/components/ui/form"
+import { User, UserPlusIcon, Lock, Mail, Building2, ArrowBigRight, Link, ArrowRight, ArrowLeft } from "lucide-react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { useState, useEffect } from "react"
+import { ToastContainer, toast } from 'react-toastify';
+import { Input } from "@/components/ui/input"
+import { Checkbox } from "@/components/ui/checkbox"
+import { error } from "console"
+import axios from "axios"
+import { redirect } from "next/dist/server/api-utils"
+import { useRouter } from "next/router"
 
 
+const formSchema = z.object({
+  username: z.string().min(3, "Username must be at least 3 characters."),
+  email: z.string().email("Please enter a valid email address."),
+  password: z.string()
+    .min(8, "Password must be at least 8 characters.")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter.")
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter.")
+    .regex(/[0-9]/, "Password must contain at least one number."),
+  confirmPassword: z.string(),
+  companyName: z.string().min(2, "Company name must be at least 2 characters."),
+  country: z.string().min(1, "Provide a country name."),
+  phone: z.string().min(10, "Phone number must be at least 10 characters.").max(10, "Phone number must be at most 10 characters."),
+  termsAndConditions: z.boolean().refine((value) => value === true, { message: "You must accept the terms and conditions", }),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match.",
+  path: ["confirmPassword"],
+});
 
-interface SignupProps {
-  params: {
-    role: string;
-  };
-}
+type FormData = z.infer<typeof formSchema>
 
-const Signup: React.FC<SignupProps> = ({ params }) => {
-  //const { role } = params; // `params` is now synchronous and directly passed
+export default function SignUpForm() {
+  const [api, setApi] = useState<CarouselApi>()
+  const [current, setCurrent] = useState(0)
+  const [count, setCount] = useState(0)
+
   
-  const firstNameRef = useRef<HTMLInputElement>(null);
-  const lastNameRef = useRef<HTMLInputElement>(null);
-  const emailRef = useRef<HTMLInputElement>(null);
-  const passwordRef = useRef<HTMLInputElement>(null);
-  const confirmPasswordRef = useRef<HTMLInputElement>(null);
-  const companyRef = useRef<HTMLInputElement>(null);
-  const [role, setRole] = useState('');
 
-  useEffect(() => { params.then((resolvedParams) => { setRole(resolvedParams.role); }); }, [params]);
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      companyName: "",
+    },
+  })
 
-  const [userDetails, setUserDetails] = useState({
-    firstName: { value: '', ref: firstNameRef },
-    lastName: { value: '', ref: lastNameRef },
-    email: { value: '', ref: emailRef },
-    password: { value: '', ref: passwordRef },
-    confirmPassword: { value: '', ref: confirmPasswordRef },
-    company: { value: '', ref: companyRef },
-  });
+  useEffect(() => {
+    if (!api) return
 
-  const userFields = Object.keys(userDetails);
-  const [hasError, setHasError] = useState(false);
+    setCount(api.scrollSnapList().length)
+    setCurrent(api.selectedScrollSnap())
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap())
+    })
+  }, [api])
 
-    // const hasMissingFields = userFields.some(
-    //   (key) => !userDetails[key as keyof typeof userDetails].value
-    // );
-    // setHasError(hasMissingFields);
+  async function onSubmit(values: FormData) {
+    debugger
+    axios.post('http://192.168.3.7:8080/auth/signup', JSON.stringify({username: values.username, email: values.email, password: values.password}), {
+      headers: { 'Content-Type': 'application/json' },
+    }).then((response) => {
+      toast.success('Account created successfully')
+      window.location.href = '/login'
+    }).catch((error) => {
+      toast.error(error.response.data.message);
+    })
+  }
 
-    // if (hasMissingFields) {
-    //   const invalidFields = userFields.filter(
-    //     (key) => !userDetails[key as keyof typeof userDetails].value
-    //   );
-    //   invalidFields.forEach((key) => {
-    //     const ref = userDetails[key as keyof typeof userDetails].ref;
-    //     if (ref && ref.current) {
-    //       ref.current.focus();
-    //     }
-    //   });
-    //   return;
-    // }
-
-    const formData = {
-      username: `${userDetails.firstName.value} ${userDetails.lastName.value}`,
-      email: userDetails.email.value,
-      password: userDetails.password.value,
-    };
-    
-    try {
-      const response = await axios.post('http://192.168.3.7:8080/auth/signup', JSON.stringify(formData), {
-        headers: { 'Content-Type': 'application/json' },
-      });
-      console.log('Form submitted successfully', response);
-      
-    } catch (error) {
-      console.error('Form submission error', error);
+  const handleNext = async () => {
+    const firstStepFields: (keyof FormData)[] = ["username", "email", "password", "confirmPassword"];
+    const secondStepFields: (keyof FormData)[] = ["companyName"];
+    const isValid = await form.trigger(current === 0 ? firstStepFields : secondStepFields);
+    if (isValid) {
+      api?.scrollTo(current + 1);
     }
-  };
+  }
 
-  const handleInputChange = (key: keyof typeof userDetails, value: string) => {
-    setUserDetails((prev) => ({
-      ...prev,
-      [key]: { ...prev[key], value },
-    }));
-  };
+  const handlePrevious = () => {
+    api?.scrollTo(current - 1)
+  }
+
+  const handleSubmit = async () => {
+    const isValid = await form.trigger()
+    if (isValid) {
+      form.handleSubmit(onSubmit)()
+    }
+  }
 
   return (
-    <div className="min-h-screen from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
-        <div className="text-center">
-          <UserPlus className="mx-auto h-12 w-12 text-indigo-600" />
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            Create your account as an {role}
-          </h2>
-          <p className="mt-2 text-sm text-gray-600">Join us and start your journey</p>
-        </div>
-        {/* {hasError && (
-          <MissingFields
-            fields={userFields.filter((key) => !userDetails[key as keyof typeof userDetails].value)}
-          />
-        )} */}
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <input
-                  id="firstName"
-                  type="text"
-                  ref={firstNameRef}
-                  placeholder="First Name"
-                  value={userDetails.firstName.value}
-                  onChange={(e) => handleInputChange('firstName', e.target.value)}
-                  className="input bg-[#d9e1ff]"
-                  required
-                />
-              </div>
-              <div>
-                <input
-                  id="lastName"
-                  type="text"
-                  ref={lastNameRef}
-                  placeholder="Last Name"
-                  value={userDetails.lastName.value}
-                  onChange={(e) => handleInputChange('lastName', e.target.value)}
-                  className="input bg-[#d9e1ff]"
-                  required
-                />
-              </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-800 to-slate-900 items-center justify-center flex p-4">
+      <ToastContainer />
+      <Card className="w-full max-w-md">
+        <CardHeader className="space-y-4">
+          <div className="flex justify-center">
+            <div className="rounded-full bg-primary/10 p-4">
+              <UserPlusIcon className="h-8 w-8 text-primary" />
             </div>
-            <input
-              id="email"
-              type="email"
-              ref={emailRef}
-              placeholder="Email address"
-              value={userDetails.email.value}
-              onChange={(e) => handleInputChange('email', e.target.value)}
-              className="input bg-[#d9e1ff]"
-              required
-            />
-            {role !== 'fundraiser' && (
-              <input
-                id="company"
-                type="text"
-                ref={companyRef}
-                placeholder="Company (Optional)"
-                value={userDetails.company.value}
-                onChange={(e) => handleInputChange('company', e.target.value)}
-                className="input bg-[#d9e1ff]"
-              />
-            )}
-            <input
-              id="password"
-              type="password"
-              ref={passwordRef}
-              placeholder="Password"
-              value={userDetails.password.value}
-              onChange={(e) => handleInputChange('password', e.target.value)}
-              className="input bg-[#d9e1ff]"
-              required
-            />
-            <input
-              id="confirmPassword"
-              type="password"
-              ref={confirmPasswordRef}
-              placeholder="Confirm Password"
-              value={userDetails.confirmPassword.value}
-              onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-              className="input bg-[#d9e1ff]"
-              required
-            />
-            <button type="submit" className="btn">
-              Sign up
-            </button>
-            <p className="text-center text-sm text-gray-600">
-              Already have an account?{' '}
-              <Link href="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
-                Log In
-              </Link>
-            </p>
           </div>
-        </form>
-      </div>
-    </div>
-  );
-};
+          <CardTitle className="text-2xl font-bold text-center">Welcome to QuantM.AI</CardTitle>
+          <CardDescription className="text-center text-lg">
+            Complete your profile in two simple steps
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form className="space-y-6">
+              <Carousel setApi={setApi} className="w-full">
+                <CarouselContent>
+                  <CarouselItem className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="username"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Username</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <User className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                              <Input placeholder="johndoe" className="pl-10" {...field} />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Mail className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                              <Input placeholder="john@example.com" className="pl-10" {...field} />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Password</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Lock className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                              <Input
+                                type="password"
+                                placeholder="••••••••"
+                                className="pl-10"
+                                {...field}
+                                onChange={(e) => {
+                                  field.onChange(e);
+                                  // Trigger confirm password validation when password changes
+                                  if (form.getValues("confirmPassword")) {
+                                    form.trigger("confirmPassword");
+                                  }
+                                }}
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="confirmPassword"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Confirm Password</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Lock className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                              <Input
+                                type="password"
+                                placeholder="••••••••"
+                                className="pl-10"
+                                {...field}
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </CarouselItem>
 
-export default Signup;
+                  <CarouselItem className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="companyName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Company Name</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Building2 className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                              <Input placeholder="Acme Inc." className="pl-10" {...field} />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="country"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Country</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <User className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                              <Input placeholder="India" className="pl-10" {...field} />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Contact No.</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <User className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                              <Input placeholder="India" className="pl-10" {...field} />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="termsAndConditions"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-4 pl-0">
+                          <FormControl>
+                            <Checkbox 
+                            
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                             
+                            />
+                          </FormControl>
+                          <div className="space-y-1 leading-none">
+                            <FormLabel>
+                              I agree to the terms and conditions
+                            </FormLabel>
+                            
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+                  </CarouselItem>
+                </CarouselContent>
+              </Carousel>
+
+              <div className="flex items-center justify-between gap-4 pt-4">
+                <Button
+                  type="button"
+                 
+                  onClick={handlePrevious}
+                  disabled={current === 0}
+                  className="bg-primary hover:bg-primary/90"
+                >
+                  <ArrowLeft className="ml-2 h-4 w-4" />Previous 
+                </Button>
+                {current === count - 1 ? (
+                  <Button
+                    type="button"
+                    onClick={handleSubmit}
+                    className="bg-primary hover:bg-primary/90"
+                  >
+                    Create Account
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    onClick={handleNext}
+                  >
+                    Next <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
