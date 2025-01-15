@@ -1,6 +1,7 @@
 import React from 'react';
 import { Calendar, Target, Users } from 'lucide-react';
 import { Campaign } from '@/types';
+import Link from 'next/link';
 
 interface CampaignCardProps {
   campaign: Campaign;
@@ -19,6 +20,8 @@ export default function CampaignCard({ campaign, onDonate }: CampaignCardProps) 
   const progress = (campaign.amount_raised / campaign.goal_amount) * 100;
   const daysLeft = Math.ceil((new Date(campaign.end_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
   //console.log(campaign);
+
+  const path = `../detailCampaign/${campaign._id}`;
 
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden transition-transform hover:scale-[1.02]">
@@ -52,12 +55,17 @@ export default function CampaignCard({ campaign, onDonate }: CampaignCardProps) 
             </div>
           </div>
           
-          <button
+          {/* <button
             onClick={() => onDonate(campaign._id)}
             className="w-full py-3 px-4 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors"
           >
             Invest
-          </button>
+          </button> */}
+
+          <Link href={path} className="block text-center w-full py-3 px-4 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors">
+            Invest
+          </Link>
+
         </div>
       </div>
     </div>
