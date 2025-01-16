@@ -8,7 +8,7 @@ export default {
 		"./src/app/**/*.{js,ts,jsx,tsx,mdx}",
 	],
 	daisyui: {
-		themes: ["light", "dark", "cupcake", "halloween"],
+		themes: [ "dark", "cupcake", "halloween"],
 	},
 	theme: {
 		extend: {
@@ -53,6 +53,7 @@ export default {
 					'4': 'hsl(var(--chart-4))',
 					'5': 'hsl(var(--chart-5))'
 				}
+				
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -61,7 +62,7 @@ export default {
 			}
 		}
 	},
-	plugins: [require("tailwindcss-animate"),
-	require('daisyui'),
-	],
+	// plugins: [require("tailwindcss-animate"),
+	// require('daisyui'),
+	// ],
 } satisfies Config;

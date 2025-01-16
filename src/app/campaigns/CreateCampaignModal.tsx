@@ -42,7 +42,7 @@ export function CreateCampaignModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral/60 backdrop-blur-sm">
       {/* Modal container with height limiting and scrolling */}
-      <div className="card w-full max-w-2xl bg-base-100 shadow-2xl animate-in fade-in zoom-in p-4 relative max-h-[80vh] overflow-y-auto">
+      <div className="card w-full max-w-2xl  shadow-2xl animate-in fade-in zoom-in p-4 relative max-h-[80vh] overflow-y-auto">
         {/* Close Button */}
         <button
           onClick={onClose}
