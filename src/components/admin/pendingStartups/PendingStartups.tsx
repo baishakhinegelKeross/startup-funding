@@ -1,5 +1,3 @@
-// PendingStartups.tsx
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -152,7 +150,7 @@ const PendingStartups: React.FC = () => {
                                     </td>
                                     <td className="px-6 py-4 text-center">
                                         <Button
-                                            onClick={() => handleViewDetails(startup._id)}
+                                            onClick={() => handleViewDetails(campaign)} // Pass the whole campaign object here
                                             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-200"
                                         >
                                             View Details
@@ -217,7 +215,7 @@ const PendingStartups: React.FC = () => {
                                     </div>
                                     <div>
                                         <h4 className="text-xl font-semibold text-gray-700">Amount Raised:</h4>
-                                        <p className="text-gray-600">${selectedCampaign.amount_raised.toLocaleString()}</p>
+                                        <p className="text-gray-600">${selectedCampaign.amount_raised}</p>
                                     </div>
                                     <div>
                                         <h4 className="text-xl font-semibold text-gray-700">End Date:</h4>
