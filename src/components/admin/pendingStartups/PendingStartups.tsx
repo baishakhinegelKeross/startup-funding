@@ -53,7 +53,8 @@ const PendingStartups: React.FC = () => {
     useEffect(() => {
         const fetchCampaigns = async () => {
             try {
-                const response = await axios.get<Campaign[]>('http://192.168.3.7:8080/api/fundraiser');
+                const response = await axios.get<Campaign[]>(`${process.env.NEXT_PUBLIC_REACT_APP_API_URL}`);
+                console.log(response);
                 const pending = response.data.filter(campaign => !campaign.approved);
                 setCampaigns(pending);
             } catch (err: any) {

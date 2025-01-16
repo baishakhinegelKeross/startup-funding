@@ -56,7 +56,7 @@ var PendingStartups = function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, 3, 4]);
-                        return [4 /*yield*/, axios_1["default"].get('http://192.168.3.7:8080/api/fundraiser')];
+                        return [4 /*yield*/, axios_1["default"].get('http://192.168.3.217:8090/api/fundraiser')];
                     case 1:
                         response = _a.sent();
                         pending = response.data.filter(function (campaign) { return !campaign.approved; });
