@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react';
+import { Context, useState,useContext } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import '@/styles/styles.css';
@@ -15,8 +15,17 @@ import num_one from '@/assets/icons8-one-100 (1).png';
 import num_two from '@/assets/icons8-two-100.png';
 import num_three from '@/assets/icons8-three-100 (1).png';
 import num_four from '@/assets/icons8-circled-4-100.png';
+import { LoginContext } from "@/components/context/loginContext";
+import { useAuth } from '@/lib/auth-context';
 
 const LandingPage = () => {
+    //  const { isLoggedIn, setIsLoggedIn } = useContext(LoginContext);
+    //  if(isLoggedIn)
+    //     useAuth();
+    // console.log("user auth in landing page  => ",user);
+
+    
+    // console.log(isLoggedIn) 
     const [faqs, setFaqs] = useState([
         { id: 1, question: 'Streamline the Investment Process', answer: 'Fundraising platforms offer tools to manage deal flow, track investments, and monitor portfolio performance.', isOpen: false },
         { id: 2, question: 'Collaborate with Investors', answer: 'Startups and investors can securely share documents, communicate, and coordinate on next steps.', isOpen: false },
@@ -191,8 +200,8 @@ const LandingPage = () => {
             </div> */}
             <div className=" px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
                 <div id="faq" className=" grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
-                    {faqs.map((faq) => (
-                        <a className="group flex flex-col bg-white border shadow-sm rounded-xl hover:shadow-md focus:outline-none focus:shadow-md transition dark:bg-neutral-900 dark:border-neutral-800" href="#">
+                    {faqs.map((faq,index) => (
+                        <a key={index} className="group flex flex-col bg-white border shadow-sm rounded-xl hover:shadow-md focus:outline-none focus:shadow-md transition dark:bg-neutral-900 dark:border-neutral-800" href="#">
                         <div className="p-4 md:p-5">
                           <div className="flex gap-x-5">
                             {/* <svg className="mt-1 shrink-0 size-5 text-gray-800 dark:text-neutral-200" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -326,3 +335,7 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
+
+
+
+
