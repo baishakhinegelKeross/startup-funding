@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/table"
 
 import { Check,Ban  } from 'lucide-react';
+import axios from "axios"
 
 const data: Payment[] = [
   {
@@ -190,6 +191,8 @@ export const columns: ColumnDef<Payment>[] = [
 //   },
 ]
 
+//const data = await getUserListWithPendingApproval() // Simulate an API call to fetch user list with pending approval
+
 export default function DataTableDemo() {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -198,6 +201,8 @@ export default function DataTableDemo() {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
+
+  
 
   const table = useReactTable({
     data,
@@ -341,4 +346,16 @@ export default function DataTableDemo() {
     </div>
   )
 }
+async function getUserListWithPendingApproval() {
+  // Simulate an API call to fetch user list with pending approval
+  return new Promise<Payment[]>((resolve,reject) => {
+    axios.get('http://localhost:3000/api/users/pending-approval').then((response:Object) => {
+        
+        resolve(response.data.filter((user:Object)=>user.approvalStatus === 'pending'))
+    }).catch((error:Object) => {
+      reject(error)
+    })
+  });
+}
+
 
