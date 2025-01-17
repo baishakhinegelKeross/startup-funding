@@ -12,7 +12,7 @@ import { HomeIcon, UsersIcon, StartupIcon, ProfileIcon, LogoutIcon, MenuIcon } f
 import { useRouter } from 'next/navigation';
 
 // Lazy load components
-const PendingStartups = dynamic(() => import('../pendingStartups/page'));
+const PendingStartups = dynamic(() => import('./pendingStartups/page'));
 const UpdateProfile = dynamic(() => import('@/components/admin/updateProfile/updateProfile'));
 
 const Sidebar: React.FC = () => {
@@ -28,7 +28,7 @@ const Sidebar: React.FC = () => {
     setSelectedSection(section);
   };
 
-  const handleAdminSection = (section: string) => { setSelectedSection(section); if (section === 'Pending Startups') { router.push('/pendingStartups'); } };
+  const handleAdminSection = (section: string) => { setSelectedSection(section); if (section === 'Pending Startups') { router.push('admin/pendingStartups'); } };
 
   const renderContent = () => {
     switch (selectedSection) {
