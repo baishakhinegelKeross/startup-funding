@@ -63,9 +63,9 @@ function UserDropdownMenu({username}: {username: string}) {
                         cancelButtonText: 'Cancel',
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            axios.post('http://localhost:8000/auth/logout',{}, { withCredentials: true, }).then((response) => {
+                            axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`,{}, { withCredentials: true, }).then((response) => {
                                 toast.success('Sucessfully LoggedOut')
-                                window.location.href = '/login'; 
+                                window.location.href = '/fundraiser/login'; 
                                }).catch((error) => {  
                                debugger
                                     toast.error(error.response.data.error);

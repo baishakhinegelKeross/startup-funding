@@ -1,0 +1,37 @@
+# Ignore node_modules folder
+node_modules
+
+# Ignore local environment files
+.env
+
+# Ignore log files
+*.log
+
+# Ignore build and cache folders
+.next
+out
+
+# Ignore version control files
+.git
+.gitignore
+
+# Ignore any temporary files
+*.swp
+*.bak
+
+# Ignore IDE configuration files
+.vscode
+.idea
+
+# Ignore test and documentation files
+tests
+test
+docs
+
+# Ignore dependencies from node_modules (ensure only required files are copied)
+**/node_modules
+
+# Ignore any other files that are not needed in production
+npm-debug.log
+yarn-debug.log
+yarn-error.log

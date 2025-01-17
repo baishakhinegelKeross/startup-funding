@@ -64,7 +64,7 @@ export default function ProfileForm() {
 
     const submittedData = { username: values.username, password: values.password }
 
-    axios.post('http://localhost:8000/auth/login', JSON.stringify(submittedData), {
+    axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/login`, JSON.stringify(submittedData), {
       headers: { 'Content-Type': 'application/json' },
       withCredentials: true
     }).then((response) => {
@@ -75,7 +75,7 @@ export default function ProfileForm() {
     
 
       //router.push('/');
-      window.location.href = '/';
+      window.location.href = '/fundraiser';
     }).catch((error) => {
       toast.error(error.response.data.message);
     });

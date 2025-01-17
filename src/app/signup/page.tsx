@@ -74,11 +74,11 @@ export default function SignUpForm() {
 
   async function onSubmit(values: FormData) {
     debugger
-    axios.post('http://localhost:8000/auth/signup', JSON.stringify({username: values.username, email: values.email, password: values.password}), {
+    axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/signup`, JSON.stringify({username: values.username, email: values.email, password: values.password}), {
       headers: { 'Content-Type': 'application/json' },
     }).then((response) => {
       toast.success('Account created successfully')
-      window.location.href = '/login'
+      window.location.href = '/fundraiser/login'
     }).catch((error) => {
       toast.error(error.response.data.message);
     })
