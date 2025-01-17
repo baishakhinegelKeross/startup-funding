@@ -23,7 +23,7 @@ const PendingStartupsPage: React.FC = () => {
     if (error) return <ErrorIndicator error={error} />;
 
     return (
-        <div className="p-6 bg-gray-50 min-h-screen">
+        <div className="p-6 min-h-screen">
             <h2 className="text-4xl font-bold mb-6 text-center text-blue-600">Pending Startups</h2>
 
             <CampaignTable campaigns={campaigns} onViewDetails={handleViewDetails} />
