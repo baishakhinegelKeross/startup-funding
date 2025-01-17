@@ -66,8 +66,8 @@ export default function App() {
         investmentAmount: "",
         field_of_interest: "",
         investmentExperience: "",
-        taxReturn: null as File | null,
-        bankStatement: null as File | null,
+        kyc_document: null as File | null,
+        document_upload: null as File | null,
     });
 
     const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -95,12 +95,13 @@ export default function App() {
         });
     };
 
-    const handleDocumentUpload = (e: React.ChangeEvent<HTMLInputElement>, type: 'taxReturn' | 'bankStatement') => {
+    const handleDocumentUpload = (e: React.ChangeEvent<HTMLInputElement>, type: 'document_upload' | 'kyc_document') => {
         const file = e.target.files?.[0];
         if (file) {
             setBusinessData({
                 ...businessData,
-                [type]: file,
+                
+                [e.target.id]: file.name,
             });
         }
     };
@@ -127,12 +128,15 @@ export default function App() {
             }
             console.log('Profile Data:', profileData);
         } else {
-            axios.post('http://192.168.3.7:8080/auth/sendRequest', JSON.stringify({...businessData,role:isFundraiser?"fundraiser":"investor"})).then((response) => {
+            debugger
+            const submittedJSON = JSON.stringify({...businessData,role:isFundraiser?"fundraiser":"investor"});
+            axios.post('http://localhost:8000/auth/sendRequest',submittedJSON,{ headers: { 'Content-Type': 'application/json' },withCredentials:true}).then((response) => {
                 debugger
                 toast.success('Business details saved successfully');
-
+                
 
             }).catch((error) => {
+                debugger
                 toast.error(error.response.data.message);
             });
             console.log('Business Data:', businessData);
@@ -303,44 +307,44 @@ export default function App() {
                                     </Select>
                                 </div>
                                 <div className="space-y-1">
-                                    <Label>Tax Return</Label>
+                                    <Label>Document Uploaf</Label>
                                     <div className="flex items-center space-x-2">
                                         <Input
-                                            id="taxReturn"
+                                            id="document_upload"
                                             type="file"
                                             accept=".pdf,.doc,.docx"
                                             className="hidden"
-                                            onChange={(e) => handleDocumentUpload(e, 'taxReturn')}
+                                            onChange={(e) => handleDocumentUpload(e, 'document_upload')}
                                         />
                                         <Button
                                             type="button"
                                             variant="outline"
                                             className="w-full"
-                                            onClick={() => document.getElementById('taxReturn')?.click()}
+                                            onClick={() => document.getElementById('document_upload')?.click()}
                                         >
                                             <Upload className="w-4 h-4 mr-2" />
-                                            {businessData.taxReturn ? businessData.taxReturn.name : 'Upload Tax Return'}
+                                            {businessData['document_upload'] ? businessData['document_upload'].name : 'Upload Supporting Document'}
                                         </Button>
                                     </div>
                                 </div>
                                 <div className="space-y-1">
-                                    <Label>Bank Statement</Label>
+                                    <Label>KYC Documnet</Label>
                                     <div className="flex items-center space-x-2">
                                         <Input
-                                            id="bankStatement"
+                                            id="kyc_document"
                                             type="file"
                                             accept=".pdf,.doc,.docx"
                                             className="hidden"
-                                            onChange={(e) => handleDocumentUpload(e, 'bankStatement')}
+                                            onChange={(e) => handleDocumentUpload(e, 'kyc_document')}
                                         />
                                         <Button
                                             type="button"
                                             variant="outline"
                                             className="w-full"
-                                            onClick={() => document.getElementById('bankStatement')?.click()}
+                                            onClick={() => document.getElementById('kyc_document')?.click()}
                                         >
                                             <Upload className="w-4 h-4 mr-2" />
-                                            {businessData.bankStatement ? businessData.bankStatement.name : 'Upload Bank Statement'}
+                                            {businessData['kyc_document'] ? businessData['kyc_document'].name : 'Upload KYC details'}
                                         </Button>
                                     </div>
                                 </div>

@@ -8,7 +8,7 @@ export default {
 		"./src/app/**/*.{js,ts,jsx,tsx,mdx}",
 	],
 	daisyui: {
-		themes: [ "dark", "cupcake", "halloween"],
+		themes: ["dark", "cupcake", "halloween"],
 	},
 	theme: {
 		extend: {
@@ -53,7 +53,10 @@ export default {
 					'4': 'hsl(var(--chart-4))',
 					'5': 'hsl(var(--chart-5))'
 				}
-				
+
+			},
+			fontFamily: {
+				sans: ['Inter', 'sans-serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -66,3 +69,4 @@ export default {
 	// require('daisyui'),
 	// ],
 } satisfies Config;
+
