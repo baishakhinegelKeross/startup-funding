@@ -83,9 +83,10 @@ export default function ProfileForm() {
   }
 
   return (
-    <div className="flex items-center justify-center h-screen bg-black">
+    <div className="min-h-screen bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072')] bg-cover bg-center bg-no-repeat flex items-center justify-center p-4 relative">
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
       <ToastContainer />
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md relative bg-slate-900/90 border-slate-700 shadow-2xl">
         <CardHeader className="space-y-1">
           <div className="flex justify-center mb-2">
             <LogIn className="h-10 w-10 text-primary" />
@@ -141,7 +142,7 @@ export default function ProfileForm() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full text-md">
                 Continue
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -152,8 +153,9 @@ export default function ProfileForm() {
             <small>OR</small>
             <Separator className="my-4 w-2/5" />
           </div>
-          <div className="flex justify-center" >
-            <Badge onClick={() => {
+          <div className="flex justify-center mt-6" >
+            <Badge className="w-full max-w-md relative bg-slate-900/90 border-slate-700 shadow-2xl p-2 flex justify-center text-md"
+            onClick={() => {
               // axios.get("http://localhost:8000/oauth/google").then((response) => {
               //   console.log(response);
               //   console.log(response.data);
@@ -163,7 +165,7 @@ export default function ProfileForm() {
               // })
               router.push('http://localhost:8000/oauth/google'); 
               //window.open('http://localhost:8000/oauth/google', '_blank');
-            }} variant="secondary" className="p-2"> LogIn with Google <FcGoogle className="ms-2" /> </Badge>
+            }} variant="secondary">Continue with Google <FcGoogle className="ms-2" /> </Badge>
           </div>
           <CardFooter className="flex justify-center mt-4">
   <small className="text-gray-600">

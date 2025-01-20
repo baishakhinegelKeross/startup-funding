@@ -32,7 +32,7 @@ function UserDropdownMenu({username}: {username: string}) {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
                 <DropdownMenuItem asChild>
-                    <Link href={"/user-profile"}>
+                    <Link href={"/role"}>
                         <BadgeCheck />
                         Profile
                     </Link>
