@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 export default function Updates(){
     return(
-        <div className="bg-gray-50 max-h-screen p-4 flex justify-center">
+        <div className="bg-[#0a0b1e] max-h-screen p-4 flex justify-center">
             
             <div className={Classes.post_card}>
                 <div className={Classes.engagement}>

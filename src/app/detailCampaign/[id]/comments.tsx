@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 export default function Comments(){
     return(
-    <div className="bg-gray-50 max-h-screen p-4">
+    <div className="bg-[#0a0b1e] max-h-screen p-4">
 
         <div className='flex items-center flex-col'>
             <h1 className={Classes.h1}>What Investors Say</h1>

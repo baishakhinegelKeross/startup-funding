@@ -39,7 +39,7 @@ const MyCampaignPage: React.FC = () => {
   useEffect(() => {
     const fetchCampaigns = async () => {
       try {
-        const response = await fetch('http://192.168.3.7:8080/api/fundraiser');
+        const response = await fetch('http://192.168.3.217:8090/api/fundraiser');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
