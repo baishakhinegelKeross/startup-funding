@@ -1,42 +1,13 @@
 import { JSX } from "react";
+import { PropsArgs } from './types';
 import OtherDetails from "./other_details";
-//import {Button} from "@/components/ui/button"
 import Classes from './page.module.css'
+import CampaignInvestment from "./campaign_investment";
+//import {Button} from "@/components/ui/button"
+//import Link from "next/link";
 //import Image from "next/image";
-//import BussinessImage from '@/assets/business_img-1.jpg';
 
 
-// Define a class to encapsulate campaign details
-// class Campaign {
-//     constructor(
-//         public title: string,
-//         public story: string,
-//         public image_url: string,
-//         public category: string,
-//         public goal_amount: number,
-//         public current_amount: number,
-//         public published: string,
-//         public owner: string,
-//         public email: string,
-//         public faves: number,
-//         public date: Date,
-//         public contributions: Contributions
-//     ) {}
-// }
-
-// class Contributions {
-//     constructor(
-//         public amount: number,
-//         public fundraiserId: string,
-//         public date: Date
-//     ) {}
-// }
-
-type PropsArgs = {
-    params: {
-        id: string;
-    };
-};
 
 // const fetchCampaignDetailsForId = async function (id: string): Promise<Campaign> {
 //     const apiUrl = `http://192.168.3.7:8080/api/fundraiser/campaign/${id}`;
@@ -58,10 +29,9 @@ type PropsArgs = {
 
 export default async function CampaignDetails({ params }: PropsArgs): Promise<JSX.Element> {
     //const campaignDetails = await fetchCampaignDetailsForId("677cc652db18e4735880622b");
+    
     // Use params.id to fetch campaign details dynamically
     //const campaignDetails = await fetchCampaignDetailsForId(params.id);
-
-    const class1 = `${Classes.wrapper} mt-20 border-0 border-t`;
     
     const {id} = await params;
     console.log(id)
@@ -102,7 +72,8 @@ export default async function CampaignDetails({ params }: PropsArgs): Promise<JS
     */
 
     return (
-        <main className={class1}>
+        <main className={`${Classes.wrapper} mt-20 border-0 border-t`}>
+            {/*
             <section className="w-full">
                 <article className="p-2">
                     <p className="text-xl m-0">INVEST IN FASTOPPS</p>
@@ -113,15 +84,20 @@ export default async function CampaignDetails({ params }: PropsArgs): Promise<JS
             </section>
             <section className="flex w-full">
                 <section className="w-9/12 border-0 px-2">
-                    <article className="p-0">
-                        <div>
-                            <video className="w-full h-full" src="/sample_video-1.mp4" controls></video>
+                    <article className="p-0 h-full">
+                        <div className="w-full h-full">
+                            <div className=" w-full h-full hidden">
+                                <video className="w-full h-full" src="/sample_video-1.mp4" controls></video>
+                            </div>
+                            <div className="w-full h-full relative">
+                                <Image src="https://placehold.co/600x400?text=Campaign+Photo.png" alt={"campaign image"} fill unoptimized></Image>
+                            </div>
                         </div>
                     </article>
                 </section>
                 <section className="w-1/4 border p-2 bg-white">
                     <article className="flex flex-col h-full p-2">
-                        <div className="h-3/4 border-0 p-2">
+                        <div className="h-full border-0 p-2">
                             <div className="text-black">
                                 Almost Funded
                             </div>
@@ -144,18 +120,22 @@ export default async function CampaignDetails({ params }: PropsArgs): Promise<JS
                                 </div>
                             </div>
                             <div className="mt-2">
-                                <button type="button" className="w-full text-sm">FUND</button>
+                                <button type="button" className="w-full text-sm">
+                                    <Link className="w-full text-sm" href={`/api/fundraiser/campaign/checkout/${id}`}>FUND</Link>
+                                </button>
                             </div>
                             <div className="mt-2">
                                 <button type="button" className="w-full text-sm">WATCH FOR UPDATES</button>
                             </div>
                         </div>
-                        <div className="h-1/4 border-0 p-2 text-black">
+                        <div className="hidden h-1/4 border-0 p-2 text-black">
                             FUNDING TERMS
                         </div>
                     </article>
                 </section>
             </section>
+            */}
+            <CampaignInvestment campaignId={id}></CampaignInvestment>
             <OtherDetails></OtherDetails>
         </main>
     )
