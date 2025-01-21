@@ -30,7 +30,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     
     try {
       
-      const response = await axios.get('http://localhost:8000/auth/me', { withCredentials: true, })
+      const response = await axios.get('http://localhost:8080/auth/me', { withCredentials: true, })
 
       console.log(response);
       if (response.status === 200) {

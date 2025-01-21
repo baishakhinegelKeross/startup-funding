@@ -40,31 +40,31 @@ export function CreateCampaignModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral/60 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-800 bg-opacity-75 backdrop-blur-sm">
       {/* Modal container with height limiting and scrolling */}
-      <div className="card w-full max-w-2xl  shadow-2xl animate-in fade-in zoom-in p-4 relative max-h-[80vh] overflow-y-auto">
+      <div className="card w-full max-w-2xl bg-white shadow-xl rounded-lg p-6 relative max-h-[80vh] overflow-y-auto animate-in fade-in zoom-in">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="btn btn-ghost absolute right-2 top-2 text-xl text-neutral-400 hover:text-neutral-700"
+          className="btn btn-ghost absolute right-2 top-2 text-gray-400 hover:text-gray-700"
         >
           <X className="w-6 h-6" />
         </button>
 
-        <h2 className="mt-6 text-3xl font-bold text-center">Start a Campaign</h2>
+        <h2 className="mt-4 text-2xl font-bold text-center text-gray-800">Start a Campaign</h2>
 
-        <form onSubmit={handleSubmit} className="card-body space-y-4 pb-6">
+        <form onSubmit={handleSubmit} className="card-body space-y-6 mt-4">
           {/* Campaign Title */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text font-semibold">Campaign Title</span>
+              <span className="label-text text-sm font-medium text-gray-700">Campaign Title</span>
             </label>
             <input
               type="text"
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="input input-bordered w-full focus:outline-none"
+              className="input input-bordered w-full focus:ring-primary focus:border-primary"
               placeholder="Enter campaign title"
             />
           </div>
@@ -72,14 +72,14 @@ export function CreateCampaignModal({
           {/* Description */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text font-semibold">Description</span>
+              <span className="label-text text-sm font-medium text-gray-700">Description</span>
             </label>
             <textarea
               required
               rows={4}
               value={story}
               onChange={(e) => setStory(e.target.value)}
-              className="textarea textarea-bordered w-full focus:outline-none"
+              className="textarea textarea-bordered w-full focus:ring-primary focus:border-primary"
               placeholder="Describe your campaign"
             />
           </div>
@@ -89,7 +89,7 @@ export function CreateCampaignModal({
             {/* Funding Goal */}
             <div className="form-control">
               <label className="label">
-                <span className="label-text font-semibold">Funding Goal ($)</span>
+                <span className="label-text text-sm font-medium text-gray-700">Funding Goal ($)</span>
               </label>
               <input
                 type="number"
@@ -97,7 +97,7 @@ export function CreateCampaignModal({
                 min="1"
                 value={goalAmount}
                 onChange={(e) => setGoalAmount(e.target.value)}
-                className="input input-bordered w-full focus:outline-none"
+                className="input input-bordered w-full focus:ring-primary focus:border-primary"
                 placeholder="Enter funding goal"
               />
             </div>
@@ -105,17 +105,17 @@ export function CreateCampaignModal({
             {/* End Date */}
             <div className="form-control">
               <label className="label">
-                <span className="label-text font-semibold">End Date</span>
+                <span className="label-text text-sm font-medium text-gray-700">End Date</span>
               </label>
               <div className="relative">
-                <Calendar className="absolute top-3 left-3 w-5 h-5 text-neutral-400" />
+                <Calendar className="absolute top-3 left-3 w-5 h-5 text-gray-400" />
                 <input
                   type="date"
                   required
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
                   min={new Date().toISOString().split("T")[0]}
-                  className="input input-bordered pl-9 w-full focus:outline-none"
+                  className="input input-bordered pl-10 w-full focus:ring-primary focus:border-primary"
                 />
               </div>
             </div>
@@ -124,14 +124,14 @@ export function CreateCampaignModal({
           {/* Image URL */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text font-semibold">Campaign Image URL</span>
+              <span className="label-text text-sm font-medium text-gray-700">Campaign Image URL</span>
             </label>
             <input
               type="url"
               required
               value={imageUrl}
               onChange={(e) => setImageUrl(e.target.value)}
-              className="input input-bordered w-full focus:outline-none"
+              className="input input-bordered w-full focus:ring-primary focus:border-primary"
               placeholder="Enter image URL (e.g., from Unsplash)"
             />
           </div>
@@ -139,16 +139,14 @@ export function CreateCampaignModal({
           {/* Creator Name / Org */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text font-semibold">
-                Creator Name / Organization
-              </span>
+              <span className="label-text text-sm font-medium text-gray-700">Creator Name / Organization</span>
             </label>
             <input
               type="text"
               required
               value={owner}
               onChange={(e) => setOwner(e.target.value)}
-              className="input input-bordered w-full focus:outline-none"
+              className="input input-bordered w-full focus:ring-primary focus:border-primary"
               placeholder="Enter your name or organization"
             />
           </div>
@@ -156,13 +154,13 @@ export function CreateCampaignModal({
           {/* Category */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text font-semibold">Category</span>
+              <span className="label-text text-sm font-medium text-gray-700">Category</span>
             </label>
             <input
               type="text"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="input input-bordered w-full focus:outline-none"
+              className="input input-bordered w-full focus:ring-primary focus:border-primary"
               placeholder="e.g. Technology, Charity, Creative, etc."
             />
           </div>
@@ -170,13 +168,13 @@ export function CreateCampaignModal({
           {/* Email */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text font-semibold">Email</span>
+              <span className="label-text text-sm font-medium text-gray-700">Email</span>
             </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="input input-bordered w-full focus:outline-none"
+              className="input input-bordered w-full focus:ring-primary focus:border-primary"
               placeholder="Enter your email address"
             />
           </div>
@@ -191,5 +189,6 @@ export function CreateCampaignModal({
         </form>
       </div>
     </div>
+
   );
 }
