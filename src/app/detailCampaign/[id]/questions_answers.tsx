@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function QnA(){
     return(
-        <div className="bg-gray-50 min-h-screen p-4">
+        <div className="bg-[#0a0b1e] min-h-screen p-4">
             <div className="max-w-3xl mx-auto">
                 {/* Question Input */}
                 <div className="bg-white rounded-lg shadow-sm mb-8 p-4">
@@ -21,7 +21,7 @@ export default function QnA(){
                 <div className="flex items-center gap-2 mb-6">
                     <span className="text-gray-700">Sort by relevance</span>
                     <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M19 9l-7 7-7-7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                 </div>
 
@@ -47,7 +47,7 @@ export default function QnA(){
                                 <div className="flex items-center gap-2 mt-3">
                                     <span className="text-blue-600 font-medium">4</span>
                                     <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path d="M5 15l7-7 7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M5 15l7-7 7 7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                                     </svg>
                                 </div>
                             </div>
@@ -74,7 +74,7 @@ export default function QnA(){
                                     <div className="flex items-center gap-2 mt-3">
                                         <span className="text-blue-600 font-medium">6</span>
                                         <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path d="M5 15l7-7 7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M5 15l7-7 7 7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                                         </svg>
                                     </div>
                                 </div>
