@@ -18,7 +18,7 @@ const Details: React.FC<DetailsProps> = ({highlights, keypoints, featuredInvesto
                         highlights.map((obj) => (
                             <Highlights key={obj.id} title={obj.title} desc={obj.desc} />
                         ))
-                    ) : ("")
+                    ) : null
                 }
 
 
@@ -49,7 +49,7 @@ const Details: React.FC<DetailsProps> = ({highlights, keypoints, featuredInvesto
                         keypoints.map((obj) => (
                             <KeyPoints key={obj.id} desc={obj.text} />
                         ))
-                    ) : ("")
+                    ) : null
                 }
 
                 {/*
@@ -96,7 +96,7 @@ const Details: React.FC<DetailsProps> = ({highlights, keypoints, featuredInvesto
                     featuredInvestor.map((obj) => (
                         <FeaturedInvestor key={obj.id} investorPic={obj.investorPic} investorName={obj.investorName} investorTitle={obj.investorTitle} investmentAmt={obj.investmentAmt} investorCmt={obj.investorCmt} />
                     ))
-                ) : ("")
+                ) : null
             }
 
             {/*
@@ -154,7 +154,7 @@ const Details: React.FC<DetailsProps> = ({highlights, keypoints, featuredInvesto
                     teamMember.map((obj) => (
                         <TeamMember key={obj.id} teamMemberPic={obj.teamMemberPic} teamMemberName={obj.teamMemberName} teamMemberTitle={obj.teamMemberTitle} />
                     ))
-                ) : ("")
+                ) : null
             }
 
             {/*

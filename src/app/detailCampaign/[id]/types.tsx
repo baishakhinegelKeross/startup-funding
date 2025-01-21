@@ -105,3 +105,46 @@ export interface DetailsProps {
 }
 
 // details.tsx : ED
+
+// update_posts.tsx : ST
+
+export interface UpdatePostsProps {
+    key: number,
+    postTitle: string,
+    postImg: {
+        src: string;
+        alt: string;
+        class: string;
+        height: number;
+        width: number;
+    },
+    postedBy: {
+        src: string;
+        alt: string;
+        name: string;
+        date: string;
+        role: string;
+        class: string;
+        width: number;
+        height: number;
+    },
+    postTags: {
+        id: number,
+        text: string;
+    }[]
+}
+
+// update_posts.tsx : ED
+
+// comments_posts : ST
+
+export interface CommentPostProps {
+    key: number,
+    comment_img: string,
+    investor_name: string,
+    is_lead_investor: boolean,
+    investment_amount: string,
+    investor_message: string
+}
+
+// comments_posts: ED
