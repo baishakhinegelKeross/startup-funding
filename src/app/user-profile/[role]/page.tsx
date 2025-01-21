@@ -57,20 +57,34 @@ export default function App() {
         const fetchData = async () => {
             try {
                 // call API to fetch user profile data and populate the form  
-                const response = await axios.get('/');
-                const data = response.data;
-                setProfileData({
-                    username: data.username,
-                    email: data.email,
-                    password: "",
-                    confirmPassword: "",
-                    about: "",
-                    profilePicture: null,
-                    profilePicturePreview: data.profilePicture,
-                });
-
-                const approvalStatusReponse = await axios.get('http://192.168.3.7:8080/auth/roleRequest', { withCredentials: true });
+               
+            
+                    const approvalStatusReponse = await axios.post(
+                        'http://localhost:8000/user/roleRequests', 
+                        {}, 
+                        { 
+                            withCredentials: true,
+                            headers: {
+                                'Content-Type': 'application/json' // Adjust the content type if needed
+                            }
+                        }
+                    );
+                    console.log(approvalStatusReponse.data);
+                
+                
                 approvalStatus = JSON.parse(approvalStatusReponse.data).role;
+
+                // setProfileData({
+                //     username: data.username,
+                //     email: data.email,
+                //     password: "",
+                //     confirmPassword: "",
+                //     about: "",
+                //     profilePicture: null,
+                //     profilePicturePreview: data.profilePicture,
+                // });
+
+                
             } catch (error) {
                 
                 toast.error('Failed to fetch user role status');
@@ -168,226 +182,126 @@ export default function App() {
     };
 
     return (
-        <div className="h-screen flex  justify-center bg-black p-10 flex-col items-center">
+        <div className="h-screen flex justify-center bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072')] flex-col items-center">
             {approvalStatus === "pending"?<Badge variant="outline" className="bg-yellow-300 flex justify-center"><CircleAlert /> Your request is in pending state .. </Badge>:''}
+            
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
             <ToastContainer />
-            <div className="h-4/5 mt-10">
-                <Tabs defaultValue="profile" className="w-[600px] h-full">
-                    <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="profile">Profile Details</TabsTrigger>
-                        <TabsTrigger value="business">Business Details</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="profile">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Profile Details</CardTitle>
-                                <CardDescription>
-                                    Edit your profile information and settings.
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent className="spcae-y-1">
-                                <div className="spcae-y-1">
-                                    <Label>Profile Picture</Label>
-                                    <div className="flex flex-col items-center space-y-4">
-                                        {profileData.profilePicturePreview ? (
-                                            <div className="relative w-32 h-32">
-                                                <img
-                                                    src={profileData.profilePicturePreview}
-                                                    alt="Profile Preview"
-                                                    className="w-full h-full object-cover rounded-full"
+            <div className="mt-[47px] z-50 w-full">
+                <div className="flex justify-center items-center">
+                    <Tabs defaultValue="profile" className="w-3/5 h-full">
+                        <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value="profile">Profile Details</TabsTrigger>
+                            <TabsTrigger value="business">Business Details</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="profile">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Profile Details</CardTitle>
+                                    <CardDescription>
+                                        Edit your profile information and settings.
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardContent className="space-y-2">
+                                    <div className="space-y-2">
+                                        <Label>Profile Picture</Label>
+                                        <div className="flex flex-col items-center space-y-4">
+                                            {profileData.profilePicturePreview ? (
+                                                <div className="relative w-32 h-32">
+                                                    <img
+                                                        src={profileData.profilePicturePreview}
+                                                        alt="Profile Preview"
+                                                        className="w-full h-full object-cover rounded-full"
+                                                    />
+                                                </div>
+                                            ) : (
+                                                <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center">
+                                                    <ImageIcon className="w-12 h-12 text-gray-400" />
+                                                </div>
+                                            )}
+                                            <div className="flex items-center space-x-2">
+                                                <Input
+                                                    id="profilePicture"
+                                                    type="file"
+                                                    accept="image/*"
+                                                    className="hidden"
+                                                    onChange={handleProfilePictureChange}
                                                 />
+                                                <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    onClick={() => document.getElementById('profilePicture')?.click()}
+                                                >
+                                                    Upload Photo
+                                                </Button>
                                             </div>
-                                        ) : (
-                                            <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center">
-                                                <ImageIcon className="w-12 h-12 text-gray-400" />
-                                            </div>
-                                        )}
-                                        <div className="flex items-center space-x-2">
-                                            <Input
-                                                id="profilePicture"
-                                                type="file"
-                                                accept="image/*"
-                                                className="hidden"
-                                                onChange={handleProfilePictureChange}
-                                            />
-                                            <Button
-                                                type="button"
-                                                variant="outline"
-                                                onClick={() => document.getElementById('profilePicture')?.click()}
-                                            >
-                                                Upload Photo
-                                            </Button>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="spcae-y-1">
-                                    <Label htmlFor="username">Username</Label>
-                                    <Input
-                                        id="username"
-                                        placeholder="Enter your username"
-                                        value={profileData.username}
-                                        onChange={handleProfileChange}
-                                    />
-                                </div>
-                                <div className="spcae-y-1">
-                                    <Label htmlFor="email">Email</Label>
-                                    <Input
-                                        id="email"
-                                        type="email"
-                                        placeholder="Enter your email"
-                                        value={profileData.email}
-                                        onChange={handleProfileChange}
-                                    />
-                                </div>
-                                <div className="spcae-y-1">
-                                    <Label htmlFor="password">Password</Label>
-                                    <Input
-                                        id="password"
-                                        type="password"
-                                        placeholder="Enter your password"
-                                        value={profileData.password}
-                                        onChange={handleProfileChange}
-                                    />
-                                </div>
-                                <div className="spcae-y-1">
-                                    <Label htmlFor="confirmPassword">Confirm Password</Label>
-                                    <Input
-                                        id="confirmPassword"
-                                        type="password"
-                                        placeholder="Confirm your password"
-                                        value={profileData.confirmPassword}
-                                        onChange={handleProfileChange}
-                                    />
-                                </div>
-                                <div className="spcae-y-1">
-                                    <Label htmlFor="about">About</Label>
-                                    <Textarea
-                                        id="about"
-                                        placeholder="Tell us about yourself"
-                                        value={profileData.about}
-                                        onChange={handleProfileChange}
-                                    />
-                                </div>
-                            </CardContent>
-                            <CardFooter>
-                                <Button onClick={() => handleSubmit('profile')}>Save Profile</Button>
-                            </CardFooter>
-                        </Card>
-                    </TabsContent>
-                    <TabsContent value="business">
-                        {currentRoleRequest === "investor"?<Card>
-                            <CardHeader>
-                                <CardTitle>Business Details</CardTitle>
-                                <CardDescription>
-                                    Tell us about your investment preferences and experience.
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-2">
-                                <div className="space-y-1">
-                                    <Label htmlFor="industry">Investment Focus</Label>
-                                    <Input
-                                        id="industry"
-                                        placeholder="e.g., Technology, Real Estate"
-                                        value={businessData.industry}
-                                        onChange={handleBusinessChange}
-                                    />
-                                </div>
-                                <div className="space-y-1">
-                                    <Label htmlFor="investmentAmount">Investment Budget (USD)</Label>
-                                    <Input
-                                        id="investmentAmount"
-                                        type="number"
-                                        placeholder="Enter your investment budget"
-                                        value={businessData.investmentAmount}
-                                        onChange={handleBusinessChange}
-                                    />
-                                </div>
-                                <div className="space-y-1">
-                                    <Label htmlFor="investmentSector">Investment Sector</Label>
-                                    <Select onValueChange={handleSectorChange} value={businessData['field_of_interest']}>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select a sector" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="tech">Technology</SelectItem>
-                                            <SelectItem value="health">Healthcare</SelectItem>
-                                            <SelectItem value="finance">Financial Services</SelectItem>
-                                            <SelectItem value="real-estate">Real Estate</SelectItem>
-                                            <SelectItem value="energy">Energy</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className="space-y-1">
-                                    <Label htmlFor="investmentExperience">Investment Experience</Label>
-                                    <Select onValueChange={handleExperienceChange} value={businessData.investmentExperience}>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select your experience level" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="beginner">Beginner (0-2 years)</SelectItem>
-                                            <SelectItem value="intermediate">Intermediate (3-5 years)</SelectItem>
-                                            <SelectItem value="advanced">Advanced (5-10 years)</SelectItem>
-                                            <SelectItem value="expert">Expert (10+ years)</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className="space-y-1">
-                                    <Label>Document Upload</Label>
-                                    <div className="flex items-center space-x-2">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="username">Username</Label>
                                         <Input
-                                            id="document_upload"
-                                            type="file"
-                                            accept=".pdf,.doc,.docx"
-                                            className="hidden"
-                                            onChange={(e) => handleDocumentUpload(e, 'document_upload')}
+                                            id="username"
+                                            placeholder="Enter your username"
+                                            value={profileData.username}
+                                            onChange={handleProfileChange}
                                         />
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            className="w-full"
-                                            onClick={() => document.getElementById('document_upload')?.click()}
-                                        >
-                                            <Upload className="w-4 h-4 mr-2" />
-                                            {businessData['document_upload'] ? businessData['document_upload']?.name : 'Upload Supporting Document'}
-                                        </Button>
                                     </div>
-                                </div>
-                                <div className="space-y-1">
-                                    <Label>KYC Documnet</Label>
-                                    <div className="flex items-center space-x-2">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="email">Email</Label>
                                         <Input
-                                            id="kyc_document"
-                                            type="file"
-                                            accept=".pdf,.doc,.docx"
-                                            className="hidden"
-                                            onChange={(e) => handleDocumentUpload(e, 'kyc_document')}
+                                            id="email"
+                                            type="email"
+                                            placeholder="Enter your email"
+                                            value={profileData.email}
+                                            onChange={handleProfileChange}
                                         />
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            className="w-full"
-                                            onClick={() => document.getElementById('kyc_document')?.click()}
-                                        >
-                                            <Upload className="w-4 h-4 mr-2" />
-                                            {businessData['kyc_document'] ? businessData['kyc_document']?.name : 'Upload KYC details'}
-                                        </Button>
                                     </div>
-                                </div>
-                               
-                            </CardContent>
-                            <CardFooter>
-                                <Button onClick={() => handleSubmit('business')}>Save Business Details</Button>
-                            </CardFooter>
-                        </Card>:<Card>
-
-                            <CardHeader>
-                                <CardTitle>Business Details</CardTitle>
-                                <CardDescription>
-                                    Tell us about your Fundraising preferences.
-                                </CardDescription>
-                                <CardContent>
-                                    <div className="space-y-1">
-                                        <Label htmlFor="industry">Industry</Label>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="password">Password</Label>
+                                        <Input
+                                            id="password"
+                                            type="password"
+                                            placeholder="Enter your password"
+                                            value={profileData.password}
+                                            onChange={handleProfileChange}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="confirmPassword">Confirm Password</Label>
+                                        <Input
+                                            id="confirmPassword"
+                                            type="password"
+                                            placeholder="Confirm your password"
+                                            value={profileData.confirmPassword}
+                                            onChange={handleProfileChange}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="about">About</Label>
+                                        <Textarea
+                                            id="about"
+                                            placeholder="Tell us about yourself"
+                                            value={profileData.about}
+                                            onChange={handleProfileChange}
+                                        />
+                                    </div>
+                                </CardContent>
+                                <CardFooter>
+                                    <Button onClick={() => handleSubmit('profile')}>Save Profile</Button>
+                                </CardFooter>
+                            </Card>
+                        </TabsContent>
+                        <TabsContent value="business">
+                            {currentRoleRequest === "investor" ? <Card>
+                                <CardHeader>
+                                    <CardTitle>Business Details</CardTitle>
+                                    <CardDescription>
+                                        Tell us about your investment preferences and experience.
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardContent className="space-y-2">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="industry">Investment Focus</Label>
                                         <Input
                                             id="industry"
                                             placeholder="e.g., Technology, Real Estate"
@@ -395,27 +309,131 @@ export default function App() {
                                             onChange={handleBusinessChange}
                                         />
                                     </div>
-                                    <div className="space-y-1">
-                                        <Label htmlFor="company">Company</Label>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="investmentAmount">Investment Budget (USD)</Label>
                                         <Input
-                                            id="company"
-                                            type="text"
-                                            placeholder="Company Name"
-                                            value={businessData.company}
+                                            id="investmentAmount"
+                                            type="number"
+                                            placeholder="Enter your investment budget"
+                                            value={businessData.investmentAmount}
                                             onChange={handleBusinessChange}
                                         />
                                     </div>
-                                    
-                                       
-                                    
+                                    <div className="space-y-2">
+                                        <Label htmlFor="investmentSector">Investment Sector</Label>
+                                        <Select onValueChange={handleSectorChange} value={businessData['field_of_interest']}>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select a sector" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="tech">Technology</SelectItem>
+                                                <SelectItem value="health">Healthcare</SelectItem>
+                                                <SelectItem value="finance">Financial Services</SelectItem>
+                                                <SelectItem value="real-estate">Real Estate</SelectItem>
+                                                <SelectItem value="energy">Energy</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="investmentExperience">Investment Experience</Label>
+                                        <Select onValueChange={handleExperienceChange} value={businessData.investmentExperience}>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select your experience level" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="beginner">Beginner (0-2 years)</SelectItem>
+                                                <SelectItem value="intermediate">Intermediate (3-5 years)</SelectItem>
+                                                <SelectItem value="advanced">Advanced (5-10 years)</SelectItem>
+                                                <SelectItem value="expert">Expert (10+ years)</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Document Upload</Label>
+                                        <div className="flex items-center space-x-2">
+                                            <Input
+                                                id="document_upload"
+                                                type="file"
+                                                accept=".pdf,.doc,.docx"
+                                                className="hidden"
+                                                onChange={(e) => handleDocumentUpload(e, 'document_upload')}
+                                            />
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                className="w-full"
+                                                onClick={() => document.getElementById('document_upload')?.click()}
+                                            >
+                                                <Upload className="w-4 h-4 mr-2" />
+                                                {businessData['document_upload'] ? businessData['document_upload']?.name : 'Upload Supporting Document'}
+                                            </Button>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>KYC Documnet</Label>
+                                        <div className="flex items-center space-x-2">
+                                            <Input
+                                                id="kyc_document"
+                                                type="file"
+                                                accept=".pdf,.doc,.docx"
+                                                className="hidden"
+                                                onChange={(e) => handleDocumentUpload(e, 'kyc_document')}
+                                            />
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                className="w-full"
+                                                onClick={() => document.getElementById('kyc_document')?.click()}
+                                            >
+                                                <Upload className="w-4 h-4 mr-2" />
+                                                {businessData['kyc_document'] ? businessData['kyc_document']?.name : 'Upload KYC details'}
+                                            </Button>
+                                        </div>
+                                    </div>
+
                                 </CardContent>
+                                <CardFooter>
+                                    <Button onClick={() => handleSubmit('business')}>Save Business Details</Button>
+                                </CardFooter>
+                            </Card> : <Card>
+
+                                <CardHeader>
+                                    <CardTitle>Business Details</CardTitle>
+                                    <CardDescription>
+                                        Tell us about your Fundraising preferences.
+                                    </CardDescription>
+                                    <CardContent className="space-y-2">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="industry">Industry</Label>
+                                            <Input
+                                                id="industry"
+                                                placeholder="e.g., Technology, Real Estate"
+                                                value={businessData.industry}
+                                                onChange={handleBusinessChange}
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="company">Company</Label>
+                                            <Input
+                                                id="company"
+                                                type="text"
+                                                placeholder="Company Name"
+                                                value={businessData.company}
+                                                onChange={handleBusinessChange}
+                                            />
+                                        </div>
+
+
+
+                                    </CardContent>
                                     <CardFooter>
                                         <Button onClick={() => handleSubmit('business')}>Save Business Details</Button>
                                     </CardFooter>
-                            </CardHeader>
+                                </CardHeader>
                             </Card>}
-                    </TabsContent>
-                </Tabs>
+                        </TabsContent>
+                    </Tabs>
+                </div>
             </div>
         </div>
     );
