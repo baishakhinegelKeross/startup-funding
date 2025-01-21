@@ -41,6 +41,7 @@
     padding: 1.5rem;
     border-radius: 8px;
     border: 1px solid #e9ecef;
+    height: 100%;
 }
 
 .highlight_card h3 {
@@ -86,7 +87,8 @@
 }
 
 .h1{
-    color: #1a365d;
+    /*color: #1a365d;*/
+    color: #8061ff;
     text-align: center;
     margin: 3rem 0 2rem;
 
@@ -386,3 +388,27 @@
 
 
 /* QnA */
+
+/* text_editor.tsx : ST */
+
+.tool_button{
+    all: unset;
+    padding: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+.text_content{
+    all: unset;
+    background-color: white;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.5rem;
+
+    color: black;
+}
+
+.tool_button:hover{
+    background-color: black;
+}
+
+/* text_editor.tsx : ED */

@@ -6,7 +6,12 @@ import MyInvestments from "@/components/Investor/MyInvestments/MyInvestment";
 import ProfileUpdate from "@/components/Investor/myProfile/myProfile";
 import authStore from "@/store/authStore";
 
-import Admin from "@/components/founder/Admin/Admin";
+import AdminDashboard from "@/app/adminDashboard/page";
+import Fundraiser from "@/app/fundraiser/page";
+import Investor from "@/app/investor/page"
+import { Button } from "../ui/button";
+import { useRouter } from 'next/navigation';
+
 
 // Define the Sidebar class to handle toggling and manage state
 class SidebarState {
@@ -44,6 +49,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
 
   const handleSelectSection = (section: string) => {
     setSelectedSection(section);
+    
   };
 
   const renderContent = () => {
@@ -52,10 +58,14 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
         return <MyInvestments />;
       case "My Profile":
         return <ProfileUpdate />;
-      case "Admin":
-        return <Admin />;
+      case "Admin Dashboard":
+        return <AdminDashboard />;
+      case "Fundraiser":
+        return <Fundraiser />;
+      case "Investor":
+        return <Investor />;
       default:
-        return <h1 className="text-3xl">Select a section to view content</h1>;
+        return "Hi Admin";
     }
   };
 
@@ -103,11 +113,13 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
             <span>Back</span>
           </Link>
         </div>
-
-        <div className="space-y-4 mt-8 flex-1">
-          <button
-            onClick={() => handleSelectSection("Admin")}
-            className={getButtonClass("Admin")}
+         
+         {/* Admin */}
+        <div className="space-y-4 mt-8">
+          <Button
+          variant={"profilebtn"}
+            onClick={() => handleSelectSection("AdminDashboard")}
+            className={getButtonClass("AdminDashboard")}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -124,11 +136,63 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
               />
             </svg>
             <span className={isSidebarOpen ? "block" : "hidden"}>Admin</span>
-          </button>
+          </Button>
+        </div>
+      
+      {/* Fundraiser */}
+        <div className="space-y-4 mt-8">
+          <Button
+          variant={"profilebtn"}
+            onClick={() => handleSelectSection("Fundraiser")}
+            className={getButtonClass("Fundraiser")}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 3v12M3 12h12"
+              />
+            </svg>
+            <span className={isSidebarOpen ? "block" : "hidden"}>Fundraiser</span>
+          </Button>
         </div>
 
+        {/* Investor */}
+        <div className="space-y-4 mt-8 flex-1">
+          <Button
+          variant={"profilebtn"}
+            onClick={() => handleSelectSection("Investor")}
+            className={getButtonClass("Investor")}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 3v12M3 12h12"
+              />
+            </svg>
+            <span className={isSidebarOpen ? "block" : "hidden"}>Investor</span>
+          </Button>
+        </div>
+
+
+
         
-        <button
+        <Button
           onClick={() => {
             handleSelectSection("Logout");
             clearUserData();
@@ -150,7 +214,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
             />
           </svg>
           <span className={isSidebarOpen ? "block" : "hidden"}>Logout</span>
-        </button>
+        </Button>
       </div>
 
      
