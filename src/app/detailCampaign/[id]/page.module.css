@@ -407,8 +407,30 @@
     color: black;
 }
 
+.text_content-2{
+    all: unset;
+    background-color: white;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.5rem;
+
+    color: blue;
+}
+
 .tool_button:hover{
     background-color: black;
+}
+
+.edit_txt{
+    display: none;
+}
+
+.txt_output{
+    color: white;
+}
+
+.txt_output:hover .edit_txt{
+    display: block;
 }
 
 /* text_editor.tsx : ED */

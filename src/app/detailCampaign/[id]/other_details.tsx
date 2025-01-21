@@ -1,7 +1,8 @@
 'use client'
 
-import Classes from './page.module.css';
+import { nanoid } from 'nanoid';
 import { useState } from 'react';
+import Classes from './page.module.css';
 import Details from './details';
 import Updates from './updates';
 import Comments from './comments';
@@ -10,17 +11,17 @@ import PITCH from './pitch';
 
 const highlights = [
     {
-        id: Date.now(),
+        id: nanoid(),
         title: "VC-Backed",
         desc: "Raised $250K or more from a venture firm"
     },
     {
-        id: Date.now(),
+        id: nanoid(),
         title: "Fast Growth",
         desc: "Revenue growing 2X/yr for at least prior 6 months"
     },
     {
-        id: Date.now(),
+        id: nanoid(),
         title: "$5M+ Revenue",
         desc: "Earned over the last 12 months"
     }
@@ -28,42 +29,42 @@ const highlights = [
 
 const keypoints = [
     {
-        id: Date.now(),
+        id: nanoid(),
         text: '1. Revenue grew 5.2x to $7.2M in 2023'
     },
     {
-        id: Date.now(),
+        id: nanoid(),
         text: '2. Pioneering transformation of a $438B personal security market with AI-powered platform'
     },
     {
-        id: Date.now(),
+        id: nanoid(),
         text: '3. Signed deal with a global brand that aims to offer Bond to its ~200M customers worldwide'
     },
     {
-        id: Date.now(),
+        id: nanoid(),
         text: '4. Customers among the top 3 in smartphone, credit card, sports apparel, home health, and other sectors'
     },
     {
-        id: Date.now(),
+        id: nanoid(),
         text: '5. Founder has two previous tech exits totaling over $900M'
     },
     {
-        id: Date.now(),
+        id: nanoid(),
         text: '6. Over $100M and 250 engineering years invested in developing the platform'
     },
     {
-        id: Date.now(),
+        id: nanoid(),
         text: '7. Existing investors include prominent venture capital firms and multiple billionaires'
     },
     {
-        id: Date.now(),
+        id: nanoid(),
         text: '8. We have already helped members in over a million situations, including emergencies'
     },
 ]
 
 const featuredInvestor = [
     {
-        id: Date.now(),
+        id: nanoid(),
         investorPic: "/company_dummy_logo.jpg",
         investorName: "Adam Draizin",
         investorTitle: "Syndicate Lead",
@@ -74,7 +75,7 @@ const featuredInvestor = [
 
 const teamMember = [
     {
-        id: Date.now(),
+        id: nanoid(),
         teamMemberPic: "/company_dummy_logo.jpg",
         teamMemberName: "Doron Kempel",
         teamMemberTitle: "CEO"

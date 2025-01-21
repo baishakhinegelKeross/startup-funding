@@ -80,16 +80,16 @@ export interface CampaignInvestmentProps {
 
 export interface DetailsProps {
     highlights: {
-        id: number;
+        id: string;
         title: string;
         desc: string;
     }[],
     keypoints: {
-        id: number;
+        id: string;
         text: string;
     }[],
     featuredInvestor: {
-        id: number;
+        id: string;
         investorPic: string;
         investorName: string;
         investorTitle: string;
@@ -97,7 +97,7 @@ export interface DetailsProps {
         investorCmt: string;
     }[],
     teamMember: {
-        id: number;
+        id: string;
         teamMemberPic: string;
         teamMemberName: string;
         teamMemberTitle: string;
@@ -109,7 +109,7 @@ export interface DetailsProps {
 // update_posts.tsx : ST
 
 export interface UpdatePostsProps {
-    key: number,
+    key: string,
     postTitle: string,
     postImg: {
         src: string;
@@ -129,17 +129,17 @@ export interface UpdatePostsProps {
         height: number;
     },
     postTags: {
-        id: number,
+        id: string,
         text: string;
     }[]
 }
 
 // update_posts.tsx : ED
 
-// comments_posts : ST
+// comments_posts.tsx : ST
 
 export interface CommentPostProps {
-    key: number,
+    key: string,
     comment_img: string,
     investor_name: string,
     is_lead_investor: boolean,
@@ -147,4 +147,39 @@ export interface CommentPostProps {
     investor_message: string
 }
 
-// comments_posts: ED
+// comments_posts.tsx: ED
+
+// question_answers_posts.tsx : ST
+
+
+export interface QuestionAnswersPostProps{
+    posts: {
+        id: string;
+        comment: string;
+        userPic: string;
+        userName: string;
+        userRole: string;
+        commentDate: string;
+        reply: {
+            id: string;
+            replyComment: string;
+            userPic: string;
+            userName: string;
+            userRole: string;
+            replyDate: string;
+        }[];
+    }
+}
+
+// question_answers_posts.tsx : ED
+
+// text_editor.tsx : ST
+
+export interface TextEditorProps{
+    id: string,
+    cache: {
+        [key: number]: HTMLInputElement
+    }
+}
+
+// text_editor.tsx : ED

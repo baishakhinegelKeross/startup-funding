@@ -1,9 +1,10 @@
+import { nanoid } from 'nanoid';
 import Classes from './page.module.css';
 import CommentPosts from './comments_posts';
 
 const comments = [
     {
-        id: Date.now(),
+        id: nanoid(),
         comment_img: "https://placehold.co/600x400.png?text=Post+Image",
         investor_name: "Bjorn Seegers",
         is_lead_investor: true,
