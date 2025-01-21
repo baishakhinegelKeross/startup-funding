@@ -32,16 +32,16 @@ function UserDropdownMenu({username}: {username: string}) {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
                 <DropdownMenuItem asChild>
-                    <Link href={"/user-profile"}>
+                    <Link href={"/role"}>
                         <BadgeCheck />
                         Profile
                     </Link>
 
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Link href={"/setting/profile"}>
+                    <Link href={"/approval"}>
                         <BadgeCheck />
-                        Sign Up/Sign In
+                        Role Approvals
                     </Link>
 
                 </DropdownMenuItem>

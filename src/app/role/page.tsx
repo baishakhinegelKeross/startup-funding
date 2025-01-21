@@ -28,7 +28,7 @@ class Role extends Component {
                                 and startups.
                             </p>
                         </div>
-                        <Link href="/signup/investor">
+                        <Link href="/user-profile/investor">
                             <p className="bg-blue-600 text-white py-2 px-4 rounded-md text-sm md:text-xl">
                                 Continue
                             </p>
@@ -49,7 +49,7 @@ class Role extends Component {
                                 investors.
                             </p>
                         </div>
-                        <Link href="/signup/founder">
+                        <Link href="/user-profile/fundraiser">
                             <p className="bg-blue-600 text-white py-2 px-4 rounded-md text-sm md:text-xl">
                                 Continue
                             </p>
