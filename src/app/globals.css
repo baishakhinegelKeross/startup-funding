@@ -26,6 +26,26 @@
   --spacing-small: 9.5625px;
   --spacing-medium: 16px;
   --spacing-large: 19.125px;
+  --background: 222 47% 11%;
+  --foreground: 214 32% 91%;
+  --card: 222 47% 11%;
+  --card-foreground: 214 32% 91%;
+  --popover: 222 47% 11%;
+  --popover-foreground: 214 32% 91%;
+  --primary: 217.2 91.2% 59.8%;
+  --primary-foreground: 222.2 47.4% 11.2%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 214 32% 91%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 214 32% 91%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 214 32% 91%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 224.3 76.3% 48%;
+  --radius: 0.75rem;
 }
 
 

@@ -1,5 +1,7 @@
 'use client'
 import * as React from "react"
+import classes from './approval.module.css'
+
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -548,7 +550,7 @@ export default function DataTableDemo() {
                       Reject Application
                     </Button>
                     <Button
-                      className="px-8 py-2 gradient-button text-white"
+                      className={`px-8 py-2 gradient-button text-white`}
                       onClick={() => {
                         axios.post('http://localhost:8080/admin/roleRequestResponse', JSON.stringify({approvalStatus:'approved'}), { 
                           headers: { 'Content-Type': 'application/json' },
