@@ -3,6 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
+import Header from '../header/header';
+import TopMenuUser from '../top-menu-user';
+import { Button } from '../ui/button';
+import { useAuth } from '@/lib/auth-context';
 
 interface NavbarProps {
   userRole: 'unauthorized' | 'founder' | 'investor' | 'admin';
@@ -12,6 +16,7 @@ const Navbar: React.FC = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [scrollUp, setScrollUp] = useState(false);
   const pathname = usePathname();  // Get the current pathname
+  const { user } = useAuth();
 
   const userRole = 'investor';
 
@@ -46,54 +51,60 @@ const Navbar: React.FC = () => {
 
   // Render role-based links
   const renderAuthLinks = () => {
-    if (userRole === 'unauthorized') {
-      return (
-        <>
-          <NavLink to="/signin" className="px-6 py-2 rounded-md text-sm">Login</NavLink>
-          <Link
-            className="text-white hover:text-gray-200 px-6 py-2 rounded-md text-sm font-medium ml-2"
-            href="/role"
-            style={{
-              ...linkStyle,
-              backgroundImage: 'radial-gradient(circle, #8061ff, #8669ff, #8c70ff, #9278ff, #987fff)',
-            }}
-          >
-            Sign Up for Free
-          </Link>
-        </>
-      );
-    }
+    // if (userRole === 'unauthorized') {
+    //   return (
+    //     <>
+    //       <NavLink to="/signin" className="px-6 py-2 rounded-md text-sm">Login</NavLink>
+    //       <Link
+    //         className="text-white hover:text-gray-200 px-6 py-2 rounded-md text-sm font-medium ml-2"
+    //         href="/role"
+    //         style={{
+    //           ...linkStyle,
+    //           backgroundImage: 'radial-gradient(circle, #8061ff, #8669ff, #8c70ff, #9278ff, #987fff)',
+    //         }}
+    //       >
+    //         Sign Up for Free
+    //       </Link>
+
+    //     </>
+    //   );
+    // }
 
     // Role-based links (for authorized users)
-    if (userRole === 'founder') {
-      return (
-        <>
-          <NavLink to="/dashboard">Dashboard</NavLink>
-          <NavLink to="/campaigns">Campaigns</NavLink>
-          <NavLink to="/profile">Profile</NavLink>
-        </>
-      );
-    }
+    // if (userRole === 'founder') {
+    //   return (
+    //     <>
+    //       <NavLink to="/dashboard">Dashboard</NavLink>
+    //       <NavLink to="/campaigns">Campaigns</NavLink>
+    //       <NavLink to="/profile">Profile</NavLink>
+    //     </>
+    //   );
+    // }
 
-    if (userRole === 'investor') {
+    // if (userRole === 'investor') {
+    console.log("Indranil ::" ,user)
       return (
         <>
-          <NavLink to="/campaigns">Campaigns</NavLink>
+          {user?.roles.includes("Admin")?<NavLink to="/campaigns">Campaigns</NavLink>:null}
           <NavLink to="/dashboard">Dashboard</NavLink>
-          <NavLink to="/role"> <button style={{ marginLeft: '10px' }}>Sign Up</button></NavLink>
-        </>
-      );
-    }
+          
+          {user?.roles.includes("Admin")?<NavLink to="/approval">Admin</NavLink>:null}
+          { ! user?.username?<NavLink to="/login"> <Button variant="profilebtn">Login</Button></NavLink>:<TopMenuUser /> }
+          
 
-    if (userRole === 'admin') {
-      return (
-        <>
-          <NavLink to="/admin-dashboard">Admin Dashboard</NavLink>
-          <NavLink to="/users">Users</NavLink>
-          <NavLink to="/settings">Settings</NavLink>
         </>
       );
-    }
+    //}
+
+    // if (userRole === 'admin') {
+    //   return (
+    //     <>
+    //       <NavLink to="/admin-dashboard">Admin Dashboard</NavLink>
+    //       <NavLink to="/users">Users</NavLink>
+    //       <NavLink to="/settings">Settings</NavLink>
+    //     </>
+    //   );
+    // }
 
     return null;
   };
@@ -112,7 +123,7 @@ const Navbar: React.FC = () => {
           <div className="flex items-center">
             <NavLink to="/">
               <div className="flex items-center justify-center text-4xl font-bold">
-                QuantM
+                QuantM AI
               </div>
             </NavLink>
           </div>
@@ -151,6 +162,7 @@ const Navbar: React.FC = () => {
             renderAuthLinks()
           )}
         </div>
+
       </div>
     </nav>
   );

@@ -5,6 +5,7 @@ import CampaignCard from '@/components/CampaignCard/campaignCard';
 import DonationModal from './DonationModal'; // Import the DonationModal
 import { CreateCampaignModal } from './CreateCampaignModal';
 import { Campaign } from '@/types';
+import { Button } from '@/components/ui/button';
 
 // You can define an interface for type safety if desired
 // interface Campaign {
@@ -39,12 +40,13 @@ const MyCampaignPage: React.FC = () => {
   useEffect(() => {
     const fetchCampaigns = async () => {
       try {
-        const response = await fetch('http://192.168.3.217:8090/api/fundraiser');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_REACT_APP_API_URL}`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         const result = await response.json();
         setCampaignData(result);
+        console.log(result);
       } catch (error: any) {
         setError(error.message);
       } finally {
@@ -65,7 +67,7 @@ const MyCampaignPage: React.FC = () => {
     console.log('Creating campaign:', newCampaign);
 
     try {
-      const response = await fetch('http://192.168.3.7:8080/api/fundraiser', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_REACT_APP_API_URL}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -138,18 +140,19 @@ const MyCampaignPage: React.FC = () => {
 
   return (
     <div className="p-10 pt-20">
-      <div className='flex justify-between space-y-4'>
+      <div className='flex justify-center gap-10 '>
         <h2 className="text-xl md:text-4xl">My Campaigns</h2>
-        <button
+        <Button
+        variant={"profilebtn"}
           onClick={() => setIsModalOpen(true)}
-          className="cta bg-blue-500 text-white py-2 px-4 rounded"
+          className="cta  text-white py-2 px-4 rounded"
         >
           Start a Campaign
-        </button>
+        </Button>
       </div>
 
 
-      <div className="mt-10 grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 gap-7">
+      <div className="mt-10 grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2 gap-7">
         {/* {campaignData.map((campaign: any, index: number) => (
           <CampaignCard key={campaign._id} campaign={campaign} index={index} />
         ))} */}
