@@ -82,7 +82,7 @@ const Navbar: React.FC = () => {
     // }
 
     // if (userRole === 'investor') {
-    console.log("Indranil ::" ,user)
+    
       return (
         <>
           {user?.roles.includes("Admin")?<NavLink to="/campaigns">Campaigns</NavLink>:null}
