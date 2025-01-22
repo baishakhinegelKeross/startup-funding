@@ -553,7 +553,7 @@ export default function DataTableDemo() {
                     <Button
                       className={`px-8 py-2 gradient-button text-white`}
                       onClick={() => {
-                        axios.post('http://192.168.3.7:8080/admin/roleRequestResponse', JSON.stringify({approvalStatus:'approved'}), { 
+                        axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/admin/roleRequestResponse`, JSON.stringify({approvalStatus:'approved'}), { 
                           headers: { 'Content-Type': 'application/json' },
                           withCredentials: true
                         }).then(() => {
@@ -606,7 +606,7 @@ export default function DataTableDemo() {
                 withCredentials: true
             }
         ); */
-        const userData = await axios.get('http://192.168.3.7:8000/user/users', { withCredentials: true, });
+        const userData = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/user/users`, { withCredentials: true, });
         console.log(userData.data);
         let usersArray = userData.data;
           const usersObject = usersArray.reduce((obj, user) => {
@@ -614,7 +614,7 @@ export default function DataTableDemo() {
             return obj;
         }, {});
         console.log(usersObject);
-        const response = await axios.get('http://192.168.3.7:8000/admin/roleRequests', { withCredentials: true, });
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/admin/roleRequests`, { withCredentials: true, });
         console.log(response.data);
 
         let roleRequests: { id: any; role: any; username: any; email: any }[] = [];

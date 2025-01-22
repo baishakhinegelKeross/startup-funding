@@ -60,7 +60,7 @@ export default function App() {
                
             
                 const approvalStatusResponse = await axios.get(
-                    'http://192.168.3.7:8000/auth/roleRequest', 
+                    `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/roleRequest`, 
                     {
                       withCredentials: true,
                       headers: {
@@ -168,7 +168,7 @@ export default function App() {
         } else {
             debugger
             const submittedJSON = JSON.stringify({...businessData,role:currentRoleRequest});
-            axios.post('http://192.168.3.7:8000/auth/sendRequest',submittedJSON,{ headers: { 'Content-Type': 'application/json' },withCredentials:true}).then((response) => {
+            axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/sendRequest`,submittedJSON,{ headers: { 'Content-Type': 'application/json' },withCredentials:true}).then((response) => {
                 debugger
                 toast.success('Role request sent sucessfully');
                 

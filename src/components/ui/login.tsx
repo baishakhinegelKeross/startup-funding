@@ -51,7 +51,7 @@ export default function ProfileForm() {
         password: values.password
       }
 
-      await axios.post('http://192.168.3.7:8000/auth/login', JSON.stringify(submittedData), {
+      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/login`, JSON.stringify(submittedData), {
         headers: { 'Content-Type': 'application/json' },
         withCredentials: true
       })
@@ -149,7 +149,7 @@ export default function ProfileForm() {
 
             <Button
               variant="outline"
-              onClick={() => router.push('http://localhost:8000/oauth/google')}
+              onClick={() => router.push(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/oauth/google`)}
               className="w-full bg-slate-800/50 border-slate-700 hover:bg-slate-700/50 text-slate-200 transition-all duration-300"
             >
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">

@@ -84,7 +84,7 @@ export default function SignUpForm() {
   }, [api])
 
   async function onSubmit(values: FormData) {
-    axios.post('http://192.168.3.7:8000/auth/signup', JSON.stringify({
+    axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/signup`, JSON.stringify({
       username: values.username,
       email: values.email,
       password: values.password,
