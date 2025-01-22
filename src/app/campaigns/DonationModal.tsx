@@ -29,7 +29,7 @@ const DonationModal: React.FC<DonationModalProps> = ({ campaignId, onClose, onDo
 
         try {
             const response = await axios.post(
-                "http://192.168.3.7:8080/api/fundraiser/campaign/checkout",
+                `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/fundraiser/campaign/checkout`,
                 axiosData,
                 { headers: { "Content-Type": "application/json" } }
             );

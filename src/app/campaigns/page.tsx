@@ -40,7 +40,7 @@ const MyCampaignPage: React.FC = () => {
   useEffect(() => {
     const fetchCampaigns = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_REACT_APP_API_URL}`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/campaigns`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -67,7 +67,7 @@ const MyCampaignPage: React.FC = () => {
     console.log('Creating campaign:', newCampaign);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_REACT_APP_API_URL}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}//api/fundraiser`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

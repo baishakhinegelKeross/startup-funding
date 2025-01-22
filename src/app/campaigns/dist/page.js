@@ -127,7 +127,7 @@ var MyCampaignPage = function () {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 6, , 7]);
-                    return [4 /*yield*/, fetch('http://192.168.3.7:8080/api/fundraiser', {
+                    return [4 /*yield*/, fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/fundraiser`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
