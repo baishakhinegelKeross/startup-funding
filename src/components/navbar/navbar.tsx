@@ -85,10 +85,11 @@ const Navbar: React.FC = () => {
     
       return (
         <>
-          {user?.roles.includes("Admin")?<NavLink to="/campaigns">Campaigns</NavLink>:null}
+          {user?.role == "admin"?<NavLink to="/campaigns">Campaigns</NavLink>:null}
           <NavLink to="/dashboard">Dashboard</NavLink>
+          {user?.role == "admin"? <NavLink to="/admin">Admin</NavLink>:null}
           
-          {user?.roles.includes("Admin")?<NavLink to="/approval">Admin</NavLink>:null}
+         {/*  {user?.role == "admin"?<NavLink to="/approval">Approvals</NavLink>:null} */}
           { ! user?.username?<NavLink to="/login"> <Button variant="profilebtn">Login</Button></NavLink>:<TopMenuUser /> }
           
 

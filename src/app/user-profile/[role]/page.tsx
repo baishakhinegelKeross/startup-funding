@@ -59,20 +59,20 @@ export default function App() {
                 // call API to fetch user profile data and populate the form  
                
             
-                    const approvalStatusReponse = await axios.post(
-                        'http://localhost:8000/user/roleRequests', 
-                        {}, 
-                        { 
-                            withCredentials: true,
-                            headers: {
-                                'Content-Type': 'application/json' // Adjust the content type if needed
-                            }
-                        }
-                    );
-                    console.log(approvalStatusReponse.data);
+                const approvalStatusResponse = await axios.get(
+                    'http://192.168.3.7:8000/auth/roleRequest', 
+                    {
+                      withCredentials: true,
+                      headers: {
+                        'Content-Type': 'application/json' // Adjust the content type if needed
+                      }
+                    }
+                  );
+                  
+                    console.log(approvalStatusResponse.data);
                 
                 
-                approvalStatus = JSON.parse(approvalStatusReponse.data).role;
+                approvalStatus = approvalStatusResponse.data.role;
 
                 // setProfileData({
                 //     username: data.username,
@@ -168,7 +168,7 @@ export default function App() {
         } else {
             debugger
             const submittedJSON = JSON.stringify({...businessData,role:currentRoleRequest});
-            axios.post('http://localhost:8000/auth/sendRequest',submittedJSON,{ headers: { 'Content-Type': 'application/json' },withCredentials:true}).then((response) => {
+            axios.post('http://192.168.3.7:8000/auth/sendRequest',submittedJSON,{ headers: { 'Content-Type': 'application/json' },withCredentials:true}).then((response) => {
                 debugger
                 toast.success('Role request sent sucessfully');
                 

@@ -63,7 +63,7 @@ function UserDropdownMenu({username}: {username: string}) {
                         cancelButtonText: 'Cancel',
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            axios.post('http://localhost:8000/auth/logout',{}, { withCredentials: true, }).then((response) => {
+                            axios.post('http://192.168.3.7:8000/auth/logout',{}, { withCredentials: true, }).then((response) => {
                                 toast.success('Sucessfully LoggedOut')
                                 window.location.href = '/login'; 
                                }).catch((error) => {  
