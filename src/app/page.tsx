@@ -4,8 +4,9 @@ import '@/styles/styles.css';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion, useAnimation } from 'framer-motion';
+import { AnimatePresence, motion, useAnimation } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const LandingPage = () => {
     const controls = useAnimation();
@@ -44,7 +45,116 @@ const LandingPage = () => {
             }
         }
     };
+    // / *Campaign data
+    const topCampaigns = [
+        {
+            id: 1,
+            title: "EcoTech Solutions",
+            creator: "Green Innovations Inc",
+            image: "https://images.unsplash.com/photo-1536147116438-62679a5e01f2?auto=format&fit=crop&q=80",
+            progress: 75,
+            daysLeft: 12,
+            funded: "₹8.5M"
+        },
+        {
+            id: 2,
+            title: "Smart Health Monitor",
+            creator: "MedTech Ventures",
+            image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80",
+            progress: 45,
+            daysLeft: 28,
+            funded: "₹2.1M"
+        },
+        {
+            id: 3,
+            title: "AI Education Platform",
+            creator: "EduTech Solutions",
+            image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80",
+            progress: 90,
+            daysLeft: 5,
+            funded: "₹12M"
+        },
+        {
+            id: 4,
+            title: "Sustainable Fashion",
+            creator: "EcoWear Co",
+            image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&q=80",
+            progress: 60,
+            daysLeft: 15,
+            funded: "₹5.2M"
+        },
+        {
+            id: 5,
+            title: "Urban Farming Tech",
+            creator: "AgriTech Solutions",
+            image: "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&q=80",
+            progress: 85,
+            daysLeft: 8,
+            funded: "₹9.8M"
+        },
+        {
+            id: 6,
+            title: "Clean Energy Storage",
+            creator: "PowerTech Labs",
+            image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&q=80",
+            progress: 70,
+            daysLeft: 20,
+            funded: "₹6.8M"
+        },
+        {
+            id: 7,
+            title: "Smart City Solutions",
+            creator: "Urban Innovators",
+            image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80",
+            progress: 55,
+            daysLeft: 25,
+            funded: "₹4.2M"
+        },
+        {
+            id: 8,
+            title: "Biotech Research",
+            creator: "LifeScience Co",
+            image: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&q=80",
+            progress: 95,
+            daysLeft: 3,
+            funded: "₹15.5M"
+        },
+        {
+            id: 9,
+            title: "Ocean Cleanup Tech",
+            creator: "Marine Solutions",
+            image: "https://images.unsplash.com/photo-1484291470158-b8f8d608850d?auto=format&fit=crop&q=80",
+            progress: 40,
+            daysLeft: 30,
+            funded: "₹3.1M"
+        },
+        {
+            id: 10,
+            title: "Space Technology",
+            creator: "Stellar Research",
+            image: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&q=80",
+            progress: 80,
+            daysLeft: 10,
+            funded: "₹11.2M"
+        }
+    ];
+    const [currentPage, setCurrentPage] = useState(0);
+    const itemsPerPage = 4;
+    const totalPages = Math.ceil(topCampaigns.length / itemsPerPage);
 
+    const nextPage = () => {
+        setCurrentPage((prev) => (prev + 1) % totalPages);
+    };
+
+    const prevPage = () => {
+        setCurrentPage((prev) => (prev - 1 + totalPages) % totalPages);
+    };
+
+    const getCurrentPageItems = () => {
+        const start = currentPage * itemsPerPage;
+        return topCampaigns.slice(start, start + itemsPerPage);
+    };
+    // / *Campaign data
     const toggleFAQ = (id: number) => {
         setFaqs((prevFaqs) => {
             const updatedFaqs = prevFaqs.map((faq) =>
@@ -77,10 +187,10 @@ const LandingPage = () => {
                         className="space-y-6"
                     >
                         <h1 className="text-5xl md:text-7xl font-bold leading-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
-                            Funding Platforms for Startups
+                            Funding Innovation, Enabling Success
                         </h1>
                         <p className="text-xl text-gray-300">
-                            Fundraising platforms connect ambitious startups with accredited investors, providing tools to pitch ideas, research companies, and manage investments.
+                            Fundraising platforms connect ambitious entrepreneurs with accredited investors, offering tools to pitch ideas, analyze ventures, and manage investments effectively
                         </p>
                         <div className="flex flex-wrap gap-4">
                             <Link href="/role">
@@ -89,10 +199,10 @@ const LandingPage = () => {
                                     whileTap={{ scale: 0.95 }}
                                     className="px-8 py-4 bg-blue-600 hover:bg-blue-700 rounded-full font-semibold transition-colors"
                                 >
-                                    Explore Platforms
+                                    Explore Campaigns
                                 </motion.button>
                             </Link>
-                            <Link href="/role">
+                            {/* <Link href="/role">
                                 <motion.button
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
@@ -100,7 +210,7 @@ const LandingPage = () => {
                                 >
                                     Find Investors
                                 </motion.button>
-                            </Link>
+                            </Link> */}
                         </div>
                     </motion.div>
                     <motion.div
@@ -275,68 +385,119 @@ const LandingPage = () => {
             </motion.div>
 
             {/* FAQ Section */}
+           
+            {/* Top Campaigns Section */}
             <div className="py-20">
                 <div className="container mx-auto px-4">
-                    <motion.h2
-                        variants={fadeInUp}
-                        className="text-4xl font-bold text-center mb-16"
-                    >
-                        Frequently Asked Questions
-                    </motion.h2>
-                    <div className="grid sm:grid-cols-3 gap-6">
-                        {faqs.map((faq, index) => (
+                    <h2 className="text-4xl font-bold text-center mb-8">
+                        Top Campaigns
+                    </h2>
+                    <p className="text-gray-400 text-center mb-12 max-w-2xl mx-auto">
+                        Discover the most innovative and promising campaigns currently seeking funding
+                    </p>
+
+                    <div className="relative">
+                        <div className="overflow-hidden">
                             <motion.div
-                                key={index}
-                                variants={fadeInUp}
-                                className="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300"
+                                className="grid grid-cols-4 gap-6"
+                                initial={{ opacity: 1 }}
+                                animate={{ opacity: 1 }}
                             >
-                                <h3 className="text-xl font-semibold mb-4">{faq.question}</h3>
-                                <p className="text-gray-400">{faq.answer}</p>
+                                <AnimatePresence mode="wait">
+                                    {getCurrentPageItems().map((campaign) => (
+                                        <motion.div
+                                            key={campaign.id}
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -20 }}
+                                            transition={{ duration: 0.3 }}
+                                            className="bg-gray-800/50 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 group"
+                                        >
+                                            <div className="relative h-48">
+                                                <img
+                                                    src={campaign.image}
+                                                    alt={campaign.title}
+                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                />
+                                                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent" />
+                                            </div>
+
+                                            <div className="p-4">
+                                                <h3 className="font-semibold text-lg mb-1 truncate">
+                                                    {campaign.title}
+                                                </h3>
+                                                <p className="text-gray-400 text-sm mb-3">
+                                                    by {campaign.creator}
+                                                </p>
+
+                                                <div className="mb-3">
+                                                    <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                                                        <div
+                                                            className="h-full bg-blue-500"
+                                                            style={{ width: `${campaign.progress}%` }}
+                                                        />
+                                                    </div>
+                                                    <div className="flex justify-between mt-2 text-sm">
+                                                        <span className="text-blue-400">{campaign.progress}% funded</span>
+                                                        <span className="text-gray-400">{campaign.funded}</span>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex items-center justify-between text-sm">
+                                                    <span className="text-gray-400">
+                                                        {campaign.daysLeft} days left
+                                                    </span>
+                                                    <motion.button
+                                                        whileHover={{ scale: 1.05 }}
+                                                        whileTap={{ scale: 0.95 }}
+                                                        className="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded-full text-sm transition-colors"
+                                                    >
+                                                        View Details
+                                                    </motion.button>
+                                                </div>
+                                            </div>
+                                        </motion.div>
+                                    ))}
+                                </AnimatePresence>
                             </motion.div>
-                        ))}
+                        </div>
+
+                        {/* Navigation Buttons */}
+                        <button
+                            onClick={prevPage}
+                            className="absolute -left-12 top-1/2 -translate-y-1/2 p-2 bg-blue-600 rounded-full hover:bg-blue-700 transition-colors"
+                            aria-label="Previous page"
+                        >
+                            <ChevronLeft className="w-6 h-6" />
+                        </button>
+                        <button
+                            onClick={nextPage}
+                            className="absolute -right-12 top-1/2 -translate-y-1/2 p-2 bg-blue-600 rounded-full hover:bg-blue-700 transition-colors"
+                            aria-label="Next page"
+                        >
+                            <ChevronRight className="w-6 h-6" />
+                        </button>
+
+                        {/* Page Indicators */}
+                        <div className="flex justify-center gap-2 mt-8">
+                            {Array.from({ length: totalPages }).map((_, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => setCurrentPage(index)}
+                                    className={`w-2 h-2 rounded-full transition-colors ${currentPage === index ? 'bg-blue-500' : 'bg-gray-600'
+                                        }`}
+                                    aria-label={`Go to page ${index + 1}`}
+                                />
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {/* CTA Section */}
-            <motion.div
-                initial="hidden"
-                animate={controls}
-                variants={fadeInUp}
-                className="py-20"
-            >
-                <div className="container mx-auto px-4">
-                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-12 text-center relative overflow-hidden">
-                        <div className="relative z-10">
-                            <h2 className="text-4xl font-bold mb-4">Ready to Get Started?</h2>
-                            <p className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto">
-                                Join thousands of startups and investors building the future
-                            </p>
-                            <div className="flex flex-wrap justify-center gap-4">
-                                <Link href="/role">
-                                    <motion.button
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        className="px-8 py-4 bg-white text-blue-600 rounded-full font-semibold hover:bg-gray-100 transition-colors"
-                                    >
-                                        Explore Platforms
-                                    </motion.button>
-                                </Link>
-                                <Link href="/role">
-                                    <motion.button
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        className="px-8 py-4 bg-transparent border-2 border-white rounded-full font-semibold hover:bg-white/10 transition-colors"
-                                    >
-                                        Find Investors
-                                    </motion.button>
-                                </Link>
-                            </div>
-                        </div>
-                        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-3xl" />
-                    </div>
-                </div>
-            </motion.div>
+
+            {/* Top Campaigns Section */}
+
+
         </div>
     );
 };
