@@ -36,7 +36,7 @@ export const useCampaigns = () => {
     useEffect(() => {
         const fetchCampaigns = async () => {
             try {
-                const response = await axios.get<Campaign[]>(`${process.env.NEXT_PUBLIC_REACT_APP_API_URL}`);
+                const response = await axios.get<Campaign[]>(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/fundraiser`);
                 const pending = response.data.filter(campaign => !campaign.approved);
                 setCampaigns(pending);
             } catch (err: any) {

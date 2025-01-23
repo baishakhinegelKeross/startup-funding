@@ -1,6 +1,8 @@
 "use client"
 import '@/styles/styles.css';
+import '@/styles/styles.css';
 
+import { useState, useEffect } from 'react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -9,6 +11,12 @@ import { useInView } from 'react-intersection-observer';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const LandingPage = () => {
+    const controls = useAnimation();
+    const [ref, inView] = useInView({
+        threshold: 0.1,
+        triggerOnce: true
+    });
+
     const controls = useAnimation();
     const [ref, inView] = useInView({
         threshold: 0.1,
@@ -226,9 +234,62 @@ const LandingPage = () => {
                             className="object-cover rounded-2xl"
                         />
                     </motion.div>
+                    </motion.div>
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.8 }}
+                        className="relative h-[500px] hidden md:block"
+                    >
+                        <Image
+                            src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80"
+                            fill
+                            alt="Meeting"
+                            className="object-cover rounded-2xl"
+                        />
+                    </motion.div>
                 </div>
             </div>
 
+            {/* Features Section */}
+            <motion.div
+                ref={ref}
+                initial="hidden"
+                animate={controls}
+                variants={staggerChildren}
+                className="py-20 bg-gray-900/50"
+            >
+                <div className="container mx-auto px-4">
+                    <motion.h2
+                        variants={fadeInUp}
+                        className="text-4xl font-bold text-center mb-16"
+                    >
+                        Connect Startups and Investors
+                    </motion.h2>
+                    <div className="grid md:grid-cols-3 gap-8">
+                        {[
+                            {
+                                title: "Startup Discovery",
+                                description: "Platforms allow investors to easily browse and discover promising startups across various industries and stages of growth."
+                            },
+                            {
+                                title: "Investor Matching",
+                                description: "Startups can find the right investors that align with their vision, funding needs, and growth stage."
+                            },
+                            {
+                                title: "Relationship Building",
+                                description: "These platforms facilitate conversations and connections between entrepreneurs and investors."
+                            }
+                        ].map((feature, index) => (
+                            <motion.div
+                                key={index}
+                                variants={fadeInUp}
+                                className="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300"
+                            >
+                                <h3 className="text-xl font-semibold mb-4">{feature.title}</h3>
+                                <p className="text-gray-400">{feature.description}</p>
+                            </motion.div>
+                        ))}
             {/* Features Section */}
             <motion.div
                 ref={ref}
@@ -317,7 +378,65 @@ const LandingPage = () => {
                                     </div>
                                 </motion.div>
                             ))}
+            </motion.div>
+
+            {/* Tools Section */}
+            <motion.div
+                initial="hidden"
+                animate={controls}
+                variants={staggerChildren}
+                className="py-20"
+            >
+                <div className="container mx-auto px-4">
+                    <motion.h2
+                        variants={fadeInUp}
+                        className="text-4xl font-bold text-center mb-16"
+                    >
+                        Tools for Startup Pitches
+                    </motion.h2>
+                    <div className="grid md:grid-cols-2 gap-12 items-center">
+                        <div className="space-y-8">
+                            {[
+                                {
+                                    number: "01",
+                                    title: "Pitch Deck Builder",
+                                    description: "Create polished pitch decks using pre-designed templates and customization tools."
+                                },
+                                {
+                                    number: "02",
+                                    title: "Video Pitches",
+                                    description: "Record and share compelling video pitches to engage investors."
+                                },
+                                {
+                                    number: "03",
+                                    title: "Investor Analytics",
+                                    description: "Track investor engagement and feedback to refine presentations."
+                                }
+                            ].map((tool, index) => (
+                                <motion.div
+                                    key={index}
+                                    variants={fadeInUp}
+                                    className="flex gap-6"
+                                >
+                                    <div className="text-3xl font-bold text-blue-500">{tool.number}</div>
+                                    <div>
+                                        <h3 className="text-xl font-semibold mb-2">{tool.title}</h3>
+                                        <p className="text-gray-400">{tool.description}</p>
+                                    </div>
+                                </motion.div>
+                            ))}
                         </div>
+                        <motion.div
+                            variants={fadeInUp}
+                            className="relative h-[400px]"
+                        >
+                            <Image
+                                src="https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&q=80"
+                                fill
+                                alt="Pitch"
+                                className="object-cover rounded-2xl"
+                            />
+                        </motion.div>
                         <motion.div
                             variants={fadeInUp}
                             className="relative h-[400px]"
@@ -332,6 +451,7 @@ const LandingPage = () => {
                     </div>
                 </div>
             </motion.div>
+            </motion.div>
 
             {/* Benefits Section */}
             <motion.div
@@ -345,7 +465,53 @@ const LandingPage = () => {
                         variants={fadeInUp}
                         className="text-4xl font-bold text-center mb-16"
                     >
+            {/* Benefits Section */}
+            <motion.div
+                initial="hidden"
+                animate={controls}
+                variants={staggerChildren}
+                className="py-20 bg-gray-900/50"
+            >
+                <div className="container mx-auto px-4">
+                    <motion.h2
+                        variants={fadeInUp}
+                        className="text-4xl font-bold text-center mb-16"
+                    >
                         Benefits for Startups
+                    </motion.h2>
+                    <div className="grid md:grid-cols-4 gap-8">
+                        {[
+                            {
+                                icon: "🎯",
+                                title: "Visibility",
+                                description: "Reach a wider pool of potential investors."
+                            },
+                            {
+                                icon: "🤝",
+                                title: "Connections",
+                                description: "Forge meaningful relationships with investors."
+                            },
+                            {
+                                icon: "⚡",
+                                title: "Efficiency",
+                                description: "Streamline the fundraising process."
+                            },
+                            {
+                                icon: "📈",
+                                title: "Growth",
+                                description: "Access capital to fuel business expansion."
+                            }
+                        ].map((benefit, index) => (
+                            <motion.div
+                                key={index}
+                                variants={fadeInUp}
+                                className="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 text-center"
+                            >
+                                <div className="text-4xl mb-4">{benefit.icon}</div>
+                                <h3 className="text-xl font-semibold mb-2">{benefit.title}</h3>
+                                <p className="text-gray-400">{benefit.description}</p>
+                            </motion.div>
+                        ))}
                     </motion.h2>
                     <div className="grid md:grid-cols-4 gap-8">
                         {[

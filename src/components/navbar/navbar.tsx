@@ -6,7 +6,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import Header from '../header/header';
 import TopMenuUser from '../top-menu-user';
 import { Button } from '../ui/button';
-import { useAuth, User } from '@/lib/auth-context';
+import { useAuth } from '@/lib/auth-context';
 
 interface NavbarProps {
   userRole: 'unauthorized' | 'founder' | 'investor' | 'admin';
@@ -86,8 +86,9 @@ const Navbar: React.FC = () => {
       return (
         <>
           <NavLink className='cursor-pointer' to="/explore">Explore</NavLink>
-          {user?.roles.includes("Admin")?<NavLink to="/campaigns">Campaigns</NavLink>:null}
+          {user?.role == "admin"?<NavLink to="/campaigns">Campaigns</NavLink>:null}
           <NavLink to="/dashboard">Dashboard</NavLink>
+          {user?.role == "admin"? <NavLink to="/admin">Admin</NavLink>:null}
           
           {user?.roles.includes("Admin")?<NavLink to="/approval">Admin</NavLink>:null}
           { ! user?.username?<NavLink to="/login"> <Button className='bg-blue-600' variant="profilebtn">Login</Button></NavLink>:<TopMenuUser /> }

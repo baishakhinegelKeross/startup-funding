@@ -28,7 +28,7 @@ const PendingStartupsPage = () => {
             };
 
             const response = await axios.post(
-                `http://192.168.3.7:8080/admin/request/campaignResponses?id=${selectedCampaign._id}`,
+                `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/admin/request/campaignResponses?id=${selectedCampaign._id}`,
                 payload
             );
 
