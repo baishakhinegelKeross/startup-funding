@@ -183,3 +183,14 @@ export interface TextEditorProps{
 }
 
 // text_editor.tsx : ED
+
+// img_editor.tsx : ST
+
+export interface ImgEditorProps{
+    id: string,
+    cache: {
+        [key: number]: HTMLInputElement
+    }
+}
+
+// img_editor.tsx : ED
