@@ -66,6 +66,9 @@ const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({campaignId})=>{
                                 <button className="w-full text-sm bg-purple-500 hover:bg-purple-600 text-white font-semibold py-4 rounded-lg transition-colors">
                                     WATCH FOR UPDATES
                                 </button>
+                                <button className="w-full text-sm bg-gray-500 hover:bg-gray-700 text-white font-semibold py-4 rounded-lg transition-colors">
+                                    <Link className="w-full" href={`/dispute/${campaignId}`}>Report Dispute</Link>
+                                </button>
                             </div>
                         </div>
                     </div>
