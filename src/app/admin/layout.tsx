@@ -108,8 +108,8 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 </div>
             </ShadcnSidebar>
 
-            <main className="flex-1 overflow-auto p-8 pl-[96px] lg:pl-[296px] transition-all duration-300">
-                <div className="mx-auto max-w-7xl">
+            <main className="flex-1  transition-all duration-300">
+                <div className="mx-auto">
                     <AnimatePresence mode="wait">
                         {children}
                     </AnimatePresence>
