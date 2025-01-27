@@ -9,6 +9,7 @@ import authStore from "@/store/authStore";
 import AdminDashboard from "@/app/adminDashboard/page";
 import Fundraiser from "@/app/fundraiser/page";
 import Investor from "@/app/investor/page"
+import KycForm from "@/components/Investor/Kyc";
 import { Button } from "../ui/button";
 import { useRouter } from 'next/navigation';
 
@@ -64,6 +65,8 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
         return <Fundraiser />;
       case "Investor":
         return <Investor />;
+      case "Kyc":
+        return <KycForm />; 
       default:
         return "Hi Admin";
     }
@@ -163,6 +166,31 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
             <span className={isSidebarOpen ? "block" : "hidden"}>Fundraiser</span>
           </Button>
         </div>
+          
+        {/* KYC */}
+        <div className="space-y-4 mt-8">
+          <Button
+          variant={"profilebtn"}
+            onClick={() => handleSelectSection("Kyc")}
+            className={getButtonClass("Kyc")}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 3v12M3 12h12"
+              />
+            </svg>
+            <span className={isSidebarOpen ? "block" : "hidden"}>Kyc</span>
+          </Button>
+        </div>
 
         {/* Investor */}
         <div className="space-y-4 mt-8 flex-1">
@@ -188,6 +216,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
             <span className={isSidebarOpen ? "block" : "hidden"}>Investor</span>
           </Button>
         </div>
+     
 
 
 
