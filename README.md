@@ -64,6 +64,7 @@ Create a `.env` file in the project root and include the following key-value pai
 
 ```bash
 NEXT_PUBLIC_REACT_APP_API_URL=http://192.168.3.217:8090/api/fundraiser
+NEXT_PUBLIC_BACKEND_API_URL=http://192.168.3.217:8090
 ```
 
 Note: Adjust the value to point to your desired API endpoint if needed.
