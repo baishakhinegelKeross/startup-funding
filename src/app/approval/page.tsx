@@ -1,5 +1,7 @@
 'use client'
 import * as React from "react"
+import classes from './approval.module.css'
+
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -328,6 +330,7 @@ export default function DataTableDemo() {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
+  const [roleRequestsState, setRoleRequestsState] = React.useState([])
 
   const [takenAction,setTakenAction] = React.useState(false);
 
@@ -548,9 +551,9 @@ export default function DataTableDemo() {
                       Reject Application
                     </Button>
                     <Button
-                      className="px-8 py-2 gradient-button text-white"
+                      className={`px-8 py-2 gradient-button text-white`}
                       onClick={() => {
-                        axios.post('http://localhost:8080/admin/roleRequestResponse', JSON.stringify({approvalStatus:'approved'}), { 
+                        axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/admin/roleRequestResponse`, JSON.stringify({approvalStatus:'approved'}), { 
                           headers: { 'Content-Type': 'application/json' },
                           withCredentials: true
                         }).then(() => {
@@ -572,8 +575,8 @@ export default function DataTableDemo() {
       },
   ]
 
-  const table = useReactTable({
-    data,
+  const table = useReactTable<Payment>({
+    data: roleRequestsState,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -596,14 +599,40 @@ export default function DataTableDemo() {
       // Your async code here
       debugger
       try {
-        const response = await axios.get(
-            'https://localhost:8000/admin/roleRequests', 
+       /*  const response = await axios.get(
+            'https://192.168.3.7:8000/admin/roleRequests', 
             { 
               headers: { 'Content-Type': 'application/json' },
                 withCredentials: true
             }
-        );
+        ); */
+        const userData = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/user/users`, { withCredentials: true, });
+        console.log(userData.data);
+        let usersArray = userData.data;
+          const usersObject = usersArray.reduce((obj, user) => {
+            obj[user._id] = user;
+            return obj;
+        }, {});
+        console.log(usersObject);
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/admin/roleRequests`, { withCredentials: true, });
         console.log(response.data);
+
+        let roleRequests: { id: any; role: any; username: any; email: any }[] = [];
+        response.data.forEach((roleRequest) => {
+          if(usersObject[roleRequest.userId]){
+            roleRequests.push({
+              id: roleRequest._id,
+              role: roleRequest.role,
+              username: usersObject[roleRequest.userId].username,
+              email: usersObject[roleRequest.userId].email,
+            });
+          }
+        });
+       console.log(roleRequests);
+       data = roleRequests;
+        setRoleRequestsState(roleRequests);
+
+
     } catch (error) {
         console.error('Error during the request:', error);
     }

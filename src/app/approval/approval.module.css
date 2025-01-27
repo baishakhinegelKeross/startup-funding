@@ -1,0 +1,39 @@
+
+
+/* Custom gradient button */
+.gradient-button {
+    background: linear-gradient(to right, #4f46e5, #7c3aed);
+    transition: opacity 0.2s ease;
+}
+
+.gradient-button:hover {
+    opacity: 0.9;
+}
+
+/* Custom input styles */
+.custom-input {
+    @apply bg-secondary/50 border-0 focus:ring-2 focus:ring-primary/50 text-foreground placeholder:text-muted-foreground;
+}
+
+/* Custom card styles */
+.custom-card {
+    @apply bg-secondary/30 backdrop-blur-sm border border-white/10;
+}
+
+/* Custom table styles */
+.custom-table {
+    @apply bg-secondary/20;
+}
+
+.custom-table th {
+    @apply bg-secondary/30 text-muted-foreground font-medium;
+}
+
+.custom-table tr:hover {
+    @apply bg-secondary/40;
+}
+
+/* Dialog styles */
+.custom-dialog {
+    @apply bg-background/95 backdrop-blur-sm border border-white/10;
+}
