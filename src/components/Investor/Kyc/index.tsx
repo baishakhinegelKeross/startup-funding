@@ -9,12 +9,21 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Shield, Upload, AlertCircle, FileCheck, DollarSign } from 'lucide-react';
-import { useState } from 'react';
+import { useState,useRef } from 'react';
 import { AIAssistant } from '@/components/AIAssistant';
+import { ToastContainer, toast } from 'react-toastify'
 
 export default function KYCPage() {
   const [isUsCitizen, setIsUsCitizen] = useState(false);
   const [currentTab, setCurrentTab] = useState('identification');
+
+  const [files, setFiles] = useState({
+    idFront: null,
+    idBack: null,
+    incomeProof: null,
+    netWorthStatement: null,
+  });
+
   const [formData, setFormData] = useState({
     country:'us',
     firstName: '',
@@ -30,8 +39,101 @@ export default function KYCPage() {
     tin: '',
     annualIncome: '',
     netWorth: '',
-    isAccreditedInvestor : true
+    isAccreditedInvestor : true,
   });
+
+  /* const [file, setFile] = useState(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (event:any) => {
+    setFile(event.target.files[0]);
+  };
+
+  const handleUploadClick = () => {
+    console.log('Upload button clicked');
+    fileInputRef.current?.click();
+  }; */
+  async function uploadFile(file:any) {
+    /* const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0]; */
+
+    if (!file) {
+        alert('Please select a file');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/upload`, {
+            method: 'POST',
+            body: formData
+        });
+        console.log('File uploaded:', response);
+
+        const result = await response.json();
+        if(result.status === 'success'){
+          console.log('File uploaded data:', result.data);
+          alert(result.message);
+          return result.data.filename;
+        }
+        else{
+          console.error('Error uploading file:', result.error);
+          alert('Error uploading file');
+        }
+        //console.log('File uploaded data:', result);
+        //alert(result.message);
+    } catch (error) {
+        console.error('Error uploading file:', error);
+        alert('Error uploading file');
+    }
+  }
+  
+
+  const fileInputRefs = {
+    idFront: useRef<HTMLInputElement>(null),
+    idBack: useRef<HTMLInputElement>(null),
+    incomeProof: useRef<HTMLInputElement>(null),
+    netWorthStatement: useRef<HTMLInputElement>(null),
+  };
+
+  const handleFileChange = async (event:any, type:any) => {
+    setFiles(prevFiles => ({
+      ...prevFiles,
+      [type]: event.target.files[0],
+    }));
+    console.log('File uploaded:', event.target.files[0]);
+    try{
+      let filename = await uploadFile(event.target.files[0]);
+      setFormData(prev => ({
+        ...prev,
+        [type]: filename,
+        }));
+    }
+    catch(error){
+      console.error('Error uploading file:', error);
+      alert('Error uploading file');
+    }
+    
+    /* setFormData(prev => ({
+      ...prev,
+      [type]: event.target.files[0], */
+
+  };
+
+  const handleUploadClick = (type:any) => {
+    fileInputRefs[type].current.click();
+  };
+
+  const truncateFileName = (name:any, maxLength:any) => {
+    if (name.length <= maxLength) return name;
+    const separator = '...';
+    const charsToShow = maxLength - separator.length;
+    const frontChars = Math.ceil(charsToShow / 2);
+    const backChars = Math.floor(charsToShow / 2);
+    return name.substr(0, frontChars) + separator + name.substr(name.length - backChars);
+  };
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
@@ -42,6 +144,39 @@ export default function KYCPage() {
 
   const handleAISuggestion = (field: string, value: string) => {
     handleInputChange(field, value);
+  };
+
+  const handleKYCSubmit = () => {
+    console.log('KYC Form Data:', formData);
+
+    // Send KYC form data to the backend
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/kyc`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Success:', data);
+        toast.success('Login Successful')
+        debugger;
+        if(data.error){
+          alert(data.error);
+          toast.error(data.error);
+        }
+        else{
+          alert('KYC form submitted successfully!');
+          toast.success('KYC form submitted successfully!');
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        alert('An error occurred while submitting the KYC form.');
+        toast.error('An error occurred while submitting the KYC form.');
+      });
   };
 
   return (
@@ -205,15 +340,29 @@ export default function KYCPage() {
                     <div className="space-y-4">
                       <Label>Government ID Upload</Label>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <Button variant="outline" className="h-32">
+                        <Button variant="outline" className="h-32" onClick={() => handleUploadClick('idFront')}>
                           <div className="flex flex-col items-center space-y-2">
                             <Upload className="h-6 w-6" />
+                            <input
+                              type="file"
+                              ref={fileInputRefs.idFront}
+                              style={{ display: 'none' }}
+                              onChange={(e) => handleFileChange(e, 'idFront')}
+                            />
+                           {files.idFront && <p>{truncateFileName(files.idFront.name, 20)}</p>}
                             <span>Upload ID Front</span>
                           </div>
                         </Button>
-                        <Button variant="outline" className="h-32">
+                        <Button variant="outline" className="h-32" onClick={() => handleUploadClick('idBack')}>
                           <div className="flex flex-col items-center space-y-2">
                             <Upload className="h-6 w-6" />
+                            <input
+                              type="file"
+                              ref={fileInputRefs.idBack}
+                              style={{ display: 'none' }}
+                              onChange={(e) => handleFileChange(e, 'idBack')}
+                             />
+                            {files.idBack && <p>{truncateFileName(files.idBack.name, 20)}</p>}
                             <span>Upload ID Back</span>
                           </div>
                         </Button>
@@ -265,16 +414,30 @@ export default function KYCPage() {
                     <div className="space-y-4">
                       <h3 className="text-lg font-semibold">Document Upload</h3>
                       <div className="grid grid-cols-1 gap-4">
-                        <Button variant="outline" className="h-32">
+                        <Button variant="outline" className="h-32" onClick={() => handleUploadClick('incomeProof')}>
                           <div className="flex flex-col items-center space-y-2">
                             <Upload className="h-6 w-6" />
+                            <input
+                              type="file"
+                              ref={fileInputRefs.incomeProof}
+                              style={{ display: 'none' }}
+                              onChange={(e) => handleFileChange(e, 'incomeProof')}
+                              />
+                            {files.incomeProof && <p>{truncateFileName(files.incomeProof.name, 20)}</p>}
                             <span>Upload Income Proof</span>
                             <span className="text-xs text-muted-foreground">Tax returns, W-2s, or pay stubs</span>
                           </div>
                         </Button>
-                        <Button variant="outline" className="h-32">
+                        <Button variant="outline" className="h-32" onClick={() => handleUploadClick('netWorthStatement')}>
                           <div className="flex flex-col items-center space-y-2">
                             <Upload className="h-6 w-6" />
+                            <input
+                              type="file"
+                              ref={fileInputRefs.netWorthStatement}
+                              style={{ display: 'none' }}
+                              onChange={(e) => handleFileChange(e, 'netWorthStatement')}
+                             />
+                             {files.netWorthStatement && <p>{truncateFileName(files.netWorthStatement.name, 20)}</p>}
                             <span>Upload Net Worth Statement</span>
                             <span className="text-xs text-muted-foreground">Bank statements, investment accounts, or certification letter</span>
                           </div>
@@ -454,7 +617,8 @@ export default function KYCPage() {
 
             <div className="flex justify-end space-x-4">
               <Button variant="outline">Save Progress</Button>
-              <Button onClick={() => console.log('KYC Form Data:', formData)}>Submit for Review</Button>
+             {/*  <Button onClick={() => console.log('KYC Form Data:', formData)}>Submit for Review</Button> */}
+              <Button onClick={() => handleKYCSubmit()}>Submit for Review</Button>
             </div>
           </div>
 
