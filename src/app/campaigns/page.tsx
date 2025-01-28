@@ -59,7 +59,7 @@ const MyCampaignPage: React.FC = () => {
 
   const handleCreateCampaign = async (campaignData: Omit<Campaign, '_id' | 'amount_raised' | 'createdAt'>) => {
     const newCampaign: Campaign = {
-      _id: crypto.randomUUID(),
+      // _id: crypto.randomUUID(),
       ...campaignData,
       amount_raised: 0,
       createdAt: new Date(),
@@ -68,7 +68,7 @@ const MyCampaignPage: React.FC = () => {
     console.log('Creating campaign:', newCampaign);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}//api/fundraiser`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/fundraiser`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -144,7 +144,7 @@ const MyCampaignPage: React.FC = () => {
       <div className='flex justify-center gap-10 '>
         <h2 className="text-xl md:text-4xl">My Campaigns</h2>
         <Button
-        variant={"profilebtn"}
+          variant={"profilebtn"}
           onClick={() => setIsModalOpen(true)}
           className="cta  text-white py-2 px-4 rounded"
         >
@@ -158,13 +158,17 @@ const MyCampaignPage: React.FC = () => {
           <CampaignCard key={campaign._id} campaign={campaign} index={index} />
         ))} */}
 
-        {campaignData.map((campaign) => (
-          <CampaignCard
-            key={campaign._id}
-            campaign={campaign}
-            onDonate={handleDonate}
-          />
-        ))}
+        {campaignData
+          .filter(campaign => campaign.status === 'approved') // Filter campaigns with status 'approved'
+          .map(campaign => (
+            <CampaignCard
+              key={campaign._id}
+              campaign={campaign}
+              onDonate={handleDonate}
+            />
+          ))
+        }
+
       </div>
       {isModalOpen && (
         <CreateCampaignModalNew
