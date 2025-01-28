@@ -40,6 +40,7 @@ const MyCampaignPage: React.FC = () => {
   useEffect(() => {
     const fetchCampaigns = async () => {
       try {
+        debugger;
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/fundraiser`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -47,8 +48,12 @@ const MyCampaignPage: React.FC = () => {
         const result = await response.json();
         setCampaignData(result);
         console.log(result);
-      } catch (error) {
-        setError((error as Error).message);
+      } catch (error: any) {
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError(String(error));
+        }
       } finally {
         setLoading(false);
       }
@@ -63,6 +68,7 @@ const MyCampaignPage: React.FC = () => {
       ...campaignData,
       amount_raised: 0,
       createdAt: new Date(),
+      _id: ''
     };
 
     console.log('Creating campaign:', newCampaign);

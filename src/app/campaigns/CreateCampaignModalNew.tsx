@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid';
 import React, { useEffect, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import {
@@ -375,7 +376,7 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
         console.log(data);
         const campaign = {
             ...data,
-            draftId: currentDraft?.id || crypto.randomUUID(),
+            draftId: currentDraft?.id || nanoid(),
             createdAt: new Date().toISOString(),
             currentAmount: 0,
             favoritesCount: 0,
