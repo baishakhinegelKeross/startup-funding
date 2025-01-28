@@ -62,7 +62,10 @@ export default {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
-			}
+			},
+			maxHeight: {
+				'screen-20rem': 'calc(100vh - 26rem)',
+			},
 		}
 	},
 	// plugins: [require("tailwindcss-animate"),

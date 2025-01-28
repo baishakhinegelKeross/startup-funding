@@ -1,4 +1,3 @@
-// src/app/admin/pendingStartups/layout.tsx
 import React from 'react';
 import Classes from './page.module.css';
 
