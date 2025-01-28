@@ -225,7 +225,7 @@ const formSchema = z.object({
     })).optional(),
 
     // Title
-    title: z.string().min(1, "Title is required"),
+    title: z.string().min(10, "Title is required"),
 
     // Story
     story: z.string().min(100, "Story must have at least 100 characters"),
