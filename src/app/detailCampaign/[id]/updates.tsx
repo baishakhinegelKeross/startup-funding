@@ -1,10 +1,11 @@
+import { nanoid } from 'nanoid';
 import Classes from './page.module.css';
 //import Image from 'next/image';
 import UpdatePosts from './update_posts';
 
 const posts = [
     {
-        id: Date.now(),
+        id: nanoid(),
         postTitle: "CEO Interviewed on Kingscrowd's Podcast",
         postImg: {
             src: "https://placehold.co/600x400.png?text=Post+Image",
@@ -25,19 +26,19 @@ const posts = [
         },
         postTags: [
             {
-                id: Date.now(),
+                id: nanoid(),
                 text: "Sustainable Energy"
             },
             {
-                id: Date.now(),
+                id: nanoid(),
                 text: "Clean Tech"
             },
             {
-                id: Date.now(),
+                id: nanoid(),
                 text: "Renewable Power"
             },
             {
-                id: Date.now(),
+                id: nanoid(),
                 text: "Energy storage"
             }
         ]

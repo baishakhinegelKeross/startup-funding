@@ -40,6 +40,7 @@ const MyCampaignPage: React.FC = () => {
   useEffect(() => {
     const fetchCampaigns = async () => {
       try {
+        debugger;
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/fundraiser`);
         if (!response.ok) {
           throw new Error('Network response was not ok');

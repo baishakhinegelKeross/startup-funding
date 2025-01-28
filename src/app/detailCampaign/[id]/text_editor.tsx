@@ -1,43 +1,67 @@
 "use client"
 import Classes from './page.module.css';
-
-const uuid = Date.now();
+import { TextEditorProps } from './types';
 
 type EditorCacheType = { 
-    [key: number]: HTMLInputElement 
+    [key: string]: HTMLInputElement 
 };
 
-const editorCache: EditorCacheType = {};
+let cacheTxtEd : EditorCacheType;
 
-const TextEditor = () => {
+// type EditorCacheType = { 
+//     [key: number]: HTMLInputElement 
+// };
+
+// const editorCache: EditorCacheType = {};
+
+const TextEditor: React.FC<TextEditorProps> = ({id, cache}) => {
+    cacheTxtEd = cache;
+
     return (
-        <div>
-            <div id={`textInputDiv-${uuid}`}>
-                <div className="textTools p-2 bg-[#9e9e9e]">
-                    <button type="button" className={Classes.tool_button} onClick={increaseFontSize}>Aa+</button>
-                    <button type="button" className={Classes.tool_button} onClick={decreaseFontSize}>Aa-</button>
-                    <button type='button' className={Classes.tool_button} onClick={save}>Save</button>
+        <div className='relative'>
+            <div id={`textOutputDiv-${id}`} className={`${Classes.txt_output} hidden`}>
+                <div className={`${Classes.edit_txt} absolute top-[20%] right-0`}>
+                    <span className='p-2' onClick={()=>{ showTextEditor(id) }}>
+                        Edit
+                    </span>
                 </div>
-                <input type='text' id={`textContent-${uuid}`} className={Classes.text_content} placeholder={'Type something...'} />
-            </div>
-            <div id={`textOutputDiv-${uuid}`} className='hidden'>
-                <p id={`textOutput-${uuid}`}>
+                <p id={`textOutput-${id}`}>
                 </p>
             </div>
-            
+            <div id={`textInputDiv-${id}`}>
+                <div className="textTools p-2 bg-[#9e9e9e]">
+                    <button type="button" className={Classes.tool_button} onClick={()=>{ increaseFontSize(id) }}>Aa+</button>
+                    <button type="button" className={Classes.tool_button} onClick={()=>{ decreaseFontSize(id) }}>Aa-</button>
+                    <button type='button' className={Classes.tool_button} onClick={()=>{ save(id) }}>Save</button>
+                </div>
+                <input type='text' id={`textContent-${id}`} className={Classes["text_content-2"]} placeholder={'Type something...'} />
+            </div>
         </div>
     )
 }
 
-const increaseFontSize = function(){
+const showTextEditor = function(uuid: string){
+    debugger;
+    const textEditor = cacheTxtEd[uuid];
+
+    if (textEditor) {
+        const outputDiv = document.getElementById(`textOutputDiv-${uuid}`)
+        const inputDiv = document.getElementById(`textInputDiv-${uuid}`);
+
+        inputDiv?.classList.remove('hidden');
+        outputDiv?.classList.add('hidden');
+    }
+}
+
+const increaseFontSize = function(uuid: string){
     let textEditor: HTMLInputElement | null;
     
-    if(!editorCache[uuid]){
+    if(!cacheTxtEd[uuid]){
         textEditor = document.getElementById(`textContent-${uuid}`) as HTMLInputElement;
-        editorCache[uuid] = textEditor;
+        cacheTxtEd[uuid] = textEditor;
     }
     else{
-        textEditor = editorCache[uuid];
+        textEditor = cacheTxtEd[uuid];
     }
 
     if (textEditor) {
@@ -52,15 +76,15 @@ const increaseFontSize = function(){
     }
 }
 
-const decreaseFontSize = function(){
+const decreaseFontSize = function(uuid: string){
     let textEditor: HTMLInputElement | null;
     
-    if(!editorCache[uuid]){
+    if(!cacheTxtEd[uuid]){
         textEditor = document.getElementById(`textContent-${uuid}`) as HTMLInputElement;
-        editorCache[uuid] = textEditor;
+        cacheTxtEd[uuid] = textEditor;
     }
     else{
-        textEditor = editorCache[uuid];
+        textEditor = cacheTxtEd[uuid];
     }
 
     if (textEditor) {
@@ -75,16 +99,16 @@ const decreaseFontSize = function(){
     }
 }
 
-const save = function(){
+const save = function(uuid: string){
     debugger;
     let textEditor: HTMLInputElement | null;
     
-    if(!editorCache[uuid]){
+    if(!cacheTxtEd[uuid]){
         textEditor = document.getElementById(`textContent-${uuid}`) as HTMLInputElement;
-        editorCache[uuid] = textEditor;
+        cacheTxtEd[uuid] = textEditor;
     }
     else{
-        textEditor = editorCache[uuid];
+        textEditor = cacheTxtEd[uuid];
     }
 
     if(textEditor){
