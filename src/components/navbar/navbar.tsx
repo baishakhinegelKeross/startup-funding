@@ -18,7 +18,7 @@ const Navbar: React.FC = () => {
   const pathname = usePathname();  // Get the current pathname
   const { user } = useAuth();
 
-  const userRole = user?.role == 'admin' ? 'admin' : user?.role == 'founder' ? 'founder' : 'investor';
+  const userRole = user?.role === 'admin' ? 'admin' : user?.role === 'fundraiser' ? 'founder' : 'investor';
 
   useEffect(() => {
     const handleScroll = () => {

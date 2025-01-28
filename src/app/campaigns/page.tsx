@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import CampaignCard from '@/components/CampaignCard/campaignCard';
 import DonationModal from './DonationModal'; // Import the DonationModal
-import { CreateCampaignModal } from './CreateCampaignModal';
+import CreateCampaignModalNew from './CreateCampaignModalNew';
 import { Campaign } from '@/types';
 import { Button } from '@/components/ui/button';
 
@@ -48,7 +48,11 @@ const MyCampaignPage: React.FC = () => {
         setCampaignData(result);
         console.log(result);
       } catch (error: any) {
-        setError(error.message);
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError(String(error));
+        }
       } finally {
         setLoading(false);
       }
@@ -59,15 +63,17 @@ const MyCampaignPage: React.FC = () => {
 
   const handleCreateCampaign = async (campaignData: Omit<Campaign, '_id' | 'amount_raised' | 'createdAt'>) => {
     const newCampaign: Campaign = {
+      // _id: crypto.randomUUID(),
       ...campaignData,
       amount_raised: 0,
       createdAt: new Date(),
+      _id: ''
     };
 
     console.log('Creating campaign:', newCampaign);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}//api/fundraiser`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/fundraiser`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -83,7 +89,7 @@ const MyCampaignPage: React.FC = () => {
       const result = await response.json();
       console.log('Campaign created successfully:', result);
       setCampaigns([...campaigns, result]);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating campaign:', error);
       setError(error.message);
     }
@@ -143,7 +149,7 @@ const MyCampaignPage: React.FC = () => {
       <div className='flex justify-center gap-10 '>
         <h2 className="text-xl md:text-4xl">My Campaigns</h2>
         <Button
-        variant={"profilebtn"}
+          variant={"profilebtn"}
           onClick={() => setIsModalOpen(true)}
           className="cta  text-white py-2 px-4 rounded"
         >
@@ -157,18 +163,23 @@ const MyCampaignPage: React.FC = () => {
           <CampaignCard key={campaign._id} campaign={campaign} index={index} />
         ))} */}
 
-        {campaignData.map((campaign) => (
-          <CampaignCard
-            key={campaign._id}
-            campaign={campaign}
-            onDonate={handleDonate}
-          />
-        ))}
+        {campaignData
+          .filter(campaign => campaign.status === 'approved') // Filter campaigns with status 'approved'
+          .map(campaign => (
+            <CampaignCard
+              key={campaign._id}
+              campaign={campaign}
+              onDonate={handleDonate}
+            />
+          ))
+        }
+
       </div>
       {isModalOpen && (
-        <CreateCampaignModal
+        <CreateCampaignModalNew
           onClose={() => setIsModalOpen(false)}
           onCreateCampaign={handleCreateCampaign}
+          onBack={() => setIsModalOpen(false)}
         />
       )}
       {isDonationModalOpen && (

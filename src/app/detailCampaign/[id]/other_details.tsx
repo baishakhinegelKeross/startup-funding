@@ -98,7 +98,7 @@ const OtherDetails = ()=>{
                         <button type="button" className={`me-2 text-sm ${active == 'Comments' ? Classes.btn_active : Classes.btn_inactive}`} onClick={()=>toggleBtnState('Comments')}>COMMENTS</button>
                         <button type="button" className={`me-2 text-sm ${active == 'Q & A' ? Classes.btn_active : Classes.btn_inactive}`} onClick={()=>toggleBtnState('Q & A')}>Q &amp; A</button>
 
-                        <button type="button" className={`text-sm ${active == 'PITCH' ? Classes.btn_active : Classes.btn_inactive}`} onClick={()=>toggleBtnState('PITCH')}>PITCH</button>
+                        {/* <button type="button" className={`text-sm ${active == 'PITCH' ? Classes.btn_active : Classes.btn_inactive}`} onClick={()=>toggleBtnState('PITCH')}>PITCH</button> */}
                     </div>
                 </article>
                     

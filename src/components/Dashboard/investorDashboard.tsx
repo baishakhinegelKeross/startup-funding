@@ -1,20 +1,32 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import MyInvestments from "@/components/Investor/MyInvestments/MyInvestment";
 import ProfileUpdate from "@/components/Investor/myProfile/myProfile";
 import authStore from "@/store/authStore";
-
 import AdminDashboard from "@/app/adminDashboard/page";
 import Fundraiser from "@/app/fundraiser/page";
-import Investor from "@/app/investor/page"
+import Investor from "@/app/investor/page";
+import MyCampaignsnew from "@/app/myCampaignsnew/page";
 import KycForm from "@/components/Investor/Kyc";
 import { Button } from "../ui/button";
 import { useRouter } from 'next/navigation';
 
+// Icons import
+import {
+  LayoutDashboard,
+  Users,
+  Wallet,
+  UserCircle,
+  ChevronLeft,
+  ChevronRight,
+  LogOut,
+  ArrowLeft
+} from 'lucide-react';
+import MyCampaigns from "../founder/myCampaigns/myCampaigns";
+import { useAuth } from "@/lib/auth-context";
 
-// Define the Sidebar class to handle toggling and manage state
 class SidebarState {
   private isCollapsed: boolean;
 
@@ -33,30 +45,30 @@ class SidebarState {
 
 const sidebarState = new SidebarState();
 
-interface SidebarProps {
-  userRole: "investor"; // Only investor role is considered
-}
+// interface SidebarProps {
+//   userRole: "investor";
+// }
 
-const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
+const Sidebar: React.FC = ({ }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
-  const [selectedSection, setSelectedSection] =
-    useState<string>("My Investments");
+  const [selectedSection, setSelectedSection] = useState<string>("My Investments");
   const { clearUserData } = authStore();
-
+  const [sidebarMenu,setsidemenu]=useState<any>([]);
   const handleToggleSidebar = () => {
     sidebarState.toggleCollapse();
-    setIsSidebarOpen(sidebarState.getCollapseState());
+    setIsSidebarOpen(!isSidebarOpen);
   };
 
   const handleSelectSection = (section: string) => {
     setSelectedSection(section);
-    
   };
 
   const renderContent = () => {
     switch (selectedSection) {
-      case "My Investments":
-        return <MyInvestments />;
+      case "My Campaigns":
+        return <MyCampaignsnew />;
+      // case "My Investments":
+      //   return <MyInvestments />;
       case "My Profile":
         return <ProfileUpdate />;
       case "Admin Dashboard":
@@ -67,103 +79,165 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
         return <Investor />;
       case "Kyc":
         return <KycForm />; 
-      default:
-        return "Hi Admin";
+
     }
   };
+  const { user } = useAuth();
 
-  // Function to conditionally apply active styles to buttons
+  const userRole = user?.role === 'admin' ? 'admin' : user?.role === 'fundraiser' ? 'fundraiser' : 'investor';
+
+  const menuItems = [
+    //for Fundraiser
+    {
+      title: "My Campaigns",
+      icon: <LayoutDashboard className="h-5 w-5" />,
+      section: "My Campaigns",
+      role: "fundraiser"
+    },
+    {
+      title: "Analysis",
+      icon: <Wallet className="h-5 w-5" />,
+      section: "Fundraiser",
+      role: "fundraiser"
+    },
+    {
+      title: "Dispute",
+      icon: <Users className="h-5 w-5" />,
+      section: "Investor",
+      role: "fundraiser"
+    },
+    //for insvestor
+    {
+      title: "My Insvestments",
+      icon: <Users className="h-5 w-5" />,
+      section: "Investor",
+      role: "investor"
+    },
+    {
+      title: "Analysis",
+      icon: <LayoutDashboard className="h-5 w-5" />,
+      section: "My Campaigns",
+      role: "investor"
+    },
+    {
+      title: "Dispute",
+      icon: <Wallet className="h-5 w-5" />,
+      section: "Fundraiser",
+      role: "investor"
+    },
+    {
+      title: "Shortlisted Campaigns",
+      icon: <Users className="h-5 w-5" />,
+      section: "Investor",
+      role: "investor"
+    },
+
+    //for admin
+    {
+      title: "Pending Startups",
+      icon: <LayoutDashboard className="h-5 w-5" />,
+      section: "My Campaigns",
+      role: "admin"
+    },
+    {
+      title: "Dispute",
+      icon: <Wallet className="h-5 w-5" />,
+      section: "Fundraiser",
+      role: "admin"
+    },
+    {
+      title: "Analysis",
+      icon: <Users className="h-5 w-5" />,
+      section: "Investor",
+      role: "admin"
+    },
+    {
+      title: "List Of Insvestors",
+      icon: <Users className="h-5 w-5" />,
+      section: "Investor",
+      role: "admin"
+    },
+  ];
+  useEffect(() => {
+    setsidemenu(menuItems.filter((item) => item.role === userRole));
+  }, [userRole]);
+ 
+  debugger;
   const getButtonClass = (section: string) => {
-    const baseClass =
-      "flex items-center space-x-4 hover:bg-gray-700 py-2 px-4 rounded-lg w-full text-left transition-all duration-300 ease-in-out transform hover:scale-105";
-    const activeClass =
-      "bg-cyan-800 text-white font-semibold shadow-md transform scale-105"; // Active style
+    const baseClass = "flex items-center w-full px-4 py-3 transition-all duration-200 ease-in-out rounded-lg gap-3";
+    const activeClass = "bg-gradient-to-r from-cyan-700 to-cyan-600 text-white shadow-lg";
+    const inactiveClass = "hover:bg-gray-700/20 text-gray-300 hover:text-white";
 
-    return section === selectedSection
-      ? `${baseClass} ${activeClass}`
-      : baseClass;
+    return `${baseClass} ${section === selectedSection ? activeClass : inactiveClass
+      }`;
   };
 
   return (
-    <div className="flex w-full">
-     
+    <div className="fixed inset-0 flex h-screen w-screen bg-gray-900">
       <div
-        className={`${
-          isSidebarOpen ? "w-64" : "w-16"
-        } transition-all duration-300 bg-gray-800 text-white h-screen p-4 space-y-6 flex-shrink-0 flex flex-col`}
+        className={`relative transition-all duration-300 ease-in-out ${isSidebarOpen ? "w-72" : "w-20"
+          } bg-gray-800 border-r border-gray-700 flex flex-col h-full`}
       >
-        <div className="flex items-center justify-between">
+        {/* Toggle Button */}
+        <button
+          onClick={handleToggleSidebar}
+          className="absolute -right-3 top-10 bg-cyan-600 text-white p-1.5 rounded-full shadow-lg border-2 border-gray-700 hover:bg-cyan-700 transition-colors"
+        >
+          {isSidebarOpen ? (
+            <ChevronLeft className="h-4 w-4" />
+          ) : (
+            <ChevronRight className="h-4 w-4" />
+          )}
+        </button>
+
+        {/* Header */}
+        <div className="p-6 border-b border-gray-700">
           <Link
             href="/"
-            className={`text-2xl font-bold text-white ${
-              isSidebarOpen ? "block" : "hidden"
-            } flex items-center space-x-2 transition-all duration-300 transform hover:scale-105 hover:text-indigo-400`}
+            className="flex items-center gap-3 text-white hover:text-cyan-400 transition-colors"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M19 12H5"
-              />
-            </svg>
-            <span>Back</span>
+            <ArrowLeft className="h-6 w-6" />
+            {isSidebarOpen && <span className="font-semibold text-lg">Back</span>}
           </Link>
         </div>
-         
-         {/* Admin */}
-        <div className="space-y-4 mt-8">
-          <Button
-          variant={"profilebtn"}
-            onClick={() => handleSelectSection("AdminDashboard")}
-            className={getButtonClass("AdminDashboard")}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+
+        {/* Navigation */}
+        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+          {sidebarMenu.map((item) => (
+            <Button
+              key={item.section}
+              variant="profilebtn"
+              onClick={() => handleSelectSection(item.section)}
+              className={getButtonClass(item.section)}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 3v12M3 12h12"
-              />
-            </svg>
-            <span className={isSidebarOpen ? "block" : "hidden"}>Admin</span>
-          </Button>
-        </div>
-      
-      {/* Fundraiser */}
-        <div className="space-y-4 mt-8">
+              {item.icon}
+              <span
+                className={`${isSidebarOpen ? "opacity-100" : "opacity-0 w-0"
+                  } transition-all duration-200 whitespace-nowrap`}
+              >
+                {item.title}
+              </span>
+            </Button>
+          ))}
+        </nav>
+
+        {/* Footer */}
+        {/* <div className="p-4 border-t border-gray-700">
           <Button
-          variant={"profilebtn"}
-            onClick={() => handleSelectSection("Fundraiser")}
-            className={getButtonClass("Fundraiser")}
+            onClick={() => {
+              handleSelectSection("Logout");
+              clearUserData();
+            }}
+            className="w-full flex items-center gap-3 text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-colors rounded-lg px-4 py-3"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+            <LogOut className="h-5 w-5" />
+            <span
+              className={`${
+                isSidebarOpen ? "opacity-100" : "opacity-0 w-0"
+              } transition-all duration-200`}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 3v12M3 12h12"
-              />
-            </svg>
-            <span className={isSidebarOpen ? "block" : "hidden"}>Fundraiser</span>
+              Logout
+            </span>
           </Button>
         </div>
           
@@ -192,29 +266,10 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
           </Button>
         </div>
 
-        {/* Investor */}
-        <div className="space-y-4 mt-8 flex-1">
-          <Button
-          variant={"profilebtn"}
-            onClick={() => handleSelectSection("Investor")}
-            className={getButtonClass("Investor")}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 3v12M3 12h12"
-              />
-            </svg>
-            <span className={isSidebarOpen ? "block" : "hidden"}>Investor</span>
-          </Button>
+      {/* Main Content */}
+      <div className="flex-1 bg-gray-900 p-8 overflow-auto">
+        <div className=" mx-auto">
+          {renderContent()}
         </div>
      
 
@@ -245,9 +300,6 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
           <span className={isSidebarOpen ? "block" : "hidden"}>Logout</span>
         </Button>
       </div>
-
-     
-      <div className="flex-1 p-8">{renderContent()}</div>
     </div>
   );
 };
