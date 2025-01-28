@@ -9,6 +9,7 @@ import AdminDashboard from "@/app/adminDashboard/page";
 import Fundraiser from "@/app/fundraiser/page";
 import Investor from "@/app/investor/page";
 import MyCampaignsnew from "@/app/myCampaignsnew/page";
+import KycForm from "@/components/Investor/Kyc";
 import { Button } from "../ui/button";
 import { useRouter } from 'next/navigation';
 
@@ -76,6 +77,8 @@ const Sidebar: React.FC = ({ }) => {
         return <Fundraiser />;
       case "Investor":
         return <Investor />;
+      case "Kyc":
+        return <KycForm />; 
 
     }
   };
@@ -236,14 +239,66 @@ const Sidebar: React.FC = ({ }) => {
               Logout
             </span>
           </Button>
-        </div> */}
-      </div>
+        </div>
+          
+        {/* KYC */}
+        <div className="space-y-4 mt-8">
+          <Button
+          variant={"profilebtn"}
+            onClick={() => handleSelectSection("Kyc")}
+            className={getButtonClass("Kyc")}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 3v12M3 12h12"
+              />
+            </svg>
+            <span className={isSidebarOpen ? "block" : "hidden"}>Kyc</span>
+          </Button>
+        </div>
 
       {/* Main Content */}
       <div className="flex-1 bg-gray-900 p-8 overflow-auto">
         <div className=" mx-auto">
           {renderContent()}
         </div>
+     
+
+
+
+        
+        <Button
+          onClick={() => {
+            handleSelectSection("Logout");
+            clearUserData();
+          }}
+          className={getButtonClass("Logout")}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M16 17l4-4m0 0l-4-4m4 4H7"
+            />
+          </svg>
+          <span className={isSidebarOpen ? "block" : "hidden"}>Logout</span>
+        </Button>
       </div>
     </div>
   );
