@@ -27,13 +27,16 @@ import {
 } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
-import { ImageIcon, Upload } from "lucide-react";
+import { ImageIcon, Upload, ChevronsUpDown, Check, Shield } from "lucide-react";
+import { Popover, PopoverTrigger, PopoverContent } from "@radix-ui/react-popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { request } from "http";
 import { usePathname } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { CircleAlert } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 
 
@@ -49,44 +52,37 @@ export default function App() {
         about: "",
         profilePicture: null as File | null,
         profilePicturePreview: "",
+        company: "",
+        selectedDomains: [] as string[],
+        kycVerified: false,
     });
 
     let approvalStatus = "";
-    
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 // call API to fetch user profile data and populate the form  
-               
-            
+
+
                 const approvalStatusResponse = await axios.get(
-                    `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/roleRequest`, 
+                    `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/roleRequest`,
                     {
-                      withCredentials: true,
-                      headers: {
-                        'Content-Type': 'application/json' // Adjust the content type if needed
-                      }
+                        withCredentials: true,
+                        headers: {
+                            'Content-Type': 'application/json' // Adjust the content type if needed
+                        }
                     }
-                  );
-                  
-                    console.log(approvalStatusResponse.data);
-                
-                
+                );
+
+                console.log(approvalStatusResponse.data);
+
+
                 approvalStatus = approvalStatusResponse.data.role;
 
-                // setProfileData({
-                //     username: data.username,
-                //     email: data.email,
-                //     password: "",
-                //     confirmPassword: "",
-                //     about: "",
-                //     profilePicture: null,
-                //     profilePicturePreview: data.profilePicture,
-                // });
 
-                
             } catch (error) {
-                
+
                 toast.error('Failed to fetch user role status');
             }
         };
@@ -96,7 +92,7 @@ export default function App() {
     const currentPath = usePathname()
     const currentRoleRequest = currentPath.split("/")[2];
     console.log(currentRoleRequest);
-    
+
 
     const [businessData, setBusinessData] = useState({
         industry: "",
@@ -107,6 +103,43 @@ export default function App() {
         document_upload: null as File | null,
         company: "",
     });
+    const domains = [
+        { value: "Telecommunications", label: "Telecommunications" },
+        { value: "Retail", label: "Retail" },
+        { value: "Advertising", label: "Advertising" },
+        { value: "Manufacturing", label: "Manufacturing" },
+        { value: "Automotive", label: "Automotive" },
+        { value: "Construction and Engineering", label: "Construction and Engineering" },
+        { value: "Transportation", label: "Transportation" },
+        { value: "Transport", label: "Transport" },
+        { value: "Software", label: "Software" },
+        { value: "Infrastructure", label: "Infrastructure" },
+        { value: "Food", label: "Food" },
+        { value: "Financial Services", label: "Financial Services" },
+        { value: "Oil and Gas", label: "Oil and Gas" },
+        { value: "Consultancy Services", label: "Consultancy Services" },
+        { value: "Accounting", label: "Accounting" },
+        { value: "Technology", label: "Technology" },
+        { value: "Engineering", label: "Engineering" },
+        { value: "Food and Beverage", label: "Food and Beverage" },
+        { value: "Aviation", label: "Aviation" },
+        { value: "Insurance", label: "Insurance" },
+        { value: "Other", label: "Other" }
+    ];
+
+    const countries = [
+        { value: "us", label: "United States" },
+        { value: "uk", label: "United Kingdom" },
+        { value: "ca", label: "Canada" },
+        { value: "au", label: "Australia" },
+        { value: "de", label: "Germany" },
+        { value: "fr", label: "France" },
+        { value: "in", label: "India" },
+        { value: "jp", label: "Japan" },
+        // Add more countries as needed
+    ];
+
+    const [open, setOpen] = useState(false);
 
     const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setProfileData({
@@ -138,7 +171,7 @@ export default function App() {
         if (file) {
             setBusinessData({
                 ...businessData,
-                
+
                 [e.target.id]: file.name,
             });
         }
@@ -167,11 +200,11 @@ export default function App() {
             console.log('Profile Data:', profileData);
         } else {
             debugger
-            const submittedJSON = JSON.stringify({...businessData,role:currentRoleRequest});
-            axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/sendRequest`,submittedJSON,{ headers: { 'Content-Type': 'application/json' },withCredentials:true}).then((response) => {
+            const submittedJSON = JSON.stringify({ ...businessData, role: currentRoleRequest });
+            axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/sendRequest`, submittedJSON, { headers: { 'Content-Type': 'application/json' }, withCredentials: true }).then((response) => {
                 debugger
                 toast.success('Role request sent sucessfully');
-                
+
 
             }).catch((error) => {
                 debugger
@@ -181,259 +214,246 @@ export default function App() {
         }
     };
 
+    function handleDomainToggle(value: string) {
+        throw new Error("Function not implemented.");
+    }
+
+    function handleKYCVerification() {
+        // Implement your KYC verification logic here
+        console.log("KYC verification initiated");
+    }
+
     return (
-        <div className="h-screen flex justify-center bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072')] flex-col items-center">
-            {approvalStatus === "pending"?<Badge variant="outline" className="bg-yellow-300 flex justify-center"><CircleAlert /> Your request is in pending state .. </Badge>:''}
-            
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
-            <ToastContainer />
-            <div className="mt-[47px] z-50 w-full">
-                <div className="flex justify-center items-center">
-                    <Tabs defaultValue="profile" className="w-3/5 h-full">
-                        <TabsList className="grid w-full grid-cols-2">
-                            <TabsTrigger value="profile">Profile Details</TabsTrigger>
-                            <TabsTrigger value="business">Business Details</TabsTrigger>
-                        </TabsList>
-                        <TabsContent value="profile">
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Profile Details</CardTitle>
-                                    <CardDescription>
-                                        Edit your profile information and settings.
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent className="space-y-2">
-                                    <div className="space-y-2">
-                                        <Label>Profile Picture</Label>
-                                        <div className="flex flex-col items-center space-y-4">
-                                            {profileData.profilePicturePreview ? (
-                                                <div className="relative w-32 h-32">
-                                                    <img
-                                                        src={profileData.profilePicturePreview}
-                                                        alt="Profile Preview"
-                                                        className="w-full h-full object-cover rounded-full"
-                                                    />
-                                                </div>
-                                            ) : (
-                                                <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center">
-                                                    <ImageIcon className="w-12 h-12 text-gray-400" />
-                                                </div>
-                                            )}
-                                            <div className="flex items-center space-x-2">
-                                                <Input
-                                                    id="profilePicture"
-                                                    type="file"
-                                                    accept="image/*"
-                                                    className="hidden"
-                                                    onChange={handleProfilePictureChange}
-                                                />
-                                                <Button
-                                                    type="button"
-                                                    variant="outline"
-                                                    onClick={() => document.getElementById('profilePicture')?.click()}
-                                                >
-                                                    Upload Photo
-                                                </Button>
+        <div className="min-h-screen bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072')] bg-cover bg-center py-8 px-4 sm:px-6 lg:px-8">
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+            <ToastContainer position="top-right" theme="dark" />
+
+            <div className="relative z-10 max-w-3xl mx-auto">
+                <Card className="backdrop-blur-lg bg-white/10 border-0 shadow-2xl mt-10">
+                    <CardHeader className="text-center pb-4">
+                        <CardTitle className="text-2xl font-bold text-white">Profile Settings</CardTitle>
+                        <p className="text-sm text-gray-300">Manage your account settings and preferences</p>
+                    </CardHeader>
+                    <CardContent className="max-h-[calc(100vh-147px)] overflow-y-auto">
+                        <form onSubmit={handleSubmit} className="space-y-6 mt-1">
+                            {/* Profile Picture Section */}
+                            <div className="flex justify-center">
+                                <div className="space-y-3">
+                                    <div className="relative w-24 h-24 mx-auto">
+                                        {profileData.profilePicturePreview ? (
+                                            <img
+                                                src={profileData.profilePicturePreview}
+                                                alt="Profile Preview"
+                                                className="w-full h-full object-cover rounded-full ring-2 ring-blue-500/50"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full bg-gray-800 rounded-full flex items-center justify-center ring-2 ring-blue-500/50">
+                                                <ImageIcon className="w-8 h-8 text-gray-400" />
                                             </div>
-                                        </div>
+                                        )}
                                     </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="username">Username</Label>
+                                    <div className="flex justify-center">
+                                        <Input
+                                            id="profilePicture"
+                                            type="file"
+                                            accept="image/*"
+                                            className="hidden"
+                                            onChange={handleProfilePictureChange}
+                                        />
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            onClick={() => document.getElementById('profilePicture')?.click()}
+                                            className="bg-gray-800/50 text-white hover:bg-gray-700/50 border-gray-600 text-sm py-1"
+                                        >
+                                            Change Photo
+                                        </Button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="grid gap-4">
+                                {/* Basic Information */}
+                                <div className="grid gap-3 sm:grid-cols-2">
+                                    <div className="space-y-1">
+                                        <Label htmlFor="username" className="text-white text-sm">Username</Label>
                                         <Input
                                             id="username"
                                             placeholder="Enter your username"
                                             value={profileData.username}
                                             onChange={handleProfileChange}
+                                            className="bg-gray-800/50 border-gray-600 text-white focus:ring-blue-500/50 h-9"
                                         />
                                     </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="email">Email</Label>
+                                    <div className="space-y-1">
+                                        <Label htmlFor="email" className="text-white text-sm">Email</Label>
                                         <Input
                                             id="email"
                                             type="email"
                                             placeholder="Enter your email"
                                             value={profileData.email}
                                             onChange={handleProfileChange}
+                                            className="bg-gray-800/50 border-gray-600 text-white focus:ring-blue-500/50 h-9"
                                         />
                                     </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="password">Password</Label>
+                                </div>
+
+                                {/* Company and Country */}
+                                <div className="grid gap-3 sm:grid-cols-2">
+                                    <div className="space-y-1">
+                                        <Label htmlFor="company" className="text-white text-sm">Company (Optional)</Label>
+                                        <Input
+                                            id="company"
+                                            placeholder="Enter your company name"
+                                            value={profileData.company}
+                                            onChange={handleProfileChange}
+                                            className="bg-gray-800/50 border-gray-600 text-white focus:ring-blue-500/50 h-9"
+                                        />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <Label htmlFor="country" className="text-white text-sm">Country</Label>
+                                        <Select onValueChange={(value) => setProfileData(prev => ({ ...prev, country: value }))}>
+                                            <SelectTrigger className="bg-gray-800/50 border-gray-600 text-white h-9">
+                                                <SelectValue placeholder="Select your country" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {countries.map((country) => (
+                                                    <SelectItem key={country.value} value={country.value}>
+                                                        {country.label}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </div>
+
+                                {/* Domains */}
+                                {/* Domains Section */}
+                                <div className="space-y-1">
+                                    <Label className="text-white text-sm">Domains</Label>
+                                    <Popover open={open} onOpenChange={setOpen}>
+                                        <PopoverTrigger asChild>
+                                            <Button
+                                                variant="outline"
+                                                role="combobox"
+                                                aria-expanded={open}
+                                                className="w-full justify-between bg-gray-800/50 text-white border-gray-600 hover:bg-gray-700/50 h-9"
+                                            >
+                                                {profileData.selectedDomains.length === 0
+                                                    ? "Select domains..."
+                                                    : `${profileData.selectedDomains.length} domain(s) selected`}
+                                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-[720px] p-0">
+                                            <Command>
+                                                <CommandInput placeholder="Search domains..." className="h-9" />
+                                                <CommandEmpty>No domain found.</CommandEmpty>
+                                                <CommandGroup className="max-h-[200px] overflow-auto">
+                                                    {domains.map((domain) => (
+                                                        <CommandItem
+                                                            key={domain.value}
+                                                            onSelect={() => handleDomainToggle(domain.value)}
+                                                        >
+                                                            <Check
+                                                                className={cn(
+                                                                    "mr-2 h-4 w-4",
+                                                                    profileData.selectedDomains.includes(domain.value)
+                                                                        ? "opacity-100"
+                                                                        : "opacity-0"
+                                                                )}
+                                                            />
+                                                            {domain.label}
+                                                        </CommandItem>
+                                                    ))}
+                                                </CommandGroup>
+                                            </Command>
+                                        </PopoverContent>
+                                    </Popover>
+                                </div>
+
+
+                                {/* Password Section */}
+                                <div className="grid gap-3 sm:grid-cols-2">
+                                    <div className="space-y-1">
+                                        <Label htmlFor="password" className="text-white text-sm">Password</Label>
                                         <Input
                                             id="password"
                                             type="password"
                                             placeholder="Enter your password"
                                             value={profileData.password}
                                             onChange={handleProfileChange}
+                                            className="bg-gray-800/50 border-gray-600 text-white focus:ring-blue-500/50 h-9"
                                         />
                                     </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="confirmPassword">Confirm Password</Label>
+                                    <div className="space-y-1">
+                                        <Label htmlFor="confirmPassword" className="text-white text-sm">Confirm Password</Label>
                                         <Input
                                             id="confirmPassword"
                                             type="password"
                                             placeholder="Confirm your password"
                                             value={profileData.confirmPassword}
                                             onChange={handleProfileChange}
+                                            className="bg-gray-800/50 border-gray-600 text-white focus:ring-blue-500/50 h-9"
                                         />
                                     </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="about">About</Label>
-                                        <Textarea
-                                            id="about"
-                                            placeholder="Tell us about yourself"
-                                            value={profileData.about}
-                                            onChange={handleProfileChange}
-                                        />
-                                    </div>
-                                </CardContent>
-                                <CardFooter>
-                                    <Button onClick={() => handleSubmit('profile')}>Save Profile</Button>
-                                </CardFooter>
-                            </Card>
-                        </TabsContent>
-                        <TabsContent value="business">
-                            {currentRoleRequest === "investor" ? <Card>
-                                <CardHeader>
-                                    <CardTitle>Business Details</CardTitle>
-                                    <CardDescription>
-                                        Tell us about your investment preferences and experience.
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent className="space-y-2">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="industry">Investment Focus</Label>
-                                        <Input
-                                            id="industry"
-                                            placeholder="e.g., Technology, Real Estate"
-                                            value={businessData.industry}
-                                            onChange={handleBusinessChange}
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="investmentAmount">Investment Budget (USD)</Label>
-                                        <Input
-                                            id="investmentAmount"
-                                            type="number"
-                                            placeholder="Enter your investment budget"
-                                            value={businessData.investmentAmount}
-                                            onChange={handleBusinessChange}
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="investmentSector">Investment Sector</Label>
-                                        <Select onValueChange={handleSectorChange} value={businessData['field_of_interest']}>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select a sector" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="tech">Technology</SelectItem>
-                                                <SelectItem value="health">Healthcare</SelectItem>
-                                                <SelectItem value="finance">Financial Services</SelectItem>
-                                                <SelectItem value="real-estate">Real Estate</SelectItem>
-                                                <SelectItem value="energy">Energy</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="investmentExperience">Investment Experience</Label>
-                                        <Select onValueChange={handleExperienceChange} value={businessData.investmentExperience}>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select your experience level" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="beginner">Beginner (0-2 years)</SelectItem>
-                                                <SelectItem value="intermediate">Intermediate (3-5 years)</SelectItem>
-                                                <SelectItem value="advanced">Advanced (5-10 years)</SelectItem>
-                                                <SelectItem value="expert">Expert (10+ years)</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label>Document Upload</Label>
-                                        <div className="flex items-center space-x-2">
-                                            <Input
-                                                id="document_upload"
-                                                type="file"
-                                                accept=".pdf,.doc,.docx"
-                                                className="hidden"
-                                                onChange={(e) => handleDocumentUpload(e, 'document_upload')}
-                                            />
-                                            <Button
-                                                type="button"
-                                                variant="outline"
-                                                className="w-full"
-                                                onClick={() => document.getElementById('document_upload')?.click()}
-                                            >
-                                                <Upload className="w-4 h-4 mr-2" />
-                                                {businessData['document_upload'] ? businessData['document_upload']?.name : 'Upload Supporting Document'}
-                                            </Button>
-                                        </div>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label>KYC Documnet</Label>
-                                        <div className="flex items-center space-x-2">
-                                            <Input
-                                                id="kyc_document"
-                                                type="file"
-                                                accept=".pdf,.doc,.docx"
-                                                className="hidden"
-                                                onChange={(e) => handleDocumentUpload(e, 'kyc_document')}
-                                            />
-                                            <Button
-                                                type="button"
-                                                variant="outline"
-                                                className="w-full"
-                                                onClick={() => document.getElementById('kyc_document')?.click()}
-                                            >
-                                                <Upload className="w-4 h-4 mr-2" />
-                                                {businessData['kyc_document'] ? businessData['kyc_document']?.name : 'Upload KYC details'}
-                                            </Button>
-                                        </div>
-                                    </div>
+                                </div>
 
-                                </CardContent>
-                                <CardFooter>
-                                    <Button onClick={() => handleSubmit('business')}>Save Business Details</Button>
-                                </CardFooter>
-                            </Card> : <Card>
+                                {/* About Section */}
+                                <div className="space-y-1">
+                                    <Label htmlFor="about" className="text-white text-sm">About</Label>
+                                    <Textarea
+                                        id="about"
+                                        placeholder="Tell us about yourself"
+                                        value={profileData.about}
+                                        onChange={handleProfileChange}
+                                        className="bg-gray-800/50 border-gray-600 text-white h-20 min-h-[80px] focus:ring-blue-500/50"
+                                    />
+                                </div>
+                            </div>
 
-                                <CardHeader>
-                                    <CardTitle>Business Details</CardTitle>
-                                    <CardDescription>
-                                        Tell us about your Fundraising preferences.
-                                    </CardDescription>
-                                    <CardContent className="space-y-2">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="industry">Industry</Label>
-                                            <Input
-                                                id="industry"
-                                                placeholder="e.g., Technology, Real Estate"
-                                                value={businessData.industry}
-                                                onChange={handleBusinessChange}
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label htmlFor="company">Company</Label>
-                                            <Input
-                                                id="company"
-                                                type="text"
-                                                placeholder="Company Name"
-                                                value={businessData.company}
-                                                onChange={handleBusinessChange}
-                                            />
-                                        </div>
+                            {/* //ekyc section */}
+
+                            <div className="space-y-1 p-4 bg-gray-800/30 rounded-lg border border-gray-600/50">
+                                <div className="flex items-center justify-between">
+                                    <div className="space-y-1">
+                                        <h3 className="text-white font-medium flex items-center gap-2">
+                                            <CircleAlert className="h-4 w-4 text-yellow-500" />
+                                            Identity Verification (e-KYC)
+                                        </h3>
+                                        <p className="text-sm text-gray-400">
+                                            Complete your identity verification to unlock all features
+                                        </p>
+                                    </div>
+                                    <Button
+                                        type="button"
+                                        onClick={handleKYCVerification}
+                                        className="bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-2"
+                                    >
+                                        <Shield className="h-4 w-4" />
+                                        Verify Identity
+                                    </Button>
+                                </div>
+                                {profileData.kycVerified && (
+                                    <Badge className="mt-2 bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+                                        Verified
+                                    </Badge>
+                                )}
+                            </div>
 
 
-
-                                    </CardContent>
-                                    <CardFooter>
-                                        <Button onClick={() => handleSubmit('business')}>Save Business Details</Button>
-                                    </CardFooter>
-                                </CardHeader>
-                            </Card>}
-                        </TabsContent>
-                    </Tabs>
-                </div>
+                            {/* Submit Button */}
+                            <div className="flex justify-end">
+                                <Button
+                                    type="submit"
+                                    className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+                                >
+                                    Save Changes
+                                </Button>
+                            </div>
+                        </form>
+                    </CardContent>
+                </Card>
             </div>
         </div>
     );
