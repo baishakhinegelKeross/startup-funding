@@ -26,32 +26,43 @@ export default function QnA(){
     return(
         <div className="bg-[#0a0b1e] p-4">
             <div className="max-w-3xl mx-auto">
+
                 {/* Question Input */}
-                <div className="bg-white rounded-lg shadow-sm mb-8 p-4">
-                    <input type="text" 
-                            placeholder="Ask a question" 
-                            className="w-full p-3 text-gray-600 placeholder-gray-400 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400"
-                    />
-                    <div className="flex justify-end mt-3">
-                        <button className="px-6 py-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors">
-                            SUBMIT
-                        </button>
-                    </div>
-                </div>
+                <Card className="border-0 shadow-lg bg-card/50 backdrop-blur">
+                    <CardContent className="p-6">
+                        <Input
+                            type="text"
+                            placeholder="What would you like to know?"
+                            className="bg-background border-primary/10 text-primary placeholder:text-muted-foreground"
+                        />
+                        <div className="flex justify-end mt-4">
+                            <Button className="px-6 bg-blue-600 hover:bg-blue-700 text-white">
+                                <MessageSquare className="mr-2 h-4 w-4" />
+                                Ask Question
+                            </Button>
+                        </div>
+                    </CardContent>
+                </Card>
 
                 {/* Sort Options */}
-                <div className="flex items-center gap-2 mb-6">
-                    <span className="text-gray-700">Sort by relevance</span>
-                    <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path d="M19 9l-7 7-7-7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+                <div className="flex items-center justify-between">
+                    <h2 className="text-lg font-semibold text-white">Recent Questions</h2>
+                    <Select defaultValue="relevance">
+                        <SelectTrigger className="w-[180px] bg-card/50 border-primary/10 text-white">
+                            <SelectValue placeholder="Sort by" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="relevance">Sort by relevance</SelectItem>
+                            <SelectItem value="recent">Most recent</SelectItem>
+                            <SelectItem value="votes">Most votes</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
 
                 {/* Questions and Answers */}
                 <div className="space-y-6">
-                    {/* Question */}
+                   
                     <div className="bg-white rounded-lg shadow-sm p-6">
-
                         {
                             posts.length > 0 ? (
                                 posts.map((obj)=>(
@@ -59,9 +70,9 @@ export default function QnA(){
                                 ))
                             ) : null
                         }
-
-                        
+            
                     </div>
+
                 </div>
             </div>
         </div>

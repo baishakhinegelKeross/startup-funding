@@ -48,8 +48,12 @@ const MyCampaignPage: React.FC = () => {
         const result = await response.json();
         setCampaignData(result);
         console.log(result);
-      } catch (error) {
-        setError((error as Error).message);
+      } catch (error: any) {
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError(String(error));
+        }
       } finally {
         setLoading(false);
       }
@@ -64,6 +68,7 @@ const MyCampaignPage: React.FC = () => {
       ...campaignData,
       amount_raised: 0,
       createdAt: new Date(),
+      _id: ''
     };
 
     console.log('Creating campaign:', newCampaign);

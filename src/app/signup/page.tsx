@@ -45,6 +45,7 @@ const formSchema = z.object({
   country: z.string().min(1, "Please select a country."),
   phone: z.string().min(10, "Phone number must be at least 10 digits.").max(10, "Phone number must be at most 10 digits."),
   termsAndConditions: z.boolean().refine((value) => value === true, { message: "You must accept the terms and conditions", }),
+  role: z.string().min(1, "Please select a role."),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords do not match.",
   path: ["confirmPassword"],
@@ -67,7 +68,7 @@ export default function SignUpForm() {
       confirmPassword: "",
       companyName: "",
       country: "",
-      phone: "",
+      role: "",
       termsAndConditions: false,
     },
   })
@@ -284,7 +285,7 @@ export default function SignUpForm() {
                           <FormLabel className="text-slate-200">Contact Number</FormLabel>
                           <FormControl>
                             <div className="relative flex gap-2">
-                              
+
                               <div className="flex-shrink-0 z-10">
                                 <Input
                                   disabled
@@ -299,6 +300,40 @@ export default function SignUpForm() {
                               />
                             </div>
                           </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="role"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-slate-200">I am</FormLabel>
+                          <Select
+                            onValueChange={(value) => field.onChange(value)}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="bg-slate-800/50 border-slate-700 text-white">
+                              <SelectValue className="text-white" placeholder="Select your role" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent className="bg-slate-800 border-slate-700">
+                              <SelectItem
+                                value="Fundraiser"
+                                className="text-white hover:bg-slate-700"
+                              >
+                                Fundraiser
+                              </SelectItem>
+                              <SelectItem
+                                value="Investor"
+                                className="text-white hover:bg-slate-700"
+                              >
+                                Investor
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -335,7 +370,7 @@ export default function SignUpForm() {
                   disabled={current === 0}
                   className="bg-indigo-600 hover:bg-indigo-700 text-white"
                 >
-                  <ArrowLeft className="mr-2 h-4 w-4" />Previous 
+                  <ArrowLeft className="mr-2 h-4 w-4" />Previous
                 </Button>
                 {current === count - 1 ? (
                   <Button
