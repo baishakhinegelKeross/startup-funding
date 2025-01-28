@@ -312,8 +312,8 @@ export default function SignUpForm() {
                           <FormControl>
                             <Checkbox
                               checked={field.value}
-                              onCheckedChange={field.onChange}
-                              className="border-slate-700 data-[state=checked]:bg-indigo-500"
+                              onChange={field.onChange}
+                              className=""
                             />
                           </FormControl>
                           <div className="space-y-1 leading-none">
