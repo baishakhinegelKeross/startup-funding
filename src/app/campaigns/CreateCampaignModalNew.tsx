@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid';
 import React, { useEffect, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import {
@@ -23,7 +24,8 @@ import {
     BadgeDollarSign,
     FileText,
     LineChart,
-    Wallet
+    Wallet,
+    Calendar
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -82,18 +84,154 @@ const ACCEPTED_FILE_TYPES = [
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 ];
 
+// const formSchema = z.object({
+//     // highlights: z.array(z.object({ description: z.string() })).optional(),
+//     highlights: z.array(z.object({
+//         description: z.string(),
+//         id: z.number().optional()
+//     })).optional(),
+//     ourTeam: z.array(z.object({
+//         name: z.string(),
+//         position: z.string(),
+//         avatar: z.string().optional(),
+//         about: z.string().optional(),
+//     })).optional(),
+//     // Existing Fields from CreateCampaignModalNew.tsx
+//     title: z.string().min(1, "Title is required"),
+//     story: z.string().min(10, "Story is required"),
+//     resourceUrl: z.string().url("Please enter a valid URL"),
+//     category: z.enum([
+//         'CleanTech',
+//         'FinTech',
+//         'HealthTech',
+//         'EdTech',
+//         'AI/ML',
+//         'Blockchain',
+//         'IoT',
+//         'Other',
+//     ]).refine((val) => val !== undefined, {
+//         message: "Please select a valid category",
+//     }),
+//     goalAmount: z.number().min(1, "Amount must be greater than 0"),
+//     currencyType: z.enum(['USD', 'EUR', 'GBP', 'JPY']).refine((val) => val !== undefined, {
+//         message: "Please select a valid currency",
+//     }),
+//     owner: z.object({
+//         name: z.string().min(1, "Owner name is required"),
+//         email: z.string().email("Invalid email address"),
+//         stripeId: z.string().min(1, "Stripe ID is required"),
+//     }),
+//     publishedStatus: z.boolean().optional(),
+
+//     // additionalHighlights: z.array(z.string()).optional(),
+
+//     additionalHighlights: z.array(z.object({
+//         title: z.string(),
+//         description: z.string().optional()
+//     })).optional(),
+
+//     // New Fields from CreateCampaignFields.tsx
+//     pitch: z.string().min(10, "Please provide a detailed campaign pitch").optional(),
+
+//     // Business Concept
+//     businessName: z.string().min(2, "Business name must be at least 2 characters"),
+//     businessIdea: z.string().min(10, "Please provide a detailed business idea"),
+//     valueProposition: z.string().min(10, "Please describe your value proposition"),
+//     businessModelDoc: z
+//         .instanceof(FileList)
+//         .refine((files) => files?.length === 1, "Business model document is required")
+//         .refine(
+//             (files) => files?.[0]?.size <= MAX_FILE_SIZE,
+//             "Max file size is 5MB"
+//         )
+//         .refine(
+//             (files) => ACCEPTED_FILE_TYPES.includes(files?.[0]?.type),
+//             "Only .pdf, .doc, and .docx files are accepted"
+//         )
+//         .optional(),
+//     businessPlanDoc: z
+//         .instanceof(FileList)
+//         .refine((files) => files?.length === 1, "Business plan document is required")
+//         .refine(
+//             (files) => files?.[0]?.size <= MAX_FILE_SIZE,
+//             "Max file size is 5MB"
+//         )
+//         .refine(
+//             (files) => ACCEPTED_FILE_TYPES.includes(files?.[0]?.type),
+//             "Only .pdf, .doc, and .docx files are accepted"
+//         )
+//         .optional(),
+
+//     // Market Analysis
+//     targetMarket: z.string().min(10, "Please describe your target market"),
+//     marketSize: z.string().min(1, "Please estimate your market size"),
+//     competitiveAnalysis: z.string().min(10, "Please provide competitive analysis"),
+
+//     // Business Model
+//     revenueStreams: z.string().min(10, "Please describe your revenue streams"),
+//     costStructure: z.string().min(10, "Please outline your cost structure"),
+
+//     // Business Plan
+//     executiveSummary: z.string().min(10, "Please provide an executive summary"),
+//     shortTermGoals: z.string().min(10, "Please list your short-term goals"),
+//     longTermGoals: z.string().min(10, "Please list your long-term goals"),
+//     marketingStrategy: z.string().min(10, "Please describe your marketing strategy"),
+
+//     // Operational Plan
+//     businessLocation: z.string().min(2, "Please specify your business location"),
+//     technologyNeeds: z.string().min(10, "Please list your technology needs"),
+//     supplyChain: z.string().min(10, "Please describe your supply chain"),
+
+//     // Management Team
+//     teamMembers: z.string().min(10, "Please list key team members"),
+//     rolesResponsibilities: z.string().min(10, "Please outline roles and responsibilities"),
+
+//     // Financial Projections
+//     startupCosts: z.string().min(1, "Please estimate your startup costs"),
+//     projectedRevenue: z.string().min(1, "Please provide projected revenue"),
+//     breakEvenPoint: z.string().min(1, "Please estimate break-even point"),
+
+//     // Funding Requirements
+//     fundingNeeded: z.string().min(1, "Please specify funding needed"),
+//     useOfFunds: z.string().min(10, "Please detail use of funds"),
+
+//     // Legal Structure
+//     businessEntity: z.string().min(2, "Please select business entity type"),
+//     licensesPermits: z.string().min(10, "Please list required licenses and permits"),
+
+//     // Risks and Challenges
+//     risksAndChallenges: z.string().min(10, "Please describe potential risks and challenges"),
+
+//     // Milestones and Metrics
+//     keyMilestones: z.string().min(10, "Please list key milestones"),
+//     metricsForSuccess: z.string().min(10, "Please specify metrics for success"),
+
+//     // Valuation
+//     valuation: z.object({
+//         currentValuation: z.number().optional(),
+//         lastValuation: z.number().optional(),
+//         currencyUnit: z.enum(['USD', 'EUR', 'GBP', 'JPY', 'INR']).optional(),
+//     }).optional(),
+// });
+
 const formSchema = z.object({
-    highlights: z.array(z.object({ description: z.string() })).optional(),
-    ourTeam: z.array(z.object({
-        name: z.string(),
-        position: z.string(),
-        avatar: z.string().optional(),
-        about: z.string().optional()
+    // Currency Type
+    currencyType: z.enum(['USD', 'EUR', 'GBP', 'JPY']).refine((val) => val !== undefined, {
+        message: "Please select a valid currency",
+    }),
+    // Highlights
+    highlights: z.array(z.object({
+        description: z.string(),
+        id: z.number().optional()
     })).optional(),
-    // Existing Fields from CreateCampaignModalNew.tsx
+
+    // Title
     title: z.string().min(1, "Title is required"),
-    story: z.string().min(10, "Story is required"),
-    resourceUrl: z.string().url("Please enter a valid URL"),
+
+    // Story
+    story: z.string().min(100, "Story must have at least 100 characters"),
+
+    // Category
     category: z.enum([
         'CleanTech',
         'FinTech',
@@ -106,98 +244,27 @@ const formSchema = z.object({
     ]).refine((val) => val !== undefined, {
         message: "Please select a valid category",
     }),
-    goalAmount: z.number().min(1, "Amount must be greater than 0"),
-    currencyType: z.enum(['USD', 'EUR', 'GBP', 'JPY']).refine((val) => val !== undefined, {
-        message: "Please select a valid currency",
+
+    // Goal Amount
+    goalAmount: z.number().min(1, "Goal amount is required"),
+
+    // End Date
+    endDate: z.date().refine((val) => val !== undefined, {
+        message: "Please select a valid end date",
     }),
+
+    // Image URL
+    imageUrl: z.string().url("Please enter a valid image URL"),
+
+    // Owner
     owner: z.object({
         name: z.string().min(1, "Owner name is required"),
         email: z.string().email("Invalid email address"),
         stripeId: z.string().min(1, "Stripe ID is required"),
     }),
-    publishedStatus: z.boolean().optional(),
-
-    // additionalHighlights: z.array(z.string()).optional(),
-
-    additionalHighlights: z.array(z.object({
-        title: z.string(),
-        description: z.string().optional()
-    })).optional(),
-
-    // New Fields from CreateCampaignFields.tsx
-    // Business Concept
-    businessName: z.string().min(2, "Business name must be at least 2 characters"),
-    businessIdea: z.string().min(10, "Please provide a detailed business idea"),
-    valueProposition: z.string().min(10, "Please describe your value proposition"),
-    businessModelDoc: z
-        .instanceof(FileList)
-        .refine((files) => files?.length === 1, "Business model document is required")
-        .refine(
-            (files) => files?.[0]?.size <= MAX_FILE_SIZE,
-            "Max file size is 5MB"
-        )
-        .refine(
-            (files) => ACCEPTED_FILE_TYPES.includes(files?.[0]?.type),
-            "Only .pdf, .doc, and .docx files are accepted"
-        )
-        .optional(),
-    businessPlanDoc: z
-        .instanceof(FileList)
-        .refine((files) => files?.length === 1, "Business plan document is required")
-        .refine(
-            (files) => files?.[0]?.size <= MAX_FILE_SIZE,
-            "Max file size is 5MB"
-        )
-        .refine(
-            (files) => ACCEPTED_FILE_TYPES.includes(files?.[0]?.type),
-            "Only .pdf, .doc, and .docx files are accepted"
-        )
-        .optional(),
-
-    // Market Analysis
-    targetMarket: z.string().min(10, "Please describe your target market"),
-    marketSize: z.string().min(1, "Please estimate your market size"),
-    competitiveAnalysis: z.string().min(10, "Please provide competitive analysis"),
-
-    // Business Model
-    revenueStreams: z.string().min(10, "Please describe your revenue streams"),
-    costStructure: z.string().min(10, "Please outline your cost structure"),
-
-    // Business Plan
-    executiveSummary: z.string().min(10, "Please provide an executive summary"),
-    shortTermGoals: z.string().min(10, "Please list your short-term goals"),
-    longTermGoals: z.string().min(10, "Please list your long-term goals"),
-    marketingStrategy: z.string().min(10, "Please describe your marketing strategy"),
-
-    // Operational Plan
-    businessLocation: z.string().min(2, "Please specify your business location"),
-    technologyNeeds: z.string().min(10, "Please list your technology needs"),
-    supplyChain: z.string().min(10, "Please describe your supply chain"),
-
-    // Management Team
-    teamMembers: z.string().min(10, "Please list key team members"),
-    rolesResponsibilities: z.string().min(10, "Please outline roles and responsibilities"),
-
-    // Financial Projections
-    startupCosts: z.string().min(1, "Please estimate your startup costs"),
-    projectedRevenue: z.string().min(1, "Please provide projected revenue"),
-    breakEvenPoint: z.string().min(1, "Please estimate break-even point"),
-
-    // Funding Requirements
-    fundingNeeded: z.string().min(1, "Please specify funding needed"),
-    useOfFunds: z.string().min(10, "Please detail use of funds"),
-
-    // Legal Structure
-    businessEntity: z.string().min(2, "Please select business entity type"),
-    licensesPermits: z.string().min(10, "Please list required licenses and permits"),
-
-    // Risks and Challenges
-    risksAndChallenges: z.string().min(10, "Please describe potential risks and challenges"),
-
-    // Milestones and Metrics
-    keyMilestones: z.string().min(10, "Please list key milestones"),
-    metricsForSuccess: z.string().min(10, "Please specify metrics for success"),
 });
+
+
 
 export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }: {
     onBack: () => void;
@@ -214,12 +281,15 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
         handleSubmit,
         control,
         watch,
+        setValue,
         formState: { errors, isValid },
         reset,
-    } = useForm<z.infer<typeof formSchema & { highlights: { description: string }[]; additionalHighlights: string[]; ourTeam: { name: string, position: string, avatar: string, about: string }[] }>>({
+    } = useForm<z.infer<typeof formSchema & { highlights: { description: string, id?: number }[]; additionalHighlights: { title: string, description?: string }[]; ourTeam: { name: string, position: string, avatar?: string, about?: string }[] }>>({
         resolver: zodResolver(formSchema),
         // defaultValues: currentDraft || undefined,
     });
+
+    console.log(errors);
 
     const formValues = watch();
 
@@ -306,17 +376,20 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
         console.log(data);
         const campaign = {
             ...data,
-            id: currentDraft?.id || crypto.randomUUID(),
+            draftId: currentDraft?.id || nanoid(),
             createdAt: new Date().toISOString(),
             currentAmount: 0,
             favoritesCount: 0,
             contributions: [],
             endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+            email: data.owner.email,
+            goal_amount: data.goalAmount,
+            end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+            image_url: data.imageUrl,
+            owner: JSON.stringify(data.owner),
+            stripeId: data.owner.stripeId
         };
-        onCreateCampaign({
-            ...campaign,
-            _id: campaign.id
-        });
+        onCreateCampaign(campaign);
         reset();
         onBack();
     };
@@ -325,13 +398,13 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
         setSaving(true);
         await saveDraft({
             ...formValues,
-            highlights: formValues.highlights?.map((highlight) => ({ text: highlight })),
+            highlights: formValues.highlights?.map((highlight) => ({ description: highlight.description, id: highlight.id })),
             additionalHighlights: formValues.additionalHighlights?.map((highlight) => ({
                 text: highlight,
                 title: "", // Provide appropriate default value or mapping
                 description: "" // Provide appropriate default value or mapping
             })),
-            id: crypto.randomUUID(),
+            draftId: crypto.randomUUID(),
         });
         setSaving(false);
     };
@@ -399,7 +472,7 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
 
                         <form onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-hidden">
                             <ScrollArea className="h-[calc(85vh-13rem)] px-6 py-4">
-                                {/* Existing Tabs */}
+
                                 <TabsContent value="details" className="mt-0 space-y-6">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
@@ -417,7 +490,7 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
                                             <Label>Category <span className="text-destructive">*</span></Label>
                                             <Select
                                                 onValueChange={(value) => {
-                                                    register('category').onChange({ target: { value } });
+                                                    setValue('category', value as 'CleanTech' | 'FinTech' | 'HealthTech' | 'EdTech' | 'AI/ML' | 'Blockchain' | 'IoT' | 'Other');
                                                 }}
                                             >
                                                 <SelectTrigger>
@@ -458,6 +531,7 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
                                                     type="number"
                                                     {...register('goalAmount', {
                                                         required: 'Goal amount is required',
+                                                        valueAsNumber: true,
                                                         min: { value: 1, message: 'Amount must be greater than 0' },
                                                     })}
                                                     className="pl-9"
@@ -473,11 +547,11 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
                                             <Label>Currency Type <span className="text-destructive">*</span></Label>
                                             <Select
                                                 onValueChange={(value) => {
-                                                    register('currencyType').onChange({ target: { value } });
+                                                    setValue('currencyType', value as 'USD' | 'EUR' | 'GBP' | 'JPY');
                                                 }}
                                             >
                                                 <SelectTrigger>
-                                                    <SelectValue placeholder="Select currency" />
+                                                    <SelectValue placeholder="Select currency type" />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     {CURRENCIES.map((currency) => (
@@ -494,23 +568,23 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
                                     </div>
 
                                     <div className="space-y-2">
-                                        <Label>Resource URL <span className="text-destructive">*</span></Label>
+                                        <Label>Image URL <span className="text-destructive">*</span></Label>
                                         <div className="relative">
                                             <Link className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                                             <Input
-                                                {...register('resourceUrl', {
-                                                    required: 'Resource URL is required',
+                                                {...register('imageUrl', {
+                                                    required: 'Image URL is required',
                                                     pattern: {
                                                         value: /^https?:\/\/.+/,
                                                         message: 'Please enter a valid URL',
                                                     },
                                                 })}
                                                 className="pl-9"
-                                                placeholder="https://example.com/resource"
+                                                placeholder="https://example.com/image"
                                             />
                                         </div>
-                                        {errors.resourceUrl && (
-                                            <p className="text-sm text-destructive">{errors.resourceUrl?.message as string}</p>
+                                        {errors.imageUrl && (
+                                            <p className="text-sm text-destructive">{errors.imageUrl?.message as string}</p>
                                         )}
                                     </div>
 
@@ -547,16 +621,43 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
                                                 </div>
                                             </div>
 
-                                            <div className="mt-4 space-y-2">
-                                                <Label>Stripe ID <span className="text-destructive">*</span></Label>
-                                                <Input
-                                                    {...register('owner.stripeId', { required: 'Stripe ID is required' })}
-                                                    placeholder="Enter Stripe ID"
-                                                />
-                                                {errors.owner?.stripeId && (
-                                                    <p className="text-sm text-destructive">{errors.owner.stripeId.message}</p>
-                                                )}
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                <div className="mt-4 space-y-2">
+                                                    <Label>Stripe ID <span className="text-destructive">*</span></Label>
+                                                    <Input
+                                                        {...register('owner.stripeId', { required: 'Stripe ID is required' })}
+                                                        placeholder="Enter Stripe ID"
+                                                    />
+                                                    {errors.owner?.stripeId && (
+                                                        <p className="text-sm text-destructive">{errors.owner.stripeId.message}</p>
+                                                    )}
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <Label>End Date <span className="text-destructive">*</span></Label>
+                                                    <div className="relative">
+                                                        <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                                        <Input
+                                                            {...register('endDate', {
+                                                                required: 'End Date is required',
+                                                                valueAsDate: true,
+                                                                validate: value => {
+                                                                    if (!value) return 'End Date is required';
+                                                                    const date = new Date(value);
+                                                                    if (isNaN(date.getTime())) return 'Please enter a valid date';
+                                                                    return true;
+                                                                },
+                                                            })}
+                                                            type="date"
+                                                            className="pl-9"
+                                                        />
+                                                    </div>
+                                                    {errors.endDate && (
+                                                        <p className="text-sm text-destructive">{errors.endDate?.message as string}</p>
+                                                    )}
+                                                </div>
+
                                             </div>
+
                                         </CardContent>
                                     </Card>
 
@@ -714,10 +815,7 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
                                                     name: '',
                                                     position: '',
                                                     avatar: '',
-                                                    about: '',
-                                                    experience: [],
-                                                    education: [],
-                                                    skills: []
+                                                    about: ''
                                                 })
                                             }
                                             variant="outline"
@@ -833,7 +931,6 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
                                     </Card>
                                 </TabsContent>
 
-                                {/* New Tabs from CreateCampaignFields.tsx */}
                                 <TabsContent value="business-concept" className="space-y-6">
                                     <Card>
                                         <CardContent className="pt-6">
@@ -1247,9 +1344,9 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
                                         Previous
                                     </Button>
                                     {activeTab === TABS.length - 1 ? (
-                                        <Button type="submit" disabled={isValid} className="gap-2">
+                                        <Button type="submit" disabled={!isValid} className="gap-2">
                                             <Sparkles className="h-4 w-4" />
-                                            Launch Campaign
+                                            Submit For Approval
                                         </Button>
                                     ) : (
                                         <Button

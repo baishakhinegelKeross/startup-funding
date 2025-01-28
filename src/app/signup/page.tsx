@@ -45,6 +45,7 @@ const formSchema = z.object({
   country: z.string().min(1, "Please select a country."),
   phone: z.string().min(10, "Phone number must be at least 10 digits.").max(10, "Phone number must be at most 10 digits."),
   termsAndConditions: z.boolean().refine((value) => value === true, { message: "You must accept the terms and conditions", }),
+  role: z.string().min(1, "Please select a role."),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords do not match.",
   path: ["confirmPassword"],
@@ -67,7 +68,7 @@ export default function SignUpForm() {
       confirmPassword: "",
       companyName: "",
       country: "",
-      phone: "",
+      role: "",
       termsAndConditions: false,
     },
   })
@@ -84,13 +85,15 @@ export default function SignUpForm() {
   }, [api])
 
   async function onSubmit(values: FormData) {
+    debugger;
     axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/signup`, JSON.stringify({
       username: values.username,
       email: values.email,
       password: values.password,
       companyName: values.companyName,
       country: values.country,
-      phone: `${selectedCountry.phone}${values.phone}`
+      phone: `${selectedCountry.phone}${values.phone}`,
+      role: values.role.toLocaleLowerCase()
     }), {
       headers: { 'Content-Type': 'application/json' },
     }).then((response) => {
@@ -284,7 +287,7 @@ export default function SignUpForm() {
                           <FormLabel className="text-slate-200">Contact Number</FormLabel>
                           <FormControl>
                             <div className="relative flex gap-2">
-                              
+
                               <div className="flex-shrink-0 z-10">
                                 <Input
                                   disabled
@@ -303,6 +306,40 @@ export default function SignUpForm() {
                         </FormItem>
                       )}
                     />
+                    <FormField
+                      control={form.control}
+                      name="role"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-slate-200">I am</FormLabel>
+                          <Select
+                            onValueChange={(value) => field.onChange(value)}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="bg-slate-800/50 border-slate-700 text-white">
+                              <SelectValue className="text-white" placeholder="Select your role" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent className="bg-slate-800 border-slate-700">
+                              <SelectItem
+                                value="Fundraiser"
+                                className="text-white hover:bg-slate-700"
+                              >
+                                Fundraiser
+                              </SelectItem>
+                              <SelectItem
+                                value="Investor"
+                                className="text-white hover:bg-slate-700"
+                              >
+                                Investor
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
                     <FormField
                       control={form.control}
@@ -312,8 +349,8 @@ export default function SignUpForm() {
                           <FormControl>
                             <Checkbox
                               checked={field.value}
-                              onCheckedChange={field.onChange}
-                              className="border-slate-700 data-[state=checked]:bg-indigo-500"
+                              onChange={field.onChange}
+                              className=""
                             />
                           </FormControl>
                           <div className="space-y-1 leading-none">
@@ -335,7 +372,7 @@ export default function SignUpForm() {
                   disabled={current === 0}
                   className="bg-indigo-600 hover:bg-indigo-700 text-white"
                 >
-                  <ArrowLeft className="mr-2 h-4 w-4" />Previous 
+                  <ArrowLeft className="mr-2 h-4 w-4" />Previous
                 </Button>
                 {current === count - 1 ? (
                   <Button

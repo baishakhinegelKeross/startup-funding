@@ -1,8 +1,15 @@
 'use client'
 
+import { nanoid } from 'nanoid';
 import ReactDOM from 'react-dom/client';
 //import SlateEditor from "./slate_editor";
 import TextEditor from './text_editor';
+
+type EditorCacheType = { 
+    [key: number]: HTMLInputElement 
+};
+
+const editorCache: EditorCacheType = {};
 
 const drag = function(event: DragEvent | React.DragEvent<HTMLDivElement>) {
     console.log('dragged id: ', (event.target as HTMLDivElement).id);
@@ -24,6 +31,7 @@ const drop = function(event: React.DragEvent<HTMLDivElement>){
      
     const addTextNode = function(clonedElement: HTMLElement){
         // Create a container for the SlateEditor inside the cloned element
+        const uuid = nanoid();
         const editorContainer = document.createElement('div');
         editorContainer.style.width = '100%';
         editorContainer.style.height = '100%';
@@ -37,14 +45,14 @@ const drop = function(event: React.DragEvent<HTMLDivElement>){
         // Render the SlateEditor component into the editor container
         const root = ReactDOM.createRoot(editorContainer); // Use ReactDOM.render(editorContainer, <SlateEditor />) for React 17
         //root.render(<SlateEditor />);
-        root.render(<TextEditor />);
+        root.render(<TextEditor key={uuid} id={uuid} cache={editorCache}/>);
     }
 
     const data = event.dataTransfer.getData("text");
     const draggedElement = document.getElementById(data);
     const itemType = draggedElement?.dataset.type;
 
-    if(draggedElement){
+    if(!draggedElement?.id.includes('cloned') && draggedElement){
         const clonedElement = draggedElement.cloneNode(true) as HTMLElement;
 
         clonedElement.innerHTML = '';

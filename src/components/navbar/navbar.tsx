@@ -18,7 +18,7 @@ const Navbar: React.FC = () => {
   const pathname = usePathname();  // Get the current pathname
   const { user } = useAuth();
 
-  const userRole = user?.roles.includes('Admin') ? 'admin' : user?.roles.includes('Founder') ? 'founder' : 'investor';
+  const userRole = user?.role === 'admin' ? 'admin' : user?.role === 'fundraiser' ? 'founder' : 'investor';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -85,12 +85,8 @@ const Navbar: React.FC = () => {
     
       return (
         <>
-          <NavLink className='cursor-pointer' to="/explore">Explore</NavLink>
-          {user?.role == "admin"?<NavLink to="/campaigns">Campaigns</NavLink>:null}
+          <NavLink className='cursor-pointer' to="/campaigns">Explore</NavLink>
           <NavLink to="/dashboard">Dashboard</NavLink>
-          {user?.role == "admin"? <NavLink to="/admin">Admin</NavLink>:null}
-          
-          {user?.roles.includes("Admin")?<NavLink to="/approval">Admin</NavLink>:null}
           { ! user?.username?<NavLink to="/login"> <Button className='bg-blue-600' variant="profilebtn">Login</Button></NavLink>:<TopMenuUser /> }
           
 

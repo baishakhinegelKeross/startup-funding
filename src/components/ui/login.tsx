@@ -71,15 +71,13 @@ export default function ProfileForm() {
         <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-40 h-40 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full blur-3xl opacity-20 animate-pulse"></div>
 
         <Card className="w-full backdrop-blur-md bg-slate-900/90 border-slate-800/50 shadow-2xl overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
-
           <CardHeader className="space-y-1 pt-8">
             <div className="flex justify-center mb-4">
               <div className="p-3 rounded-full bg-slate-800/50 ring-1 ring-slate-700/50">
                 <LogIn className="h-8 w-8 text-blue-400" />
               </div>
             </div>
-            <h2 className="text-2xl font-bold text-center bg-gradient-to-r from-blue-400 to-purple-400 text-transparent bg-clip-text">
+            <h2 className="text-2xl font-bold text-center bg-gradient-to-r text-white text-transparent bg-clip-text">
               Welcome to QuantM.AI
             </h2>
             <p className="text-slate-400 text-center text-sm">
@@ -133,7 +131,7 @@ export default function ProfileForm() {
                 />
                 <Button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 transition-all duration-300 text-white font-medium py-2"
+                  className="w-full bg-gradient-to-r hover:from-blue-600 transition-all duration-300 text-white font-medium py-2"
                 >
                   Sign In
                   <ArrowRight className="ml-2 h-4 w-4" />
