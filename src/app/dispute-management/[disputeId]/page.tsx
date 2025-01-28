@@ -8,13 +8,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { AlertCircle, FileText, Image as ImageIcon, Mail, Phone, Send, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { AlertCircle, FileText, Image as ImageIcon, Mail, MessageSquare, Phone, Plus, Send, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import axios from "axios";
-import { toast } from "react-toastify";
-import { useRouter } from 'next/navigation'
-
+import { toast, ToastContainer } from "react-toastify";
+import { useRouter } from 'next/navigation';
 
 interface DisputeEvidence {
   name: string;
@@ -23,27 +22,10 @@ interface DisputeEvidence {
   url: string;
 }
 
-// Mock data with preview URLs
-// const mockEvidences: DisputeEvidence[] = [
-//   { 
-//     name: "evidence1.pdf", 
-//     type: "PDF", 
-//     size: "2.4 MB",
-//     url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
-//   },
-//   { 
-//     name: "screenshot.png", 
-//     type: "Image", 
-//     size: "1.1 MB",
-//     url: "https://images.unsplash.com/photo-1706001151251-69843c11c4f1?w=800&auto=format&fit=crop"
-//   },
-//   { 
-//     name: "document.docx", 
-//     type: "Word", 
-//     size: "892 KB",
-//     url: "https://file-examples.com/storage/fe8c7eef0c6364f6c9504cc/2017/02/file-sample_100kB.doc"
-//   },
-// ];
+interface Question {
+  id: string;
+  text: string;
+}
 
 export default function DisputeReviewForm({
   params,
@@ -51,28 +33,30 @@ export default function DisputeReviewForm({
   params: Promise<{ slug: string }>
 }) {
   const [selectedEvidence, setSelectedEvidence] = useState<DisputeEvidence | null>(null);
-  const [data,setData] = useState({files:[]}) // setting data as state 
-  const router = useRouter()
+  const [data, setData] = useState({ files: [] });
+  const [comment, setComment] = useState('');
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [newQuestion, setNewQuestion] = useState('');
+  const router = useRouter();
+  // const commentRef = useRef<HTMLTextAreaElement>(null);
+  // const questionRef = useRef<HTMLInputElement>(null);
 
-  useEffect(()=>{
-    
-    const fetchData = async ()=>{
-        try{
-            debugger
-            
-            const disputeId = (await params).disputeId
-            const response = await axios.get(`http://localhost:8000/admin/fetchDisputeInfo/${disputeId}`);
+  const QuestionInpRef =  useRef(null)
+  const commentsRef = useRef(null)
 
-            setData(response.data)
-        }
-        catch(e){
-            toast.error('Error while getting dispute details')
-        }
-    }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const disputeId = (await params).disputeId;
+        const response = await axios.get(`http://localhost:8000/admin/fetchDisputeInfo/${disputeId}`);
+        setData(response.data);
+      } catch (e) {
+        toast.error('Error while getting dispute details');
+      }
+    };
 
     fetchData();
-
-  },[])
+  }, []);
 
   const FormSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
     <div className="space-y-4 animate-in fade-in slide-in-from-bottom-5 duration-700">
@@ -98,6 +82,51 @@ export default function DisputeReviewForm({
   const handleEvidenceClick = (evidence: DisputeEvidence) => {
     setSelectedEvidence(evidence);
   };
+
+  const handleAddQuestion = () => {
+    const qs = QuestionInpRef.current.value
+    if (qs.trim()) {
+      const question: Question = {
+        id: Date.now().toString(),
+        text: qs,
+      };
+      setQuestions([...questions, question]);
+      setNewQuestion('');
+    }
+  };
+
+  const handleSubmit = async () => {
+    // Handle form submission with comment and questions
+    debugger
+    const comments = commentsRef.current.value
+    const returnObj = { comments, questions }
+    const disputeId = (await params).disputeId;
+
+    try {
+      const response = await axios.post(
+        `http://localhost:8000/admin/submitAdminQueries/${disputeId}`,
+        JSON.stringify(returnObj),
+        {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true,
+        }
+      );
+      toast.success('Dispute submitted to Project creator review');
+      router.push('/disputes');
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('Dispute submission failed!');
+    }
+    // Add your submission logic here
+  };
+
+  // const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  //   setComment(e.target.value);
+  // };
+
+  // const handleQuestionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setNewQuestion(e.target.value);
+  // };
 
   const PreviewDialog = () => {
     if (!selectedEvidence) return null;
@@ -143,6 +172,7 @@ export default function DisputeReviewForm({
 
   return (
     <div className="min-h-screen bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+      <ToastContainer/>
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
@@ -227,13 +257,6 @@ export default function DisputeReviewForm({
                     className="w-full text-left transition-colors hover:bg-gray-800/50 flex items-center justify-between p-2 bg-gray-800 rounded-md"
                   >
                     <div className="flex items-center space-x-3">
-                      {/* {evidence.type === "PDF" ? (
-                        <FileText className="h-5 w-5 text-red-400" />
-                      ) : evidence.type === "Image" ? (
-                        <ImageIcon className="h-5 w-5 text-blue-400" />
-                      ) : (
-                        <FileText className="h-5 w-5 text-blue-400" />
-                      )} */}
                       <span className="text-sm font-medium text-gray-300">{evidence.name}</span>
                     </div>
                     <span className="text-xs text-gray-500">{evidence.size}</span>
@@ -241,6 +264,45 @@ export default function DisputeReviewForm({
                 ))}
               </div>
             </ScrollArea>
+          </FormSection>
+
+          <FormSection title="Comments">
+            <div className="space-y-2">
+              <Textarea
+                //value={comment}
+                //onChange={handleCommentChange}
+                placeholder="Add your comments here..."
+                className="bg-gray-800 min-h-[100px]"
+                ref={commentsRef}
+                
+              />
+            </div>
+          </FormSection>
+
+          <FormSection title="Evidence Questions">
+            <div className="space-y-4">
+              <div className="flex gap-2">
+                <Input
+                  //value={newQuestion}
+                  //onChange={handleQuestionChange}
+                 // ref={questionRef}
+                  placeholder="Add a question about the evidence..."
+                  className="bg-gray-800"
+                  ref={QuestionInpRef}
+                />
+                <Button onClick={handleAddQuestion}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Question
+                </Button>
+              </div>
+              <div className="border border-gray-800 rounded-md p-4 space-y-4">
+                {questions.map((question) => (
+                  <div key={question.id} className="bg-gray-800 rounded-lg p-3">
+                    <p className="text-gray-300">{question.text}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </FormSection>
 
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
@@ -266,13 +328,14 @@ export default function DisputeReviewForm({
                 <TooltipTrigger asChild>
                   <Button 
                     className="w-full sm:w-auto"
+                    onClick={handleSubmit}
                   >
                     <Send className="mr-2 h-4 w-4" />
-                    Send Notification to Project Creator
+                    Submit Review
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Notify the project creator about this dispute</p>
+                  <p>Submit the dispute review</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
