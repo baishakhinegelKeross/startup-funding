@@ -8,10 +8,8 @@ import authStore from "@/store/authStore";
 
 import AdminDashboard from "@/app/adminDashboard/page";
 import Fundraiser from "@/app/fundraiser/page";
-import Investor from "@/app/investor/page"
+import Investor from "@/app/investor/page";
 import { Button } from "../ui/button";
-import { useRouter } from 'next/navigation';
-
 
 // Define the Sidebar class to handle toggling and manage state
 class SidebarState {
@@ -49,7 +47,6 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
 
   const handleSelectSection = (section: string) => {
     setSelectedSection(section);
-    
   };
 
   const renderContent = () => {
@@ -58,14 +55,14 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
         return <MyInvestments />;
       case "My Profile":
         return <ProfileUpdate />;
-      case "Admin Dashboard":
+      case "AdminDashboard":
         return <AdminDashboard />;
       case "Fundraiser":
         return <Fundraiser />;
       case "Investor":
         return <Investor />;
       default:
-        return "Hi Admin";
+        return "Select a content to view";
     }
   };
 
@@ -83,7 +80,6 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
 
   return (
     <div className="flex w-full">
-     
       <div
         className={`${
           isSidebarOpen ? "w-64" : "w-16"
@@ -113,11 +109,11 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
             <span>Back</span>
           </Link>
         </div>
-         
-         {/* Admin */}
+
+        {/* Admin */}
         <div className="space-y-4 mt-8">
           <Button
-          variant={"profilebtn"}
+            variant={"profilebtn"}
             onClick={() => handleSelectSection("AdminDashboard")}
             className={getButtonClass("AdminDashboard")}
           >
@@ -138,11 +134,11 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
             <span className={isSidebarOpen ? "block" : "hidden"}>Admin</span>
           </Button>
         </div>
-      
-      {/* Fundraiser */}
+
+        {/* Fundraiser */}
         <div className="space-y-4 mt-8">
           <Button
-          variant={"profilebtn"}
+            variant={"profilebtn"}
             onClick={() => handleSelectSection("Fundraiser")}
             className={getButtonClass("Fundraiser")}
           >
@@ -160,14 +156,16 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
                 d="M12 3v12M3 12h12"
               />
             </svg>
-            <span className={isSidebarOpen ? "block" : "hidden"}>Fundraiser</span>
+            <span className={isSidebarOpen ? "block" : "hidden"}>
+              Fundraiser
+            </span>
           </Button>
         </div>
 
         {/* Investor */}
         <div className="space-y-4 mt-8 flex-1">
           <Button
-          variant={"profilebtn"}
+            variant={"profilebtn"}
             onClick={() => handleSelectSection("Investor")}
             className={getButtonClass("Investor")}
           >
@@ -189,9 +187,6 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
           </Button>
         </div>
 
-
-
-        
         <Button
           onClick={() => {
             handleSelectSection("Logout");
@@ -217,7 +212,6 @@ const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
         </Button>
       </div>
 
-     
       <div className="flex-1 p-8">{renderContent()}</div>
     </div>
   );
