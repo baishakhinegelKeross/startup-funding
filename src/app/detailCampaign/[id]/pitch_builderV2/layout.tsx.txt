@@ -1,0 +1,23 @@
+//import './globals.css';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+//import StrictModeDroppable from './components/StrictModeDroppable';
+
+const inter = Inter({ subsets: ['latin'] });
+
+export const metadata: Metadata = {
+  title: 'Pitch Deck Builder',
+  description: 'Create beautiful pitch decks with drag and drop',
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body className={inter.className}>{children}</body>
+    </html>
+  );
+}
