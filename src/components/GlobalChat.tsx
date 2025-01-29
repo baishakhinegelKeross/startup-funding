@@ -47,7 +47,7 @@ export function GlobalChat() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/chat', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_AI_URL}/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -128,7 +128,7 @@ export function GlobalChat() {
             </Button>
           </div>
         </CardHeader>
-        <CardContent className="flex-1 flex flex-col p-0">
+        <CardContent className="flex-1 flex flex-col p-0 overflow-y-auto">
           <ScrollArea className="flex-1">
             <div className="p-4 space-y-4">
               {messages.map((message) => (

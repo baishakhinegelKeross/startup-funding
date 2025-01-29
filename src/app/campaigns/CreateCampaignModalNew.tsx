@@ -480,6 +480,7 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
                                             <Input
                                                 {...register('title', { required: 'Title is required' })}
                                                 placeholder="Enter campaign title"
+                                                className='text-white'
                                             />
                                             {errors.title && (
                                                 <p className="text-sm text-destructive">{errors.title.message}</p>
@@ -534,7 +535,7 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
                                                         valueAsNumber: true,
                                                         min: { value: 1, message: 'Amount must be greater than 0' },
                                                     })}
-                                                    className="pl-9"
+                                                    className="pl-9 text-white"
                                                     placeholder="Enter goal amount"
                                                 />
                                             </div>
@@ -579,7 +580,7 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
                                                         message: 'Please enter a valid URL',
                                                     },
                                                 })}
-                                                className="pl-9"
+                                                className="pl-9 text-white"
                                                 placeholder="https://example.com/image"
                                             />
                                         </div>
@@ -596,6 +597,7 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
                                                     <Input
                                                         {...register('owner.name', { required: 'Owner name is required' })}
                                                         placeholder="Enter owner name"
+                                                        className='text-white'
                                                     />
                                                     {errors.owner?.name && (
                                                         <p className="text-sm text-destructive">{errors.owner.name.message}</p>
@@ -613,6 +615,7 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
                                                                 message: 'Invalid email address',
                                                             },
                                                         })}
+                                                        className='text-white'
                                                         placeholder="Enter owner email"
                                                     />
                                                     {errors.owner?.email && (
@@ -648,7 +651,7 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
                                                                 },
                                                             })}
                                                             type="date"
-                                                            className="pl-9"
+                                                            className="pl-9 text-white"
                                                         />
                                                     </div>
                                                     {errors.endDate && (

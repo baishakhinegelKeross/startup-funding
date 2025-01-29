@@ -111,7 +111,7 @@ const AdminApprovalTabs:React.FC<ApprovalTabsProps> = ({campaignData, pitch, fun
         }
     
         // Redirect to pending campaigns
-        router.push('http://localhost:3000/admin/pendingStartups');
+        router.push('/admin/pendingStartups');
     };
 
     const handleApproval = async function (campaignData: campaignData) {

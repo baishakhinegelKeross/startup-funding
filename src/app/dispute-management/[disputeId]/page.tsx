@@ -48,7 +48,7 @@ export default function DisputeReviewForm({
     const fetchData = async () => {
       try {
         const disputeId = (await params).disputeId;
-        const response = await axios.get(`http://localhost:8000/admin/fetchDisputeInfo/${disputeId}`);
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/admin/fetchDisputeInfo/${disputeId}`);
         setData(response.data);
       } catch (e) {
         toast.error('Error while getting dispute details');
@@ -73,7 +73,7 @@ export default function DisputeReviewForm({
         <Input 
           disabled 
           value={value} 
-          className="pl-9 bg-gray-800"
+          className="pl-9 bg-gray-800 text-white"
         />
       </div>
     </div>
@@ -104,7 +104,7 @@ export default function DisputeReviewForm({
 
     try {
       const response = await axios.post(
-        `http://localhost:8000/admin/submitAdminQueries/${disputeId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/admin/submitAdminQueries/${disputeId}`,
         JSON.stringify(returnObj),
         {
           headers: { 'Content-Type': 'application/json' },
@@ -151,7 +151,7 @@ export default function DisputeReviewForm({
             {selectedEvidence.type === "Image" ? (
               <div className="relative h-[60vh] w-full">
                 <Image
-                  src={`http://localhost:8000/admin/${selectedEvidence.url}`}
+                  src={`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/admin/${selectedEvidence.url}`}
                   alt={selectedEvidence.name}
                   fill
                   className="object-contain"
@@ -159,7 +159,7 @@ export default function DisputeReviewForm({
               </div>
             ) : (
               <iframe
-                src={`http://localhost:8000/admin/${selectedEvidence.url}`}
+                src={`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/admin/${selectedEvidence.url}`}
                 className="w-full h-[60vh]"
                 title={selectedEvidence.name}
               />
@@ -189,10 +189,12 @@ export default function DisputeReviewForm({
               <DisabledInput 
                 icon={Mail} 
                 label="Backer Email" 
-                value="john.doe@example.com" 
+                className="text-white"
+                value="john.doe@example.com"      
               />
               <DisabledInput 
-                icon={Phone} 
+                icon={Phone}
+                className="text-white" 
                 label="Contact Number" 
                 value="+1 (555) 123-4567" 
               />
@@ -202,12 +204,14 @@ export default function DisputeReviewForm({
           <FormSection title="Project Information">
             <div className="grid gap-4 sm:grid-cols-2">
               <DisabledInput 
-                icon={FileText} 
+                icon={FileText}
+                className="text-white"
                 label="Project Name" 
                 value="Innovative Tech Project" 
               />
               <DisabledInput 
                 icon={FileText} 
+                className="text-white"
                 label="Project ID" 
                 value="PRJ-2024-001" 
               />
@@ -232,6 +236,7 @@ export default function DisputeReviewForm({
               
               <DisabledInput 
                 icon={FileText} 
+                className="text-white"
                 label="Issued At" 
                 value="2024-03-20 14:30 UTC" 
               />
@@ -240,7 +245,7 @@ export default function DisputeReviewForm({
                 <label className="text-sm text-gray-400">Description</label>
                 <Textarea 
                   disabled 
-                  className="bg-gray-800 h-32"
+                  className="bg-gray-800 h-32 text-white"
                   value="The product received does not match the description provided in the project. Multiple features are missing and the quality is subpar."
                 />
               </div>
@@ -272,7 +277,7 @@ export default function DisputeReviewForm({
                 //value={comment}
                 //onChange={handleCommentChange}
                 placeholder="Add your comments here..."
-                className="bg-gray-800 min-h-[100px]"
+                className="bg-gray-800 min-h-[100px] text-white"
                 ref={commentsRef}
                 
               />
@@ -287,7 +292,7 @@ export default function DisputeReviewForm({
                   //onChange={handleQuestionChange}
                  // ref={questionRef}
                   placeholder="Add a question about the evidence..."
-                  className="bg-gray-800"
+                  className="bg-gray-800 text-white"
                   ref={QuestionInpRef}
                 />
                 <Button onClick={handleAddQuestion}>

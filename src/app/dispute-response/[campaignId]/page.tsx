@@ -184,7 +184,7 @@ export default function DisputeForm({
 
 
       const _disputeId = await (params).campaignId
-      await fetch(`http://localhost:8000/user/submitCreatorResponse/${_disputeId}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/user/submitCreatorResponse/${_disputeId}`, {
         method: 'POST',
         body: formData,
         
