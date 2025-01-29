@@ -1,8 +1,15 @@
+'use client'
 import Image from "next/image";
 import Link from "next/link";
 import { CampaignInvestmentProps } from "./types";
+import axios from "axios";
+import { useRef } from "react";
+import { redirect, useRouter } from "next/navigation";
 
 const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({campaignId})=>{
+    debugger
+    const inputRef = useRef<HTMLInputElement>(null)
+    const router = useRouter()
     return (
         <div className="bg-[#0a0b1e] text-white">
             
@@ -52,16 +59,35 @@ const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({campaignId})=>{
                                     <div className="relative">
                                         <span className="absolute left-[14px] top-[14px] text-gray-500">$</span>
                                         <input type="number" min="10"
+                                            id="amountInp"
                                             className="m-0 w-full pl-8 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                             placeholder="Enter amount" 
-                                            defaultValue={10}/>
+                                            defaultValue={10} 
+                                            />
                                     </div>
                                     <p className="mt-1 text-sm text-gray-500">min $10</p>
                                 </div>
 
                                 {/* Action Buttons */}
-                                <button className="w-full text-sm bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-lg transition-colors">
+                                {/* <button className="w-full text-sm bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-lg transition-colors">
                                     <Link className="w-full" href={`/api/fundraiser/campaign/checkout/${campaignId}`}>FUND</Link>
+                                </button> */}
+                                 <button onClick={async ()=>{
+                                    debugger
+                                    console.log(inputRef)
+                                    const res = await axios.post(`http://localhost:8000/api/fundraiser/campaign/checkout/${campaignId}`,JSON.stringify({'amount':document.getElementById('amountInp').value}),{
+                                        headers: {
+                                          'Content-Type': 'application/json'
+                                        },
+                                        withCredentials:true
+                        
+                                      })
+                                    const data = res.data;
+                                    router.push(data.url)
+                                    //redirect(data.url)
+                                 }}
+                                 className="w-full text-sm bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-lg transition-colors">
+                                    FUND
                                 </button>
                                 <button className="w-full text-sm bg-purple-500 hover:bg-purple-600 text-white font-semibold py-4 rounded-lg transition-colors">
                                     WATCH FOR UPDATES

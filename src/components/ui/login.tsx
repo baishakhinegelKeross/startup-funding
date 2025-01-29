@@ -51,7 +51,7 @@ export default function ProfileForm() {
         password: values.password
       }
 
-      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/login`, JSON.stringify(submittedData), {
+      await axios.post(`http://localhost:8000/auth/login`, JSON.stringify(submittedData), {
         headers: { 'Content-Type': 'application/json' },
         withCredentials: true
       })
