@@ -146,12 +146,12 @@ const AdminApprovalTabs:React.FC<ApprovalTabsProps> = ({campaignData, pitch, fun
         }
     
         // Redirect to pending campaigns
-        router.push('http://localhost:3000/dashboard');
+        router.push('/dashboard');
     };
 
     const handleApproval = async function (campaignData: campaignData) {
         const campaignId = campaignData._id
-        const baseUrl = `${process.env.NEXT_PUBLIC_APPROVAL_URL}?id=${campaignId}`;
+        const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/admin/request/campaignResponses?id=${campaignId}`;
         //const campaignId = '6785f626cb0c0ebbc57cbef2'; // Extracted _id from the URL
 
         // const data = {

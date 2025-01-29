@@ -8,9 +8,12 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { DollarSign, Eye } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({ campaignId }) => {
     const { user } = useAuth();
+    const router = useRouter();
 
   const userRole = user?.role === 'admin' ? 'admin' : user?.role === 'fundraiser' ? 'founder' : user?.role === 'investor' ? 'investor' : undefined;
   debugger;
@@ -98,17 +101,79 @@ const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({ campaignId }) =
                                 {/* Action Buttons */}
                                 
                                 <div className="space-y-3">
-                                    <Button
+                               {/*  {userRole == undefined ? 
+                                   ( <Button
                                         className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
                                         asChild
                                     >
-                                        {userRole == undefined ? <Link href={`/login`}>
+                                      <Link href={`/login`}>
                                             INVEST NOW
-                                        </Link> : <Link href={`/api/fundraiser/campaign/checkout/${campaignId}`}>
-                                            INVEST NOW
-                                        </Link>}
+                                        </Link>
                                         
                                     </Button>
+                                   )
+                                    :
+                                    (<Button
+                                        onClick={async ()=>{
+                                            debugger
+                                            
+                                            const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/fundraiser/campaign/checkout/${campaignId}`,JSON.stringify({'amount':document.getElementById('amountInp').value}),{
+                                                headers: {
+                                                'Content-Type': 'application/json'
+                                                },
+                                                withCredentials:true
+                                
+                                            })
+                                            const data = res.data;
+                                            router.push(data.url)
+                                            //redirect(data.url)
+                                        }}
+                                        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                                        asChild
+                                    >
+                                            INVEST NOW
+                                        
+                                    </Button>)
+                                } */}
+
+{userRole === undefined ? (
+    <Button
+        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+        asChild
+    >
+        <Link href={`/login`}>
+            INVEST NOW
+        </Link>
+    </Button>
+) : (
+    <Button
+        onClick={async () => {
+            try {
+                const amount = document.getElementById('amountInp').value;
+                const response = await axios.post(
+                    `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/fundraiser/campaign/checkout/${campaignId}`,
+                    JSON.stringify({ amount }),
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        withCredentials: true,
+                    }
+                );
+                const data = response.data;
+                router.push(data.url);
+            } catch (error) {
+                console.error('Error during the request:', error);
+            }
+        }}
+        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+    >
+        INVEST NOW
+    </Button>
+)}
+
+                                    
+                                    {userRole != undefined && 
                                     <Button
                                         variant="secondary"
                                         className="w-full bg-secondary/50 hover:bg-secondary/70"
@@ -116,6 +181,7 @@ const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({ campaignId }) =
                                         <Eye className="mr-2 h-4 w-4" />
                                         <Link href={`/dispute/${campaignId}`}>Report Dispute</Link>
                                     </Button>
+                                    }
                                 </div>
                                   
                             </div>

@@ -86,7 +86,10 @@ const Navbar: React.FC = () => {
       return (
         <>
           <NavLink className='cursor-pointer' to="/campaigns">Explore</NavLink>
-          <NavLink to="/dashboard">Dashboard</NavLink>
+          {
+            user?.username && <NavLink to="/dashboard">Dashboard</NavLink>
+          }
+          
           { ! user?.username?<NavLink to="/login"> <Button className='bg-blue-600' variant="profilebtn">Login</Button></NavLink>:<TopMenuUser /> }
           
 

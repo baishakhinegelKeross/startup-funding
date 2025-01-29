@@ -22,12 +22,13 @@ const handleCreateCampaign = async (
   campaignData: Omit<Campaign, "_id" | "amount_raised" | "createdAt">
 ) => {
   const newCampaign: Campaign = {
-    _id: crypto.randomUUID(),
+    //_id: crypto.randomUUID(),
     ...campaignData,
     amount_raised: 0,
     createdAt: new Date(),
   };
-
+  
+  
   console.log("Creating campaign:", newCampaign);
 
   try {
@@ -50,7 +51,7 @@ const handleCreateCampaign = async (
 
     const result = await response.json();
     console.log("Campaign created successfully:", result);
-    setCampaigns([...campaigns, result]);
+    //setCampaigns([...campaigns, result]);
   } catch (error: any) {
     console.error("Error creating campaign:", error);
     setError(error.message);
@@ -108,6 +109,7 @@ const CampaignCard: React.FC<{ campaign: CampaignCard }> = ({ campaign }) => {
 const { user } = useAuth();
 debugger;
 const userRole = user?.role;
+const [campaigns, setCampaigns] = useState<Campaign[]>([]);
 
 //path = 'http://192.168.3.164:3000/dashboard/100'; 
 
@@ -130,12 +132,12 @@ const userRole = user?.role;
         <h3 className="text-white text-xl font-semibold mb-2">
           {campaign.title}
         </h3>
-        <p className="text-gray-400 text-sm mb-4">by {campaign.owner}</p>
+        <p className="text-gray-400 text-sm mb-4">{campaign.story}</p>
 
     {userRole == "admin" ?
       <div className="flex justify-between items-center">
         <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors">
-          <Link href={`http://192.168.3.164:3000/dashboard/${campaign._id}`}>
+          <Link href={`/dashboard/${campaign._id}`}>
             View Details
           </Link>
         </button>
@@ -158,6 +160,7 @@ const MyCampaignsNew: React.FC = () => {
   const [campaignData, setCampaignData] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
 debugger;
 const userRole = user?.role;
 
