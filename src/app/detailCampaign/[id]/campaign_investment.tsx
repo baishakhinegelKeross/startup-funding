@@ -2,60 +2,87 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CampaignInvestmentProps } from "./types";
-import axios from "axios";
-import { useRef } from "react";
-import { redirect, useRouter } from "next/navigation";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { DollarSign, Eye } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
 
-const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({campaignId})=>{
-    debugger
-    const inputRef = useRef<HTMLInputElement>(null)
-    const router = useRouter()
-    return (
-        <div className="bg-[#0a0b1e] text-white">
-            
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({ campaignId }) => {
+    const { user } = useAuth();
+
+  const userRole = user?.role === 'admin' ? 'admin' : user?.role === 'fundraiser' ? 'founder' : user?.role === 'investor' ? 'investor' : undefined;
+  debugger;
+  console.log(userRole);  
+  return (
+        <div className="min-h-screen bg-[#0a0b1e]">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
                 {/* Header Section */}
                 <div className="space-y-4 mb-12">
-                    <div className="text-sm font-medium text-blue-400">INVEST IN FASTOPPS</div>
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                        Next-Gen Software for the<br className="hidden md:block"/> Modern Professional
+                    <Badge
+                        variant="secondary"
+                        className="bg-blue-500/10 text-blue-400 hover:bg-blue-500/20"
+                    >
+                        INVEST IN FASTOPPS
+                    </Badge>
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold">
+                        <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                            Next-Gen Software for the
+                        </span>
+                        <br className="hidden md:block" />
+                        <span className="text-primary">Modern Professional</span>
                     </h1>
                 </div>
 
                 {/* Main Content Grid */}
-                <div className="grid md:grid-cols-[75%_25%] gap-8 items-start">
+                <div className="grid md:grid-cols-[2fr_1fr] gap-8 items-start">
                     {/* Campaign Image Section */}
-                    <div className="h-full bg-gray-800/50 rounded-2xl overflow-hidden shadow-2xl">
-                        <div className="h-full aspect-video bg-gray-700">
-                            <div className="w-full h-full relative">
-                                <Image src="https://placehold.co/600x400?text=Campaign+Photo.png" alt={"campaign image"} fill unoptimized></Image>
+                    <Card className="border-0 shadow-xl bg-card/50 backdrop-blur overflow-hidden">
+                        <CardContent className="p-0">
+                            <div className="aspect-video relative">
+                                <Image
+                                    src="https://placehold.co/600x400?text=Campaign+Photo.png"
+                                    alt="campaign image"
+                                    fill
+                                    className="object-cover"
+                                    unoptimized
+                                />
                             </div>
-                        </div>
-                    </div>
+                        </CardContent>
+                    </Card>
 
                     {/* Investment Card */}
-                    <div className="h-full bg-white rounded-2xl p-8 shadow-2xl">
-                        <div className="space-y-6">
+                    <Card className="border-0 shadow-xl bg-card/50 backdrop-blur">
+                        <CardContent className="p-6 space-y-6">
                             {/* Progress Section */}
-                            <div>
-                                <h3 className="text-gray-900 font-semibold mb-2">Almost Funded</h3>
-                                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                                    <div className="h-full bg-blue-500 rounded-full w-[99.5%]"></div>
+                            <div className="space-y-2">
+                                <div className="flex justify-between items-baseline">
+                                    <h3 className="text-lg font-semibold text-primary">Almost Funded</h3>
+                                    <span className="text-sm text-muted-foreground">99.5%</span>
+                                </div>
+                                <div className="h-2 bg-muted rounded-full overflow-hidden">
+                                    <div className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full w-[99.5%]"></div>
                                 </div>
                             </div>
 
                             {/* Amount Section */}
-                            <div>
-                                <div className="flex flex-col items-baseline gap-1">
-                                    <span className="text-4xl font-bold text-gray-900">$9,950</span>
-                                    <span className="text-gray-500">of a $10,000 goal</span>
+                            <div className="space-y-1">
+                                <div className="flex items-baseline gap-2">
+                                    <span className="text-4xl font-bold text-primary">$9,950</span>
+                                    <span className="text-muted-foreground">raised</span>
                                 </div>
+                                <p className="text-sm text-muted-foreground">of a $10,000 goal</p>
                             </div>
 
                             {/* Investment Form */}
+                            {(userRole == "investor" || userRole == undefined) &&
                             <div className="space-y-4">
+                                
                                 <div>
-                                    <label className="block text-gray-900 font-medium mb-2">FUND</label>
+                                    <label className="block text-sm font-medium text-primary mb-2">
+                                        INVESTMENT AMOUNT
+                                    </label>
                                     <div className="relative">
                                         <span className="absolute left-[14px] top-[14px] text-gray-500">$</span>
                                         <input type="number" min="10"
@@ -65,46 +92,46 @@ const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({campaignId})=>{
                                             defaultValue={10} 
                                             />
                                     </div>
-                                    <p className="mt-1 text-sm text-gray-500">min $10</p>
+                                    <p className="mt-1 text-sm text-muted-foreground">Minimum $10</p>
                                 </div>
 
                                 {/* Action Buttons */}
-                                {/* <button className="w-full text-sm bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-lg transition-colors">
-                                    <Link className="w-full" href={`/api/fundraiser/campaign/checkout/${campaignId}`}>FUND</Link>
-                                </button> */}
-                                 <button onClick={async ()=>{
-                                    debugger
-                                    console.log(inputRef)
-                                    const res = await axios.post(`http://localhost:8000/api/fundraiser/campaign/checkout/${campaignId}`,JSON.stringify({'amount':document.getElementById('amountInp').value}),{
-                                        headers: {
-                                          'Content-Type': 'application/json'
-                                        },
-                                        withCredentials:true
-                        
-                                      })
-                                    const data = res.data;
-                                    router.push(data.url)
-                                    //redirect(data.url)
-                                 }}
-                                 className="w-full text-sm bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-lg transition-colors">
-                                    FUND
-                                </button>
-                                <button className="w-full text-sm bg-purple-500 hover:bg-purple-600 text-white font-semibold py-4 rounded-lg transition-colors">
-                                    WATCH FOR UPDATES
-                                </button>
-                                <button className="w-full text-sm bg-gray-500 hover:bg-gray-700 text-white font-semibold py-4 rounded-lg transition-colors">
-                                    <Link className="w-full" href={`/dispute/${campaignId}`}>Report Dispute</Link>
-                                </button>
+                                
+                                <div className="space-y-3">
+                                    <Button
+                                        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                                        asChild
+                                    >
+                                        {userRole == undefined ? <Link href={`/login`}>
+                                            INVEST NOW
+                                        </Link> : <Link href={`/api/fundraiser/campaign/checkout/${campaignId}`}>
+                                            INVEST NOW
+                                        </Link>}
+                                        
+                                    </Button>
+                                    <Button
+                                        variant="secondary"
+                                        className="w-full bg-secondary/50 hover:bg-secondary/70"
+                                    >
+                                        <Eye className="mr-2 h-4 w-4" />
+                                        <Link href={`/dispute/${campaignId}`}>Report Dispute</Link>
+                                    </Button>
+                                </div>
+                                  
                             </div>
-                        </div>
-                    </div>
+                            }
+                        </CardContent>
+                    </Card>
                 </div>
             </div>
 
             {/* Gradient Background Effect */}
-            <div className="fixed inset-0 -z-10 bg-gradient-to-br from-blue-900/20 via-purple-900/20 to-blue-900/20 pointer-events-none"></div>
+            <div className="fixed inset-0 -z-0">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-purple-900/20 to-pink-900/20" />
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent" />
+            </div>
         </div>
-    )
-}
+    );
+};
 
 export default CampaignInvestment;

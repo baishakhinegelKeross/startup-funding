@@ -9,7 +9,7 @@ import jwt from 'jsonwebtoken';
  
 // This function can be marked `async` if using `await` inside
 export async function middleware(request: NextRequest) {
-  
+  console.log("middleware");
   let path = request.nextUrl.pathname;
   const isPublicPath = path === '/login' || path === '/signup' ;
   const homePath = path === '/';
@@ -52,14 +52,17 @@ export async function middleware(request: NextRequest) {
 
   
   if(homePath && !token){
+    console.log("within homepath")
     return NextResponse.redirect(new URL("/",request.nextUrl));
   }
 
   if (!isPublicPath && !token) {
+    console.log("not equal to public")
     return NextResponse.redirect(new URL("/login",request.nextUrl));
   }
   
   if(isPublicPath && token){
+    console.log("within public")
     return NextResponse. (new URL("/",request.nextUrl));
   }
   

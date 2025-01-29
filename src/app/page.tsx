@@ -45,8 +45,34 @@ const LandingPage = () => {
             }
         }
     };
+    const [campaignData, setCampaignData] = useState<any[]>([]);
+    //Fetch campaign data when the component mounts
+  useEffect(() => {
+    const fetchCampaigns = async () => {
+      try {
+        debugger;
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/fundraiser`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const result = await response.json();
+        setCampaignData(result.filter( x => x.status == "active"));
+        console.log(result);
+      } catch (error: any) {
+        if (error instanceof Error) {
+         
+        } else {
+          
+        }
+      } finally {
+        
+      }
+    };
+
+    fetchCampaigns();
+  }, []);
     // / *Campaign data
-    const topCampaigns = [
+    /*const topCampaigns = [
         {
             id: 1,
             title: "EcoTech Solutions",
@@ -137,10 +163,11 @@ const LandingPage = () => {
             daysLeft: 10,
             funded: "₹11.2M"
         }
-    ];
+    ];*/
+    
     const [currentPage, setCurrentPage] = useState(0);
     const itemsPerPage = 4;
-    const totalPages = Math.ceil(topCampaigns.length / itemsPerPage);
+    const totalPages = Math.ceil(campaignData.length / itemsPerPage);
 
     const nextPage = () => {
         setCurrentPage((prev) => (prev + 1) % totalPages);
@@ -152,7 +179,7 @@ const LandingPage = () => {
 
     const getCurrentPageItems = () => {
         const start = currentPage * itemsPerPage;
-        return topCampaigns.slice(start, start + itemsPerPage);
+        return campaignData.slice(start, start + itemsPerPage);
     };
     // / *Campaign data
     const toggleFAQ = (id: number) => {
@@ -193,7 +220,7 @@ const LandingPage = () => {
                             Fundraising platforms connect ambitious entrepreneurs with accredited investors, offering tools to pitch ideas, analyze ventures, and manage investments effectively
                         </p>
                         <div className="flex flex-wrap gap-4">
-                            <Link href="/role">
+                            <Link href="/campaigns">
                                 <motion.button
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
