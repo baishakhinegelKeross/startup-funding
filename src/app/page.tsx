@@ -47,30 +47,30 @@ const LandingPage = () => {
     };
     const [campaignData, setCampaignData] = useState<any[]>([]);
     //Fetch campaign data when the component mounts
-  useEffect(() => {
-    const fetchCampaigns = async () => {
-      try {
-        debugger;
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/fundraiser`);
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const result = await response.json();
-        setCampaignData(result.filter( x => x.status == "active"));
-        console.log(result);
-      } catch (error: any) {
-        if (error instanceof Error) {
-         
-        } else {
-          
-        }
-      } finally {
-        
-      }
-    };
+    useEffect(() => {
+        const fetchCampaigns = async () => {
+            try {
+                debugger;
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/fundraiser`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const result = await response.json();
+                setCampaignData(result.filter(x => x.status == "active"));
+                console.log(result);
+            } catch (error: any) {
+                if (error instanceof Error) {
 
-    fetchCampaigns();
-  }, []);
+                } else {
+
+                }
+            } finally {
+
+            }
+        };
+
+        fetchCampaigns();
+    }, []);
     // / *Campaign data
     /*const topCampaigns = [
         {
@@ -164,7 +164,7 @@ const LandingPage = () => {
             funded: "₹11.2M"
         }
     ];*/
-    
+
     const [currentPage, setCurrentPage] = useState(0);
     const itemsPerPage = 4;
     const totalPages = Math.ceil(campaignData.length / itemsPerPage);
@@ -412,7 +412,7 @@ const LandingPage = () => {
             </motion.div>
 
             {/* FAQ Section */}
-           
+
             {/* Top Campaigns Section */}
             <div className="py-20">
                 <div className="container mx-auto px-4">
@@ -433,56 +433,12 @@ const LandingPage = () => {
                                 <AnimatePresence mode="wait">
                                     {getCurrentPageItems().map((campaign) => (
                                         <motion.div
-                                            key={campaign.id}
-                                            initial={{ opacity: 0, y: 20 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, y: -20 }}
-                                            transition={{ duration: 0.3 }}
-                                            className="bg-gray-800/50 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 group"
+                                            key={campaign._id} // Ensure this is a unique identifier
+                                            animate={{ opacity: 1 }}
+                                            initial={{ opacity: 0 }}
+                                            exit={{ opacity: 0 }}
                                         >
-                                            <div className="relative h-48">
-                                                <img
-                                                    src={campaign.image}
-                                                    alt={campaign.title}
-                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                                />
-                                                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent" />
-                                            </div>
 
-                                            <div className="p-4">
-                                                <h3 className="font-semibold text-lg mb-1 truncate">
-                                                    {campaign.title}
-                                                </h3>
-                                                <p className="text-gray-400 text-sm mb-3">
-                                                    by {campaign.creator}
-                                                </p>
-
-                                                <div className="mb-3">
-                                                    <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
-                                                        <div
-                                                            className="h-full bg-blue-500"
-                                                            style={{ width: `${campaign.progress}%` }}
-                                                        />
-                                                    </div>
-                                                    <div className="flex justify-between mt-2 text-sm">
-                                                        <span className="text-blue-400">{campaign.progress}% funded</span>
-                                                        <span className="text-gray-400">{campaign.funded}</span>
-                                                    </div>
-                                                </div>
-
-                                                <div className="flex items-center justify-between text-sm">
-                                                    <span className="text-gray-400">
-                                                        {campaign.daysLeft} days left
-                                                    </span>
-                                                    <motion.button
-                                                        whileHover={{ scale: 1.05 }}
-                                                        whileTap={{ scale: 0.95 }}
-                                                        className="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded-full text-sm transition-colors"
-                                                    >
-                                                        View Details
-                                                    </motion.button>
-                                                </div>
-                                            </div>
                                         </motion.div>
                                     ))}
                                 </AnimatePresence>

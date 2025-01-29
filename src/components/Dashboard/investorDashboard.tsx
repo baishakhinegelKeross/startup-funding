@@ -118,7 +118,7 @@ const Sidebar: React.FC = ({}) => {
     },
     //for insvestor
     {
-      title: "My Insvestments",
+      title: "My Investment",
       icon: <LayoutDashboard className="h-5 w-5" />,
       section: "My Campaigns",
       role: "investor",
@@ -126,7 +126,7 @@ const Sidebar: React.FC = ({}) => {
     {
       title: "Analysis",
       icon: <LayoutDashboard className="h-5 w-5" />,
-      section: "abc",
+      section: "Investor",
       role: "investor",
     },
     {
@@ -135,12 +135,12 @@ const Sidebar: React.FC = ({}) => {
       section: "Dispute",
       role: "investor",
     },
-    {
-      title: "Shortlisted Campaigns",
-      icon: <Users className="h-5 w-5" />,
-      section: "Investor",
-      role: "investor",
-    },
+    // {
+    //   title: "Shortlisted Campaigns",
+    //   icon: <Users className="h-5 w-5" />,
+    //   section: "Investor",
+    //   role: "investor",
+    // },
     {
       title: "KYC",
       icon: <Users className="h-5 w-5" />,
@@ -164,13 +164,13 @@ const Sidebar: React.FC = ({}) => {
     {
       title: "Analysis",
       icon: <Users className="h-5 w-5" />,
-      section: "Investor",
+      section: "AdminDashboard",
       role: "admin",
     },
     {
-      title: "List Of Insvestors",
+      title: "List Of Investar",
       icon: <Users className="h-5 w-5" />,
-      section: "Investor",
+      section: "Hi there",
       role: "admin",
     },
   ];
