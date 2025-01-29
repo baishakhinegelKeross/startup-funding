@@ -215,7 +215,7 @@ export default function DisputeForm() {
                       <FormItem className="animate-in fade-in slide-in-from-left duration-700 delay-[600ms]">
                         <FormLabel>Project ID</FormLabel>
                         <FormControl>
-                          <Input {...field} disabled className="bg-muted/50" />
+                          <Input {...field} disabled className="bg-muted/50 text-white" />
                         </FormControl>
                       </FormItem>
                     )}
@@ -228,7 +228,7 @@ export default function DisputeForm() {
                       <FormItem className="animate-in fade-in slide-in-from-right duration-700 delay-[700ms]">
                         <FormLabel>Project Name</FormLabel>
                         <FormControl>
-                          <Input {...field} disabled className="bg-muted/50" name="" />
+                          <Input {...field} disabled className="bg-muted/50 text-white" name="" />
                         </FormControl>
                       </FormItem>
                     )}
@@ -242,7 +242,7 @@ export default function DisputeForm() {
                       <FormItem className="animate-in fade-in slide-in-from-left duration-700 delay-[800ms]">
                         <FormLabel>Email Address</FormLabel>
                         <FormControl>
-                          <Input {...field} type="email" disabled className="bg-muted/50" />
+                          <Input {...field} type="email" disabled className="bg-muted/50 text-white" />
                         </FormControl>
                       </FormItem>
                     )}
@@ -255,7 +255,7 @@ export default function DisputeForm() {
                       <FormItem className="animate-in fade-in slide-in-from-right duration-700 delay-[900ms]">
                         <FormLabel>Phone Number (Optional)</FormLabel>
                         <FormControl>
-                          <Input {...field} type="tel" className="transition-colors hover:border-primary" />
+                          <Input {...field} type="tel" className="transition-colors hover:border-primary text-white" />
                         </FormControl>
                       </FormItem>
                     )}

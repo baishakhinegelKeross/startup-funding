@@ -35,6 +35,7 @@ const handleCreateCampaign = async (
       `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/fundraiser`,
       {
         method: "POST",
+        credentials: "include", 
         headers: {
           "Content-Type": "application/json",
         },
@@ -100,13 +101,22 @@ const sampleCampaigns: CampaignCard[] = [
       "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2015&q=80",
   },
 ];
-const path = `../detailCampaign/679723880f75d7a5df4b0bb4`;
+//let path = `../detailCampaign/679723880f75d7a5df4b0bb4`;
 
 
 const CampaignCard: React.FC<{ campaign: CampaignCard }> = ({ campaign }) => {
 const { user } = useAuth();
 debugger;
 const userRole = user?.role;
+
+//path = 'http://192.168.3.164:3000/dashboard/100'; 
+
+// if(userRole == "user"){
+//   path = '../detailCampaign/679723880f75d7a5df4b0bb4';
+// }
+//let path2 = '../detailCampaign/679723880f75d7a5df4b0bb4';
+
+
   return (
     <div className="bg-[#1a1b23] rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105">
       <div className="relative h-48">
@@ -125,14 +135,14 @@ const userRole = user?.role;
     {userRole == "admin" ?
       <div className="flex justify-between items-center">
         <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors">
-          <Link href={path}>
+          <Link href={`http://192.168.3.164:3000/dashboard/${campaign._id}`}>
             View Details
           </Link>
         </button>
       </div>
       : userRole == "fundraiser" ? <div className="flex justify-between items-center">
       <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors">
-        <Link href={path}>
+        <Link href='../detailCampaign/679723880f75d7a5df4b0bb4'>
           View Details
         </Link>
       </button>

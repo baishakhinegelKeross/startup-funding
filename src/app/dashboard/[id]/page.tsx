@@ -12,6 +12,8 @@ const campaignData: campaignDataType  = {
     campaignDescription: "Empowering Tomorrow: Fueling Innovation, One Idea at a Time"
 };
 
+let campaignData2;
+
 const pitch = `<div className="pitch-section">
   <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
     Pitch for InnovateX: Accelerating Ideas into Impact
@@ -299,14 +301,43 @@ const contactInformation = `
 const AdminAprroval = async ({params}: {params : {id: string}})=>{
     const {id} = await params;
 
-    //console.log(id)
+    console.log('Iddddddddddd ', id)
 
-    campaignData.campaignId = id;
+    // Fetch campaign data when the component mounts
+      //useEffect(() => {
+        const fetchCampaigns = async () => {
+          try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/fundraiser/campaign/${id}`);
+            //const response = await fetch(`http://192.168.3.164:8000/api/fundraiser/campaign/${id}`);
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            const result = await response.json();
+            console.log('campaign data: ', result);
+
+            campaignData2 = result;
+          } catch (error) {
+            if (error instanceof Error) {
+              console.log('Error:', error.message);
+            } else {
+              console.log('Unexpected error:', error);
+            }
+          } finally {
+            // Cleanup or final actions if needed
+          }
+        };
+
+        await fetchCampaigns();
+        
+        console.log('campaignData2: ' , campaignData2);
+      //}, []);
+
+    //campaignData.campaignId = id;
 
     return(
         <div>
             <AdminApprovalTabs 
-                campaignData={campaignData} 
+                campaignData={campaignData2} 
                 pitch={pitch} 
                 fundingNDetails={fundingNDetails} 
                 teamAndBackground={teamAndBackground} 
