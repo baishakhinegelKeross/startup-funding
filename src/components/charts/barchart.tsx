@@ -3,7 +3,22 @@
 import { useEffect, useRef } from "react";
 import * as echarts from "echarts";
 
-const BarChart = ({ title, type = 'bar', labels, data, yAxisName = 'Amount', itemColor = '#0c0a33', formatter = '{c}' }) => {
+interface BarChartProps {
+  title: string;
+  type?: "bar"; // Assuming these are the possible types
+  labels: (string | number)[];
+  data: number[];
+  itemColor?: string;
+  formatter?: string;
+}
+
+const BarChart = ({
+  title,
+  type = "bar",
+  labels,
+  data,
+  itemColor,
+}: BarChartProps) => {
   const chartRef = useRef(null);
 
   useEffect(() => {
@@ -12,18 +27,18 @@ const BarChart = ({ title, type = 'bar', labels, data, yAxisName = 'Amount', ite
       const option = {
         title: {
           text: title,
-          left: 'center',
+          left: "center",
           textStyle: {
             fontSize: 18,
-            fontWeight: 'bold',
-            color: '#fff',
+            fontWeight: "bold",
+            color: "#fff",
           },
         },
         tooltip: {
-          trigger: 'axis',
+          trigger: "axis",
         },
         xAxis: {
-          type: 'category',
+          type: "category",
           data: labels,
           axisLabel: {
             interval: 0,
@@ -31,13 +46,13 @@ const BarChart = ({ title, type = 'bar', labels, data, yAxisName = 'Amount', ite
           },
         },
         yAxis: {
-          type: 'value',
+          type: "value",
         },
         series: [
           {
             type: type,
             data: data,
-            barWidth: '50%',
+            barWidth: "50%",
             itemStyle: {
               color: itemColor,
             },
@@ -52,9 +67,9 @@ const BarChart = ({ title, type = 'bar', labels, data, yAxisName = 'Amount', ite
         chartInstance.dispose();
       };
     }
-  }, [title, type, labels, data, yAxisName, itemColor, formatter]);
+  }, [title, type, labels, data, itemColor]);
 
-  return <div ref={chartRef} style={{ height: 400, width: '100%' }} />;
+  return <div ref={chartRef} style={{ height: 400, width: "100%" }} />;
 };
 
 export default BarChart;

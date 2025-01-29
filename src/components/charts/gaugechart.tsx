@@ -1,10 +1,27 @@
-// src/components/charts/GaugeChart.js
 "use client";
 
 import { useEffect, useRef } from "react";
 import * as echarts from "echarts";
 
-const GaugeChart = ({ title, percentage, seriesName = 'Funding Goal', achievedName = 'Achieved', min = 0, max = 100, color = '#8061ff' }) => {
+interface GaugeChartProps {
+  title: string;
+  percentage: number;
+  seriesName?: string;
+  achievedName?: string;
+  min?: number;
+  max?: number;
+  color?: string;
+}
+
+const GaugeChart = ({
+  title,
+  percentage,
+  seriesName,
+  achievedName,
+  min,
+  max,
+  color,
+}: GaugeChartProps) => {
   const chartRef = useRef(null);
 
   useEffect(() => {
@@ -13,11 +30,11 @@ const GaugeChart = ({ title, percentage, seriesName = 'Funding Goal', achievedNa
       const option = {
         title: {
           text: title,
-          left: 'center',
+          left: "center",
           textStyle: {
             fontSize: 18,
-            fontWeight: 'bold',
-            color: '#fff',
+            fontWeight: "bold",
+            color: "#fff",
           },
         },
         tooltip: {
@@ -26,17 +43,21 @@ const GaugeChart = ({ title, percentage, seriesName = 'Funding Goal', achievedNa
         series: [
           {
             name: seriesName,
-            type: 'gauge',
+            type: "gauge",
             min: min,
             max: max,
             detail: {
-              formatter: '{value}%',
+              formatter: "{value}%",
               fontSize: 16,
-              color: '#333',
+              color: "#333",
             },
             axisLine: {
               lineStyle: {
-                color: [[0.5, '#ff4500'], [0.75, '#ffed00'], [1, color]],
+                color: [
+                  [0.5, "#ff4500"],
+                  [0.75, "#ffed00"],
+                  [1, color],
+                ],
                 width: 20,
               },
             },
@@ -57,7 +78,7 @@ const GaugeChart = ({ title, percentage, seriesName = 'Funding Goal', achievedNa
     }
   }, [title, percentage, seriesName, achievedName, min, max, color]);
 
-  return <div ref={chartRef} style={{ height: 400, width: '100%' }} />;
+  return <div ref={chartRef} style={{ height: 400, width: "100%" }} />;
 };
 
 export default GaugeChart;
