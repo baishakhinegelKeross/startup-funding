@@ -164,13 +164,13 @@ const Sidebar: React.FC = ({}) => {
     {
       title: "Analysis",
       icon: <Users className="h-5 w-5" />,
-      section: "Admin Dashboard",
+      section: "AdminDashboard",
       role: "admin",
     },
     {
       title: "List Of Investar",
       icon: <Users className="h-5 w-5" />,
-      section: "Investor",
+      section: "Hi there",
       role: "admin",
     },
   ];
