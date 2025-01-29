@@ -451,7 +451,7 @@ export default function DisputeForm() {
                         <FormControl>
                           <Checkbox
                             checked={field.value}
-                            onCheckedChange={field.onChange}
+                            onChange={field.onChange}
                             className="transition-colors data-[state=checked]:bg-primary"
                           />
                         </FormControl>
