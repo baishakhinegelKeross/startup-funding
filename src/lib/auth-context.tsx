@@ -5,7 +5,7 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import axios from "axios";
 
 interface User {
-  id: string; 
+  id: string;
   username: string;
   email: string;
 }
@@ -18,24 +18,25 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  debugger
+
   const [user, setUser] = useState<User | null>(null);
-  
+
 
   useEffect(() => {
     checkAuth();
   }, []);
 
   const checkAuth = async () => {
-    
-    try {
-      
-      const response = await axios.get('http://localhost:8000/auth/me', { withCredentials: true, })
 
+    try {
+
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/me`, { withCredentials: true, })
+      
       console.log(response);
       if (response.status === 200) {
 
         const userData = response.data;
+        
         console.log(userData);
         if (userData && userData.username) {
           console.log("User Data", userData.username);
@@ -43,23 +44,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           console.log("User Data", user);
         }
       }
-      
-   
+
+
     } catch (error) {
       console.error('Auth check failed:', error);
     }
   };
 
-  
+
   return (
-    <AuthContext.Provider value={{ user, setUser}}>
+    <AuthContext.Provider value={{ user, setUser }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
 export function useAuth() {
-  debugger
+
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');

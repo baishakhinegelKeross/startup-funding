@@ -1,0 +1,41 @@
+
+.campaign-approval{
+    display: block;
+}
+
+.tablist{
+    background-color: unset;
+}
+
+.custom-scrollbar {
+    display: block;
+
+    /* Total scrollbar width and height */
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: #888 #f1f1f1; /* For Firefox */
+  
+    overflow: auto; /* Ensures that the scrollbar appears */
+  
+    /* For WebKit Browsers (Chrome, Safari, etc.) */
+    &::-webkit-scrollbar {
+      width: 12px;
+      height: 12px;
+    }
+  
+    &::-webkit-scrollbar-track {
+      background: #1e293b;
+      border-radius: 8px;
+    }
+  
+    &::-webkit-scrollbar-thumb {
+      background: #0e1729;
+      border-radius: 8px;
+    }
+  
+    /*
+    &::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+    */
+  }
+  
