@@ -11,7 +11,8 @@ import Investor from "@/app/investor/page";
 import MyCampaignsnew from "@/app/myCampaignsnew/page";
 import KycForm from "@/components/Investor/Kyc";
 import { Button } from "../ui/button";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
+import Home from "@/app/disputes/page";
 
 // Icons import
 import {
@@ -22,8 +23,8 @@ import {
   ChevronLeft,
   ChevronRight,
   LogOut,
-  ArrowLeft
-} from 'lucide-react';
+  ArrowLeft,
+} from "lucide-react";
 import MyCampaigns from "../founder/myCampaigns/myCampaigns";
 import { useAuth } from "@/lib/auth-context";
 
@@ -49,11 +50,12 @@ const sidebarState = new SidebarState();
 //   userRole: "investor";
 // }
 
-const Sidebar: React.FC = ({ }) => {
+const Sidebar: React.FC = ({}) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
-  const [selectedSection, setSelectedSection] = useState<string>("My Investments");
+  const [selectedSection, setSelectedSection] =
+    useState<string>("My Investments");
   const { clearUserData } = authStore();
-  const [sidebarMenu,setsidemenu]=useState<any>([]);
+  const [sidebarMenu, setsidemenu] = useState<any>([]);
   const handleToggleSidebar = () => {
     sidebarState.toggleCollapse();
     setIsSidebarOpen(!isSidebarOpen);
@@ -78,13 +80,19 @@ const Sidebar: React.FC = ({ }) => {
       case "Investor":
         return <Investor />;
       case "Kyc":
-        return <KycForm />; 
-
+        return <KycForm />;
+      case "Dispute":
+          return <Home />; 
     }
   };
   const { user } = useAuth();
 
-  const userRole = user?.role === 'admin' ? 'admin' : user?.role === 'fundraiser' ? 'fundraiser' : 'investor';
+  const userRole =
+    user?.role === "admin"
+      ? "admin"
+      : user?.role === "fundraiser"
+      ? "fundraiser"
+      : "investor";
 
   const menuItems = [
     //for Fundraiser
@@ -92,44 +100,50 @@ const Sidebar: React.FC = ({ }) => {
       title: "My Campaigns",
       icon: <LayoutDashboard className="h-5 w-5" />,
       section: "My Campaigns",
-      role: "fundraiser"
+      role: "fundraiser",
     },
     {
       title: "Analysis",
       icon: <Wallet className="h-5 w-5" />,
       section: "Fundraiser",
-      role: "fundraiser"
+      role: "fundraiser",
     },
     {
       title: "Dispute",
       icon: <Users className="h-5 w-5" />,
-      section: "Investor",
-      role: "fundraiser"
+      section: "Dispute",
+      role: "fundraiser",
     },
     //for insvestor
     {
       title: "My Insvestments",
-      icon: <Users className="h-5 w-5" />,
-      section: "Investor",
-      role: "investor"
+      icon: <LayoutDashboard className="h-5 w-5" />,
+      section: "My Campaigns",
+      role: "investor",
     },
     {
       title: "Analysis",
       icon: <LayoutDashboard className="h-5 w-5" />,
-      section: "My Campaigns",
-      role: "investor"
+      section: "abc",
+      role: "investor",
     },
     {
       title: "Dispute",
       icon: <Wallet className="h-5 w-5" />,
-      section: "Fundraiser",
-      role: "investor"
+      section: "Dispute",
+      role: "investor",
     },
     {
       title: "Shortlisted Campaigns",
       icon: <Users className="h-5 w-5" />,
       section: "Investor",
-      role: "investor"
+      role: "investor",
+    },
+    {
+      title: "KYC",
+      icon: <Users className="h-5 w-5" />,
+      section: "Kyc",
+      role: "investor",
     },
 
     //for admin
@@ -137,46 +151,50 @@ const Sidebar: React.FC = ({ }) => {
       title: "Pending Startups",
       icon: <LayoutDashboard className="h-5 w-5" />,
       section: "My Campaigns",
-      role: "admin"
+      role: "admin",
     },
     {
       title: "Dispute",
       icon: <Wallet className="h-5 w-5" />,
-      section: "Fundraiser",
-      role: "admin"
+      section: "Dispute",
+      role: "admin",
     },
     {
       title: "Analysis",
       icon: <Users className="h-5 w-5" />,
       section: "Investor",
-      role: "admin"
+      role: "admin",
     },
     {
       title: "List Of Insvestors",
       icon: <Users className="h-5 w-5" />,
       section: "Investor",
-      role: "admin"
+      role: "admin",
     },
   ];
   useEffect(() => {
     setsidemenu(menuItems.filter((item) => item.role === userRole));
   }, [userRole]);
- 
+
   debugger;
   const getButtonClass = (section: string) => {
-    const baseClass = "flex items-center w-full px-4 py-3 transition-all duration-200 ease-in-out rounded-lg gap-3";
-    const activeClass = "bg-gradient-to-r from-cyan-700 to-cyan-600 text-white shadow-lg";
+    const baseClass =
+      "flex items-center w-full px-4 py-3 transition-all duration-200 ease-in-out rounded-lg gap-3";
+    const activeClass =
+      "bg-gradient-to-r from-cyan-700 to-cyan-600 text-white shadow-lg";
     const inactiveClass = "hover:bg-gray-700/20 text-gray-300 hover:text-white";
 
-    return `${baseClass} ${section === selectedSection ? activeClass : inactiveClass
-      }`;
+    return `${baseClass} ${
+      section === selectedSection ? activeClass : inactiveClass
+    }`;
   };
 
   return (
     <div className="fixed inset-0 flex h-screen w-screen bg-gray-900">
       <div
-        className={`relative transition-all duration-300 ease-in-out ${isSidebarOpen ? "w-72" : "w-20"
-          } bg-gray-800 border-r border-gray-700 flex flex-col h-full`}
+        className={`relative transition-all duration-300 ease-in-out ${
+          isSidebarOpen ? "w-72" : "w-20"
+        } bg-gray-800 border-r border-gray-700 flex flex-col h-full`}
       >
         {/* Toggle Button */}
         <button
@@ -197,7 +215,9 @@ const Sidebar: React.FC = ({ }) => {
             className="flex items-center gap-3 text-white hover:text-cyan-400 transition-colors"
           >
             <ArrowLeft className="h-6 w-6" />
-            {isSidebarOpen && <span className="font-semibold text-lg">Back</span>}
+            {isSidebarOpen && (
+              <span className="font-semibold text-lg">Back</span>
+            )}
           </Link>
         </div>
 
@@ -212,8 +232,9 @@ const Sidebar: React.FC = ({ }) => {
             >
               {item.icon}
               <span
-                className={`${isSidebarOpen ? "opacity-100" : "opacity-0 w-0"
-                  } transition-all duration-200 whitespace-nowrap`}
+                className={`${
+                  isSidebarOpen ? "opacity-100" : "opacity-0 w-0"
+                } transition-all duration-200 whitespace-nowrap`}
               >
                 {item.title}
               </span>
@@ -239,66 +260,12 @@ const Sidebar: React.FC = ({ }) => {
               Logout
             </span>
           </Button>
-        </div>
-          
-        {/* KYC */}
-        <div className="space-y-4 mt-8">
-          <Button
-          variant={"profilebtn"}
-            onClick={() => handleSelectSection("Kyc")}
-            className={getButtonClass("Kyc")}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 3v12M3 12h12"
-              />
-            </svg>
-            <span className={isSidebarOpen ? "block" : "hidden"}>Kyc</span>
-          </Button>
-        </div>
+        </div> */}
+      </div>
 
       {/* Main Content */}
       <div className="flex-1 bg-gray-900 p-8 overflow-auto">
-        <div className=" mx-auto">
-          {renderContent()}
-        </div>
-     
-
-
-
-        
-        <Button
-          onClick={() => {
-            handleSelectSection("Logout");
-            clearUserData();
-          }}
-          className={getButtonClass("Logout")}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M16 17l4-4m0 0l-4-4m4 4H7"
-            />
-          </svg>
-          <span className={isSidebarOpen ? "block" : "hidden"}>Logout</span>
-        </Button>
+        <div className=" mx-auto">{renderContent()}</div>
       </div>
     </div>
   );

@@ -37,6 +37,8 @@ import { usePathname } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { CircleAlert } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/lib/auth-context";
+import { useRouter } from "next/navigation";
 
 
 
@@ -44,17 +46,23 @@ import { cn } from "@/lib/utils";
 
 
 export default function App() {
+const { user } = useAuth();
+const router = useRouter();
+
+const userRole = user;
+console.log(userRole);
     const [profileData, setProfileData] = useState({
-        username: "",
-        email: "",
+        username: userRole?.username,
+        email: userRole?.email,
         password: "",
         confirmPassword: "",
         about: "",
         profilePicture: null as File | null,
         profilePicturePreview: "",
-        company: "",
+        company: "Keross",
         selectedDomains: [] as string[],
         kycVerified: false,
+        country: "IN"
     });
 
     let approvalStatus = "";
@@ -221,6 +229,8 @@ export default function App() {
     function handleKYCVerification() {
         // Implement your KYC verification logic here
         console.log("KYC verification initiated");
+        
+        router.push("/user-profile/investor/kyc");
     }
 
     return (

@@ -71,7 +71,7 @@ export default function CampaignCard({ campaign, onDonate }: CampaignCardProps) 
           }`}>
           
           <Link href={path} className="block text-center w-full py-3 px-4 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors">
-            Invest
+            View
           </Link>
           
           {/*<Button

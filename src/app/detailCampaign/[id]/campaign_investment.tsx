@@ -8,9 +8,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { DollarSign, Eye } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
 
 const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({ campaignId }) => {
-    return (
+    const { user } = useAuth();
+
+  const userRole = user?.role === 'admin' ? 'admin' : user?.role === 'fundraiser' ? 'founder' : user?.role === 'investor' ? 'investor' : undefined;
+  debugger;
+  console.log(userRole);  
+  return (
         <div className="min-h-screen bg-[#0a0b1e]">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
                 {/* Header Section */}
@@ -71,7 +77,9 @@ const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({ campaignId }) =
                             </div>
 
                             {/* Investment Form */}
+                            {(userRole == "investor" || userRole == undefined) &&
                             <div className="space-y-4">
+                                
                                 <div>
                                     <label className="block text-sm font-medium text-primary mb-2">
                                         INVESTMENT AMOUNT
@@ -90,24 +98,30 @@ const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({ campaignId }) =
                                 </div>
 
                                 {/* Action Buttons */}
+                                
                                 <div className="space-y-3">
                                     <Button
                                         className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
                                         asChild
                                     >
-                                        <Link href={`/api/fundraiser/campaign/checkout/${campaignId}`}>
+                                        {userRole == undefined ? <Link href={`/login`}>
                                             INVEST NOW
-                                        </Link>
+                                        </Link> : <Link href={`/api/fundraiser/campaign/checkout/${campaignId}`}>
+                                            INVEST NOW
+                                        </Link>}
+                                        
                                     </Button>
                                     <Button
                                         variant="secondary"
                                         className="w-full bg-secondary/50 hover:bg-secondary/70"
                                     >
                                         <Eye className="mr-2 h-4 w-4" />
-                                        WATCH FOR UPDATES
+                                        <Link href={`/dispute/${campaignId}`}>Report Dispute</Link>
                                     </Button>
                                 </div>
+                                  
                             </div>
+                            }
                         </CardContent>
                     </Card>
                 </div>

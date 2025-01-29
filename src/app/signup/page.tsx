@@ -85,13 +85,15 @@ export default function SignUpForm() {
   }, [api])
 
   async function onSubmit(values: FormData) {
+    debugger;
     axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/signup`, JSON.stringify({
       username: values.username,
       email: values.email,
       password: values.password,
       companyName: values.companyName,
       country: values.country,
-      phone: `${selectedCountry.phone}${values.phone}`
+      phone: `${selectedCountry.phone}${values.phone}`,
+      role: values.role.toLocaleLowerCase()
     }), {
       headers: { 'Content-Type': 'application/json' },
     }).then((response) => {
