@@ -8,6 +8,7 @@ import authStore from "@/store/authStore";
 import AdminDashboard from "@/app/adminDashboard/page";
 import Fundraiser from "@/app/fundraiser/page";
 import Investor from "@/app/investor/page";
+
 import MyCampaignsnew from "@/app/myCampaignsnew/page";
 import KycForm from "@/components/Investor/Kyc";
 import { Button } from "../ui/button";
@@ -27,6 +28,7 @@ import {
 } from "lucide-react";
 import MyCampaigns from "../founder/myCampaigns/myCampaigns";
 import { useAuth } from "@/lib/auth-context";
+
 
 class SidebarState {
   private isCollapsed: boolean;
@@ -73,7 +75,7 @@ const Sidebar: React.FC = ({}) => {
       //   return <MyInvestments />;
       case "My Profile":
         return <ProfileUpdate />;
-      case "Admin Dashboard":
+      case "AdminDashboard":
         return <AdminDashboard />;
       case "Fundraiser":
         return <Fundraiser />;
@@ -82,7 +84,7 @@ const Sidebar: React.FC = ({}) => {
       case "Kyc":
         return <KycForm />;
       case "Dispute":
-          return <Home />; 
+          return <Home />;
     }
   };
   const { user } = useAuth();
@@ -190,7 +192,9 @@ const Sidebar: React.FC = ({}) => {
   };
 
   return (
+
     <div className="fixed inset-0 flex h-screen w-screen bg-gray-900">
+
       <div
         className={`relative transition-all duration-300 ease-in-out ${
           isSidebarOpen ? "w-72" : "w-20"
@@ -221,6 +225,7 @@ const Sidebar: React.FC = ({}) => {
           </Link>
         </div>
 
+
         {/* Navigation */}
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
           {sidebarMenu.map((item) => (
@@ -242,24 +247,10 @@ const Sidebar: React.FC = ({}) => {
           ))}
         </nav>
 
+
         {/* Footer */}
         {/* <div className="p-4 border-t border-gray-700">
-          <Button
-            onClick={() => {
-              handleSelectSection("Logout");
-              clearUserData();
-            }}
-            className="w-full flex items-center gap-3 text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-colors rounded-lg px-4 py-3"
-          >
-            <LogOut className="h-5 w-5" />
-            <span
-              className={`${
-                isSidebarOpen ? "opacity-100" : "opacity-0 w-0"
-              } transition-all duration-200`}
-            >
-              Logout
-            </span>
-          </Button>
+className="flex-1 p-8">{renderContent()}</div>
         </div> */}
       </div>
 

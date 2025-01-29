@@ -1,5 +1,4 @@
-'use client';
-
+'use client'
 import Image from "next/image";
 import Link from "next/link";
 import { CampaignInvestmentProps } from "./types";
@@ -85,14 +84,13 @@ const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({ campaignId }) =
                                         INVESTMENT AMOUNT
                                     </label>
                                     <div className="relative">
-                                        <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                        <Input
-                                            type="number"
-                                            min="10"
-                                            className="pl-9 bg-background border-primary/10"
-                                            placeholder="Enter amount"
-                                            defaultValue={10}
-                                        />
+                                        <span className="absolute left-[14px] top-[14px] text-gray-500">$</span>
+                                        <input type="number" min="10"
+                                            id="amountInp"
+                                            className="m-0 w-full pl-8 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            placeholder="Enter amount" 
+                                            defaultValue={10} 
+                                            />
                                     </div>
                                     <p className="mt-1 text-sm text-muted-foreground">Minimum $10</p>
                                 </div>

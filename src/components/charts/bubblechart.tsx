@@ -1,23 +1,15 @@
 "use client";
-
 import { useEffect, useRef } from "react";
 import * as echarts from "echarts";
 
-interface LineChartProps {
+interface BubbleChartProps {
   title: string;
-  xAxisData: (string | number)[];
-  seriesData: number[];
-  seriesName?: string;
-  yAxisName?: string;
+  labels: (string | number)[];
+  data: { value: [number, number, number] }[]; // Assuming data format [x, y, size]
+  itemColor?: string;
 }
 
-const LineChart = ({
-  title,
-  xAxisData,
-  seriesData,
-  seriesName,
-  yAxisName,
-}: LineChartProps) => {
+const BubbleChart = ({ title, labels, data, itemColor }: BubbleChartProps) => {
   const chartRef = useRef(null);
 
   useEffect(() => {
@@ -34,23 +26,28 @@ const LineChart = ({
           },
         },
         tooltip: {
-          trigger: "axis",
+          trigger: "item",
         },
         xAxis: {
           type: "category",
-          data: xAxisData,
+          data: labels,
+          axisLabel: {
+            interval: 0,
+            rotate: 30,
+          },
         },
         yAxis: {
           type: "value",
-          name: yAxisName,
         },
         series: [
           {
-            name: seriesName,
-            type: "line",
-            data: seriesData,
+            type: "scatter",
+            data: data,
+            symbolSize: function (val: any[]) {
+              return val[2];
+            },
             itemStyle: {
-              color: "#8061ff",
+              color: itemColor,
             },
           },
         ],
@@ -63,9 +60,9 @@ const LineChart = ({
         chartInstance.dispose();
       };
     }
-  }, [title, xAxisData, seriesData, seriesName, yAxisName]);
+  }, [title, labels, data, itemColor]);
 
   return <div ref={chartRef} style={{ height: 400, width: "100%" }} />;
 };
 
-export default LineChart;
+export default BubbleChart;
