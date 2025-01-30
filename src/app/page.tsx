@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { AnimatePresence, motion, useAnimation } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Campaign } from '@/types';
 
 const LandingPage = () => {
     const controls = useAnimation();
@@ -45,125 +46,29 @@ const LandingPage = () => {
             }
         }
     };
+
     const [campaignData, setCampaignData] = useState<any[]>([]);
-    //Fetch campaign data when the component mounts
+    const [loading, setLoading] = useState(true);
+
+    // Fetch campaign data when the component mounts
     useEffect(() => {
         const fetchCampaigns = async () => {
             try {
-                debugger;
                 const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/fundraiser`);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
                 const result = await response.json();
-                setCampaignData(result.filter(x => x.status == "active"));
-                console.log(result);
-            } catch (error: any) {
-                if (error instanceof Error) {
-
-                } else {
-
-                }
+                setCampaignData(result.filter(x => x.status === "active"));
+            } catch (error) {
+                console.error('Error fetching campaigns:', error);
             } finally {
-
+                setLoading(false);
             }
         };
 
         fetchCampaigns();
     }, []);
-    // / *Campaign data
-    /*const topCampaigns = [
-        {
-            id: 1,
-            title: "EcoTech Solutions",
-            creator: "Green Innovations Inc",
-            image: "https://images.unsplash.com/photo-1536147116438-62679a5e01f2?auto=format&fit=crop&q=80",
-            progress: 75,
-            daysLeft: 12,
-            funded: "₹8.5M"
-        },
-        {
-            id: 2,
-            title: "Smart Health Monitor",
-            creator: "MedTech Ventures",
-            image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80",
-            progress: 45,
-            daysLeft: 28,
-            funded: "₹2.1M"
-        },
-        {
-            id: 3,
-            title: "AI Education Platform",
-            creator: "EduTech Solutions",
-            image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80",
-            progress: 90,
-            daysLeft: 5,
-            funded: "₹12M"
-        },
-        {
-            id: 4,
-            title: "Sustainable Fashion",
-            creator: "EcoWear Co",
-            image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&q=80",
-            progress: 60,
-            daysLeft: 15,
-            funded: "₹5.2M"
-        },
-        {
-            id: 5,
-            title: "Urban Farming Tech",
-            creator: "AgriTech Solutions",
-            image: "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&q=80",
-            progress: 85,
-            daysLeft: 8,
-            funded: "₹9.8M"
-        },
-        {
-            id: 6,
-            title: "Clean Energy Storage",
-            creator: "PowerTech Labs",
-            image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&q=80",
-            progress: 70,
-            daysLeft: 20,
-            funded: "₹6.8M"
-        },
-        {
-            id: 7,
-            title: "Smart City Solutions",
-            creator: "Urban Innovators",
-            image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80",
-            progress: 55,
-            daysLeft: 25,
-            funded: "₹4.2M"
-        },
-        {
-            id: 8,
-            title: "Biotech Research",
-            creator: "LifeScience Co",
-            image: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&q=80",
-            progress: 95,
-            daysLeft: 3,
-            funded: "₹15.5M"
-        },
-        {
-            id: 9,
-            title: "Ocean Cleanup Tech",
-            creator: "Marine Solutions",
-            image: "https://images.unsplash.com/photo-1484291470158-b8f8d608850d?auto=format&fit=crop&q=80",
-            progress: 40,
-            daysLeft: 30,
-            funded: "₹3.1M"
-        },
-        {
-            id: 10,
-            title: "Space Technology",
-            creator: "Stellar Research",
-            image: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&q=80",
-            progress: 80,
-            daysLeft: 10,
-            funded: "₹11.2M"
-        }
-    ];*/
 
     const [currentPage, setCurrentPage] = useState(0);
     const itemsPerPage = 4;
@@ -181,7 +86,7 @@ const LandingPage = () => {
         const start = currentPage * itemsPerPage;
         return campaignData.slice(start, start + itemsPerPage);
     };
-    // / *Campaign data
+
     const toggleFAQ = (id: number) => {
         setFaqs((prevFaqs) => {
             const updatedFaqs = prevFaqs.map((faq) =>
@@ -190,6 +95,26 @@ const LandingPage = () => {
             return updatedFaqs;
         });
     };
+
+    // Skeleton UI Component
+    const SkeletonCampaignCard = () => (
+        <div className="bg-gray-800/50 backdrop-blur-sm p-6 rounded-2xl border border-gray-700/50 animate-pulse">
+            <div className="bg-gray-700 rounded-lg h-48 mb-4"></div>
+            <div className="bg-gray-700 h-6 w-3/4 rounded mb-2"></div>
+            <div className="bg-gray-700 h-4 w-1/2 rounded mb-4"></div>
+            <div className="bg-gray-700 h-2 rounded-full mb-2">
+                <div className="bg-gray-600 h-2 rounded-full" style={{ width: '50%' }}></div>
+            </div>
+            <div className="flex justify-between">
+                <div className="bg-gray-700 h-4 w-1/4 rounded"></div>
+                <div className="bg-gray-700 h-4 w-1/4 rounded"></div>
+            </div>
+        </div>
+    );
+    //progressbar
+
+
+
 
     return (
         <div className="landing-page bg-gradient-to-b from-gray-900 via-gray-800 to-black text-white">
@@ -229,15 +154,6 @@ const LandingPage = () => {
                                     Explore Campaigns
                                 </motion.button>
                             </Link>
-                            {/* <Link href="/role">
-                                <motion.button
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    className="px-8 py-4 bg-transparent border-2 border-white/20 hover:border-white/40 rounded-full font-semibold transition-colors"
-                                >
-                                    Find Investors
-                                </motion.button>
-                            </Link> */}
                         </div>
                     </motion.div>
                     <motion.div
@@ -411,8 +327,6 @@ const LandingPage = () => {
                 </div>
             </motion.div>
 
-            {/* FAQ Section */}
-
             {/* Top Campaigns Section */}
             <div className="py-20">
                 <div className="container mx-auto px-4">
@@ -425,23 +339,55 @@ const LandingPage = () => {
 
                     <div className="relative">
                         <div className="overflow-hidden">
-                            <motion.div
-                                className="grid grid-cols-4 gap-6"
-                                initial={{ opacity: 1 }}
-                                animate={{ opacity: 1 }}
-                            >
-                                <AnimatePresence mode="wait">
-                                    {getCurrentPageItems().map((campaign) => (
-                                        <motion.div
-                                            key={campaign._id} // Ensure this is a unique identifier
-                                            animate={{ opacity: 1 }}
-                                            initial={{ opacity: 0 }}
-                                            exit={{ opacity: 0 }}
-                                        >
+                            <motion.div className="grid grid-cols-4 gap-6" initial={{ opacity: 1 }} animate={{ opacity: 1 }}>
+                                {loading ? (
+                                    Array.from({ length: itemsPerPage }).map((_, index) => <SkeletonCampaignCard key={index} />)
+                                ) : (
+                                    <AnimatePresence mode="wait">
+                                        {getCurrentPageItems().map((campaign) => {
+                                            if (!campaign.amount_raised) {
+                                                campaign.amount_raised = 0;
+                                            }
+                                            if (campaign.current_amount) {
+                                                campaign.amount_raised = campaign.current_amount;
+                                            }
 
-                                        </motion.div>
-                                    ))}
-                                </AnimatePresence>
+                                            const progress = (campaign.amount_raised / campaign.goal_amount) * 100;
+                                            const daysLeft = Math.ceil(
+                                                (new Date(campaign.end_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
+                                            );
+
+                                            return (
+                                                <motion.div key={campaign._id} animate={{ opacity: 1 }} initial={{ opacity: 0 }} exit={{ opacity: 0 }}>
+                                                    <div className="bg-gray-800/50 backdrop-blur-sm p-6 rounded-2xl border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 flex flex-col h-full group">
+                                                        <div
+                                                            className="w-full h-[260px] bg-cover bg-center bg-no-repeat rounded-lg mb-4"
+                                                            style={{ backgroundImage: `url('${campaign.image_url}')` }}
+                                                        />
+                                                        <h3 className="text-xl font-semibold mb-2 truncate group-hover:truncate-none group-hover:overflow-visible group-hover:whitespace-normal">
+                                                            {campaign.title}
+                                                        </h3>
+                                                        <p className="text-gray-400 text-sm truncate group-hover:truncate-none group-hover:overflow-visible group-hover:whitespace-normal">
+                                                            {campaign.creator}
+                                                        </p>
+                                                        <div className="mt-4 flex-grow">
+                                                            <div className="w-full bg-gray-700 rounded-full h-2">
+                                                                <div
+                                                                    className="bg-[#4e958b] h-2 rounded-full transition-all duration-500"
+                                                                    style={{ width: `${Math.min(progress, 100)}%` }}
+                                                                />
+                                                            </div>
+                                                            <div className="flex justify-between text-sm text-gray-400 mt-2">
+                                                                <span>₹{campaign.amount_raised.toLocaleString()} raised</span>
+                                                                <span>{daysLeft} days left</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </motion.div>
+                                            );
+                                        })}
+                                    </AnimatePresence>
+                                )}
                             </motion.div>
                         </div>
 
@@ -467,8 +413,7 @@ const LandingPage = () => {
                                 <button
                                     key={index}
                                     onClick={() => setCurrentPage(index)}
-                                    className={`w-2 h-2 rounded-full transition-colors ${currentPage === index ? 'bg-blue-500' : 'bg-gray-600'
-                                        }`}
+                                    className={`w-2 h-2 rounded-full transition-colors ${currentPage === index ? 'bg-blue-500' : 'bg-gray-600'}`}
                                     aria-label={`Go to page ${index + 1}`}
                                 />
                             ))}
@@ -478,15 +423,8 @@ const LandingPage = () => {
             </div>
 
 
-            {/* Top Campaigns Section */}
-
-
         </div>
     );
 };
 
 export default LandingPage;
-
-
-
-
