@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import {
     PlusCircle,
@@ -46,6 +46,7 @@ import type { Startup, Currency, Campaign } from '@/types';
 import { cn } from '@/lib/utils';
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import PitchBuilder from '@/components/PitchBuilder/PitchBuilder';
 
 const CATEGORIES = [
     'CleanTech',
@@ -215,6 +216,16 @@ const ACCEPTED_FILE_TYPES = [
 // });
 
 const formSchema = z.object({
+    ourTeam: z.array(z.object({
+        name: z.string(),
+        position: z.string(),
+        avatar: z.string().optional(),
+        about: z.string().optional(),
+    })).optional(),
+    additionalHighlights: z.array(z.object({
+        title: z.string(),
+        description: z.string().optional(),
+    })).optional(),
     // Currency Type
     currencyType: z.enum(['USD', 'EUR', 'GBP', 'JPY']).refine((val) => val !== undefined, {
         message: "Please select a valid currency",
@@ -255,26 +266,29 @@ const formSchema = z.object({
 
     // Image URL
     imageUrl: z.string().url("Please enter a valid image URL"),
-
-    // Owner
     owner: z.object({
         name: z.string().min(1, "Owner name is required"),
         email: z.string().email("Invalid email address"),
         stripeId: z.string().min(1, "Stripe ID is required"),
     }),
+    publishedStatus: z.boolean().optional(),
+
 });
 
 
 
-export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }: {
-    onBack: () => void;
+export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
     onClose: () => void;
     onCreateCampaign: (campaignData: Omit<Campaign, "_id" | "amount_raised" | "createdAt">) => Promise<void>;
 }) {
     const [activeTab, setActiveTab] = useState(0);
+    const [showLeftScroll, setShowLeftScroll] = useState(false);
+    const [showRightScroll, setShowRightScroll] = useState(false);
+    const tabsContainerRef = useRef<HTMLDivElement>(null);
     const { currentDraft, saveDraft } = useCampaignStore();
     const [progress, setProgress] = useState(0);
     const [saving, setSaving] = useState(false);
+    const [isMobileView, setIsMobileView] = useState(false);
 
     const {
         register,
@@ -284,7 +298,7 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
         setValue,
         formState: { errors, isValid },
         reset,
-    } = useForm<z.infer<typeof formSchema & { highlights: { description: string, id?: number }[]; additionalHighlights: { title: string, description?: string }[]; ourTeam: { name: string, position: string, avatar?: string, about?: string }[] }>>({
+    } = useForm<z.infer<typeof formSchema> & { highlights: { description: string, id?: number }[]; additionalHighlights: { title: string, description?: string }[]; ourTeam: { name: string, position: string, avatar?: string, about?: string }[]; valuation: { currentValuation?: number, lastValuation?: number, currencyUnit?: 'USD' | 'EUR' | 'GBP' | 'JPY' | 'INR' } }>({
         resolver: zodResolver(formSchema),
         // defaultValues: currentDraft || undefined,
     });
@@ -292,6 +306,14 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
     console.log(errors);
 
     const formValues = watch();
+
+    const checkScroll = () => {
+        if (tabsContainerRef.current) {
+            const { scrollLeft, scrollWidth, clientWidth } = tabsContainerRef.current;
+            setShowLeftScroll(scrollLeft > 0);
+            setShowRightScroll(scrollLeft < scrollWidth - clientWidth);
+        }
+    };
 
     useEffect(() => {
         // const requiredFields = [
@@ -346,6 +368,54 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
         setProgress((completedFields.length / requiredFields.length) * 100);
     }, [formValues]);
 
+    useEffect(() => {
+        const checkMobileView = () => {
+            setIsMobileView(window.innerWidth < 768);
+        };
+
+        checkMobileView();
+        window.addEventListener('resize', checkMobileView);
+        return () => window.removeEventListener('resize', checkMobileView);
+    }, []);
+
+    useEffect(() => {
+        checkScroll();
+        window.addEventListener('resize', checkScroll);
+        return () => window.removeEventListener('resize', checkScroll);
+    }, []);
+
+    const scroll = (direction: 'left' | 'right') => {
+        if (tabsContainerRef.current) {
+            const scrollAmount = tabsContainerRef.current.clientWidth * 0.75;
+            const targetScroll = tabsContainerRef.current.scrollLeft + (direction === 'left' ? -scrollAmount : scrollAmount);
+            tabsContainerRef.current.scrollTo({
+                left: targetScroll,
+                behavior: 'smooth'
+            });
+        }
+    };
+
+    const scrollToTab = (tabId: string) => {
+        const tabElement = document.getElementById(`tab-${tabId}`);
+        if (tabElement && tabsContainerRef.current) {
+            const container = tabsContainerRef.current;
+            const tabRect = tabElement.getBoundingClientRect();
+            const containerRect = container.getBoundingClientRect();
+
+            if (tabRect.left < containerRect.left || tabRect.right > containerRect.right) {
+                tabElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest',
+                    inline: 'center'
+                });
+            }
+        }
+    };
+
+    useEffect(() => {
+        scrollToTab(TABS[activeTab].id);
+    }, [activeTab]);
+
     const {
         fields: highlightFields,
         append: appendHighlight,
@@ -391,7 +461,6 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
         };
         onCreateCampaign(campaign);
         reset();
-        onBack();
     };
 
     const handleSaveDraft = async () => {
@@ -410,23 +479,25 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in-0">
-            <div className="relative w-full h-[95vh] bg-background rounded-xl shadow-lg border animate-in slide-in-from-bottom-2">
-                <div className="absolute right-4 top-4 z-50">
-                    <Button variant="ghost" size="icon" onClick={onClose}>
-                        <X className="h-4 w-4" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-background/80 backdrop-blur-sm animate-in fade-in-0">
+            <div className="relative w-full h-[98vh] sm:h-[95vh] bg-background rounded-lg sm:rounded-xl shadow-lg border animate-in slide-in-from-bottom-2">
+                <div className="absolute right-2 sm:right-4 top-2 sm:top-4 z-50">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={onClose}
+                        className="h-11 w-11 sm:h-10 sm:w-10"
+                    >
+                        <X className="h-5 w-5" />
                     </Button>
                 </div>
 
                 <div className="flex flex-col h-full">
-                    <div className="p-6 border-b">
-                        <div className="flex items-center gap-4">
-                            <Button variant="ghost" size="icon" onClick={onBack}>
-                                <ArrowLeft className="h-4 w-4" />
-                            </Button>
-                            <div>
-                                <h1 className="text-2xl font-bold">Create Campaign</h1>
-                                <p className="text-muted-foreground">Fill in the details to launch your campaign</p>
+                    <div className="p-4 sm:p-6 border-b">
+                        <div className="flex items-center gap-3 sm:gap-4">
+                            <div className="flex-1 min-w-0">
+                                <h1 className="text-lg sm:text-xl font-bold truncate">Create Campaign</h1>
+                                <p className="text-sm text-muted-foreground">Fill in the details to launch your campaign</p>
                             </div>
                         </div>
                         <div className="mt-4">
@@ -442,37 +513,98 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
                         onValueChange={(value) => setActiveTab(TABS.findIndex(tab => tab.id === value))}
                         className="flex-1 overflow-hidden"
                     >
-                        <div className="border-b bg-muted/40">
-                            <ScrollArea className="w-full">
+                        <div className="border-b bg-muted/40 pt-2 pb-2">
+                            {/* Mobile Select Dropdown */}
+                            <div className="sm:hidden p-2">
+                                <select
+                                    value={TABS[activeTab].id}
+                                    onChange={(e) => setActiveTab(TABS.findIndex(tab => tab.id === e.target.value))}
+                                    className="w-full h-12 px-4 rounded-lg border border-gray-200 bg-white text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                >
+                                    {TABS.map((tab, index) => (
+                                        <option
+                                            key={tab.id}
+                                            value={tab.id}
+                                            disabled={index > 0 && !isValid}
+                                        >
+                                            {tab.label}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
 
-                                <TabsList className="inline-flex h-16 items-center justify-start gap-4 px-6">
-                                    {TABS.map((tab, index) => {
-                                        const Icon = tab.icon;
-                                        return (
-                                            <TabsTrigger
-                                                key={tab.id}
-                                                value={tab.id}
-                                                disabled={index > 0 && !isValid}
-                                                className={cn(
-                                                    "inline-flex items-center gap-2 px-3 py-3 rounded-lg transition-all",
-                                                    "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground",
-                                                    "hover:bg-muted",
-                                                    "border-2 border-transparent data-[state=active]:border-primary/20",
-                                                    "shadow-sm data-[state=active]:shadow-md"
-                                                )}
-                                            >
-                                                {/* <Icon className="h-5 w-5" /> */}
-                                                <span className="font-small">{tab.label}</span>
-                                            </TabsTrigger>
-                                        );
-                                    })}
-                                </TabsList>
-                            </ScrollArea>
+                            {/* Desktop Tabs */}
+                            <div className="relative hidden sm:block">
+                                {showLeftScroll && (
+                                    <button
+                                        onClick={() => scroll('left')}
+                                        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 p-3 bg-white rounded-full shadow-md hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 "
+                                        aria-label="Scroll tabs left"
+                                    >
+                                        <ChevronLeft className="h-5 w-5 text-gray-600" />
+                                    </button>
+                                )}
+
+                                <div
+                                    ref={tabsContainerRef}
+                                    className="overflow-x-auto scrollbar-hide mx-12"
+                                    onScroll={checkScroll}
+                                    style={{ scrollBehavior: 'smooth', WebkitOverflowScrolling: 'touch' }}
+                                >
+                                    <ul className="inline-flex min-w-full text-base font-medium text-center text-gray-500 rounded-lg shadow-sm dark:divide-gray-700 dark:text-gray-400 gap-2">
+                                        {TABS.map((tab, index) => {
+                                            const Icon = tab.icon;
+                                            const isFirst = index === 0;
+                                            const isLast = index === TABS.length - 1;
+                                            const isActive = activeTab === index;
+
+                                            return (
+                                                <li key={tab.id} className="focus-within:z-10">
+                                                    <button
+                                                        id={`tab-${tab.id}`}
+                                                        onClick={() => setActiveTab(index)}
+                                                        disabled={index > 0 && !isValid}
+                                                        className={cn(
+                                                            "inline-flex items-center justify-center h-10 px-4 gap-3 whitespace-nowrap text-[0.8rem]",
+                                                            isActive
+                                                                ? "text-white bg-blue-600 dark:bg-blue-700 dark:text-white shadow-lg border-b-4 border-blue-800"
+                                                                : "bg-gray-800 hover:text-white hover:bg-gray-600 dark:hover:bg-gray-700 dark:hover:text-white",
+                                                            isFirst ? "rounded-l-md" : "",
+                                                            isLast ? "rounded-r-md" : "border-r border-gray-600",
+                                                            "focus:ring-4 focus:ring-blue-500 focus:outline-none",
+                                                            "transition-all duration-300 ease-in-out transform hover:scale-105",
+                                                            index > 0 && !isValid && "opacity-50 cursor-not-allowed",
+                                                            !isActive && "cursor-pointer"
+                                                        )}
+
+                                                        aria-current={isActive ? 'page' : undefined}
+                                                        role="tab"
+                                                        aria-selected={isActive}
+                                                        aria-controls={`panel-${tab.id}`}
+                                                    >
+                                                        <Icon className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
+                                                        <span>{tab.label}</span>
+                                                    </button>
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                                </div>
+
+                                {showRightScroll && (
+                                    <button
+                                        onClick={() => scroll('right')}
+                                        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 p-3 bg-white rounded-full shadow-md hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        aria-label="Scroll tabs right"
+                                    >
+                                        <ChevronRight className="h-5 w-5 text-gray-600" />
+                                    </button>
+                                )}
+                            </div>
                         </div>
 
                         <form onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-hidden">
-                            <ScrollArea className="h-[calc(85vh-13rem)] px-6 py-4">
-
+                            <div className="h-[calc(98vh-18rem)] sm:h-[calc(85vh-13rem)] px-3 sm:px-6 py-4 overflow-y-auto">
                                 <TabsContent value="details" className="mt-0 space-y-6">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
@@ -788,7 +920,7 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
                                                     <Label>Currency Unit</Label>
                                                     <Select
                                                         onValueChange={(value) => {
-                                                            register('valuation.currencyUnit').onChange({ target: { value } });
+                                                            setValue('valuation.currencyUnit', value as 'USD' | 'EUR' | 'GBP' | 'JPY' | 'INR');
                                                         }}
                                                     >
                                                         <SelectTrigger>
@@ -921,14 +1053,12 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
                                         <CardContent className="pt-6">
                                             <div className="space-y-2">
                                                 <Label>Campaign Pitch</Label>
-                                                <Textarea
+                                                {/* <Textarea
                                                     {...register('pitch')}
                                                     className="min-h-[400px]"
                                                     placeholder="Enter your campaign pitch..."
-                                                />
-                                                <p className="text-sm text-muted-foreground">
-                                                    Write a compelling pitch that will convince investors to support your campaign.
-                                                </p>
+                                                /> */}
+                                                <PitchBuilder />
                                             </div>
                                         </CardContent>
                                     </Card>
@@ -1320,45 +1450,48 @@ export default function CreateCampaignForm({ onBack, onClose, onCreateCampaign }
                                         </CardContent>
                                     </Card>
                                 </TabsContent>
+                            </div>
 
-                            </ScrollArea>
-
-                            <div className="p-6 border-t bg-gradient-to-r from-muted/50 via-muted/30 to-muted/50 flex items-center justify-between sticky bottom-0">
+                            <div className="p-3 sm:p-6 border-t bg-gradient-to-r from-muted/50 via-muted/30 to-muted/50 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-0 sticky bottom-0">
                                 <Button
                                     type="button"
                                     variant="outline"
                                     onClick={handleSaveDraft}
                                     disabled={saving}
-                                    className="gap-2"
+                                    className="h-11 sm:h-10 gap-2 w-full sm:w-auto"
                                 >
-                                    <Save className="h-4 w-4" />
-                                    {saving ? 'Saving...' : 'Save Draft'}
+                                    <Save className="h-4 w-4 flex-shrink-0" />
+                                    <span className="flex-1 sm:flex-initial">{saving ? 'Saving...' : 'Save Draft'}</span>
                                 </Button>
 
-                                <div className="flex gap-2">
+                                <div className="flex gap-2 flex-1 sm:flex-initial">
                                     <Button
                                         type="button"
                                         variant="outline"
                                         onClick={() => setActiveTab(Math.max(0, activeTab - 1))}
                                         disabled={activeTab === 0}
-                                        className="gap-2"
+                                        className="h-11 sm:h-10 gap-2 flex-1 sm:flex-initial"
                                     >
-                                        <ChevronLeft className="h-4 w-4" />
-                                        Previous
+                                        <ChevronLeft className="h-4 w-4 flex-shrink-0" />
+                                        <span>Previous</span>
                                     </Button>
                                     {activeTab === TABS.length - 1 ? (
-                                        <Button type="submit" disabled={!isValid} className="gap-2">
-                                            <Sparkles className="h-4 w-4" />
-                                            Submit For Approval
+                                        <Button
+                                            type="submit"
+                                            disabled={!isValid}
+                                            className="h-11 sm:h-10 gap-2 flex-1 sm:flex-initial"
+                                        >
+                                            <Sparkles className="h-4 w-4 flex-shrink-0" />
+                                            <span>Submit</span>
                                         </Button>
                                     ) : (
                                         <Button
                                             type="button"
                                             onClick={() => setActiveTab(Math.min(TABS.length - 1, activeTab + 1))}
-                                            className="gap-2"
+                                            className="h-11 sm:h-10 gap-2 flex-1 sm:flex-initial"
                                         >
-                                            Next
-                                            <ChevronRight className="h-4 w-4" />
+                                            <span>Next</span>
+                                            <ChevronRight className="h-4 w-4 flex-shrink-0" />
                                         </Button>
                                     )}
                                 </div>
