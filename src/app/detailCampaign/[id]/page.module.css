@@ -4,18 +4,28 @@
 
 .btn_active{
     opacity: 1;
+    background-color: rgb(10 11 30 );
+    border-bottom: 3px solid #10e4fe;
+    border-radius: 0;
 }
 
 .btn_inactive{
     opacity: 0.4;
+    background-color: rgb(10 11 30);
+    border-bottom: 3px solid rgb(10 11 30);
+    border-radius: 0;
 }
 
-.btn_inactive:hover{
+/* .btn_inactive:hover{
     opacity: 1;
-}
+} */
 
 .art_inactive{
     display: none;
+}
+
+.btn_active, .btn_inactive{
+    transition: border-bottom 1s;
 }
 
 
