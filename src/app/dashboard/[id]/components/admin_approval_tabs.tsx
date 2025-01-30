@@ -1,6 +1,7 @@
 "use client";
 
 // import { Collection, Document } from 'mongodb';
+import axios from 'axios';
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -84,6 +85,9 @@ const AdminApprovalTabs:React.FC<ApprovalTabsProps> = ({campaignData, pitch, fun
     const status: string = "pending";
     const submittedAt = "28/1/2025, 11:48:35 am";
 
+    debugger;
+    console.log(campaignData);
+
     const validation = function(){
         let isValid = true;
         const comment = document.getElementById('adminComment') as HTMLTextAreaElement;
@@ -101,7 +105,6 @@ const AdminApprovalTabs:React.FC<ApprovalTabsProps> = ({campaignData, pitch, fun
     }
 
     const handleRequestChange = async function (pendingCampaignId: string) {
-        return; // temp stop
         const isValid = validation();
         const commentEle = document.getElementById('adminComment') as HTMLTextAreaElement;
       
@@ -116,7 +119,7 @@ const AdminApprovalTabs:React.FC<ApprovalTabsProps> = ({campaignData, pitch, fun
           //console.log("Connection to 'Campaigns' collection successful.");
     
           const campaignData = {
-            pendingCampaignId: pendingCampaignId, // change to actual fieldname and value
+            _id: pendingCampaignId, // change to actual fieldname and value
             status: 'Change Requested', // change to actual fieldname
             comment: commentEle.value // Set or update comment field
           }
@@ -143,46 +146,85 @@ const AdminApprovalTabs:React.FC<ApprovalTabsProps> = ({campaignData, pitch, fun
         }
     
         // Redirect to pending campaigns
-        router.push('http://localhost:3000/dashboard');
+        router.push('/dashboard');
     };
 
     const handleApproval = async function (campaignData: campaignData) {
-        return; // temp stop
-        const isValid = validation();
+        const campaignId = campaignData._id
+        const baseUrl = `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/admin/request/campaignResponses?id=${campaignId}`;
+        //const campaignId = '6785f626cb0c0ebbc57cbef2'; // Extracted _id from the URL
+
+        // const data = {
+        // _id: campaignId
+        // };
+
+        //const isValid = validation();
+        //const commentEle = document.getElementById('adminComment') as HTMLTextAreaElement;
+
+        ;
+        //const url = process.env.NEXT_PUBLIC_APPROVAL_URL + "?id='" + campaignId + "'";
+
+
       
-        if (!isValid) {
-          console.error("Validation failed.");
-          return;
-        }
-      
+        // if (!isValid) {
+        //   console.error("Validation failed.");
+        //   return;
+        // }
+
+        //let campaignData2 = campaignData;
+
+        //campaignData2.status = 'active';
+        //campaignData2.comment = commentEle.value;
+
+
+        //http://localhost:8000/admin/request/campaignResponses?id="6798b76bfdb55e38073b1572"
         try {
           // Check connection
           //await DBCollectionAccess("Campaigns", null); // Update collection name with actual name
           //console.log("Connection to 'Campaigns' collection successful.");
       
           // Proceed with API call
-          const response = await fetch("/api/campaigns", { // update api route with actual route
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(campaignData),
-          });
+        //   const response = await fetch("/api/campaigns", { // update api route with actual route
+        //     method: "POST",
+        //     headers: {
+        //       "Content-Type": "application/json",
+        //     },
+        //     body: JSON.stringify(campaignData2),
+        //   });
       
-          const data = await response.json();
+        //   const data = await response.json();
       
-          if (response.ok) {
-            alert(`Campaigns added successfully! ID: ${data.userId}`);
-          } else {
-            alert(`Error: ${data.message}`);
-          }
+        //   if (response.ok) {
+        //     alert(`Campaigns added successfully! ID: ${data.userId}`);
+        //   } else {
+        //     alert(`Error: ${data.message}`);
+        //   }
+
+
+        // await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/login`, JSON.stringify(submittedData), {
+        //     headers: { 'Content-Type': 'application/json' },
+        //     withCredentials: true
+        //   })
+
+            axios.post(baseUrl,{},{withCredentials: true})
+            .then((response: { status: number; data: any; }) => {
+                if (response.status === 200) {
+                    console.log('Request successful:', response.data);
+                } else {
+                    console.log('Request failed with status:', response.status);
+                }
+            })
+            .catch((error: any) => {
+                console.error('Error making request:', error);
+            });
+
         } catch (error) {
           console.error("Error in handleApproval:", error);
           alert("An unexpected error occurred. Please try again.");
         }
 
         // Redirect to pending campaigns
-        router.push('http://localhost:3000/dashboard');
+        router.push('/dashboard');
     };
 
     const getStatusBadge = () => {

@@ -37,7 +37,7 @@ export default function Home() {
   useEffect(() => {
     const fetchDisputes = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/admin/getAlldisputes');
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/admin/getAlldisputes`);
         debugger
         setDisputes(response.data);
       } catch (e) {
@@ -176,7 +176,7 @@ export default function Home() {
                     <div className="flex justify-between items-start">
                       <div>
                         <h3 className="text-xl font-semibold mb-2">{dispute.title}</h3>
-                        <p className="text-gray-600 mb-4">{dispute.description}</p>
+                        <p className=" mb-4">{dispute.description}</p>
                         <div className="flex items-center space-x-4 text-sm text-gray-500">
                           <span>Reported by: {dispute.reportedBy}</span>
                           <span>Date: {new Date(dispute.createdAt).toLocaleDateString()}</span>

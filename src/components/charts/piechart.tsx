@@ -3,21 +3,18 @@
 import { useEffect, useRef } from "react";
 import * as echarts from "echarts";
 
-interface LineChartProps {
+interface PieChartProps {
   title: string;
-  xAxisData: (string | number)[];
-  seriesData: number[];
-  seriesName?: string;
-  yAxisName?: string;
+  data: { value: number; name: string }[];
+  itemColor?: string;
 }
 
-const LineChart = ({
+const PieChart = ({
   title,
-  xAxisData,
-  seriesData,
-  seriesName,
-  yAxisName,
-}: LineChartProps) => {
+
+  data,
+  itemColor,
+}: PieChartProps) => {
   const chartRef = useRef(null);
 
   useEffect(() => {
@@ -34,23 +31,22 @@ const LineChart = ({
           },
         },
         tooltip: {
-          trigger: "axis",
-        },
-        xAxis: {
-          type: "category",
-          data: xAxisData,
-        },
-        yAxis: {
-          type: "value",
-          name: yAxisName,
+          trigger: "item",
         },
         series: [
           {
-            name: seriesName,
-            type: "line",
-            data: seriesData,
+            type: "pie",
+            radius: "50%",
+            data: data,
+            emphasis: {
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: "rgba(0, 0, 0, 0)",
+              },
+            },
             itemStyle: {
-              color: "#8061ff",
+              color: itemColor,
             },
           },
         ],
@@ -63,9 +59,9 @@ const LineChart = ({
         chartInstance.dispose();
       };
     }
-  }, [title, xAxisData, seriesData, seriesName, yAxisName]);
+  }, []);
 
   return <div ref={chartRef} style={{ height: 400, width: "100%" }} />;
 };
 
-export default LineChart;
+export default PieChart;

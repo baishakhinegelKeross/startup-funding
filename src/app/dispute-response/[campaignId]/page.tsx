@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FileText, User, AlertCircle, Upload, MessageSquare, X } from "lucide-react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -38,8 +38,8 @@ const disputeResponseSchema = z.object({
   responses: z.any(),
   
   // Terms and Signature
-  termsAccepted: z.boolean().refine(val => val === true, "You must accept the terms"),
-  signatureConfirmed: z.boolean().refine(val => val === true, "You must confirm the accuracy"),
+  termsAccepted: z.any(),//z.boolean().refine(val => val === true, "You must accept the terms"),
+  signatureConfirmed: z.any() //z.boolean().refine(val => val === true, "You must confirm the accuracy"),
 });
 
 type DisputeResponse = z.infer<typeof disputeResponseSchema>;
@@ -108,6 +108,8 @@ export default function DisputeForm({
   const [questionFiles, setQuestionFiles] = useState<Record<string, File[]>>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeQuestionId, setActiveQuestionId] = useState<string | null>(null);
+
+ 
 
   const form = useForm<DisputeResponse>({
     resolver: zodResolver(disputeResponseSchema),
@@ -182,7 +184,7 @@ export default function DisputeForm({
 
 
       const _disputeId = await (params).campaignId
-      await fetch(`http://localhost:8000/user/submitCreatorResponse/${_disputeId}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/user/submitCreatorResponse/${_disputeId}`, {
         method: 'POST',
         body: formData,
         

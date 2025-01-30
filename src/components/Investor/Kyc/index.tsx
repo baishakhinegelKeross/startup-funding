@@ -12,10 +12,12 @@ import { Shield, Upload, AlertCircle, FileCheck, DollarSign } from 'lucide-react
 import { useState,useRef } from 'react';
 import { AIAssistant } from '@/components/AIAssistant';
 import { ToastContainer, toast } from 'react-toastify'
+import { useRouter } from 'next/navigation';
 
 export default function KYCPage() {
   const [isUsCitizen, setIsUsCitizen] = useState(false);
   const [currentTab, setCurrentTab] = useState('identification');
+  const router = useRouter();
 
   const [files, setFiles] = useState({
     idFront: null,
@@ -170,6 +172,7 @@ export default function KYCPage() {
         else{
           alert('KYC form submitted successfully!');
           toast.success('KYC form submitted successfully!');
+          router.push('/');
         }
       })
       .catch((error) => {
@@ -306,7 +309,7 @@ export default function KYCPage() {
                         <Checkbox 
                           id="usResident" 
                           checked={isUsCitizen}
-                          onCheckedChange={(checked) => setIsUsCitizen(checked as boolean)}
+                          onChange={(e) => setIsUsCitizen(e.target.checked)}
                         />
                         <Label htmlFor="usResident">I am a U.S. resident</Label>
                       </div>

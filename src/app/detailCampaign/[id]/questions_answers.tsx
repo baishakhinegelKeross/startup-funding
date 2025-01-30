@@ -1,5 +1,10 @@
 import { nanoid } from 'nanoid';
 import QuestionAnswersPost from "./question_answers_posts";
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { MessageSquare } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const posts = [
     {

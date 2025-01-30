@@ -38,7 +38,7 @@ function UserDropdownMenu({username}: {username: string}) {
                     </Link>
 
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
+              {/*   <DropdownMenuItem asChild>
                     <Link href={"/approval"}>
                         <BadgeCheck />
                         Role Approvals
@@ -50,7 +50,7 @@ function UserDropdownMenu({username}: {username: string}) {
                         <BadgeCheck />
                         Setting
                     </Link>
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={()=>{

@@ -3,26 +3,28 @@
 import { useEffect, useRef } from "react";
 import * as echarts from "echarts";
 
-interface LineChartProps {
+interface StackedBarChartProps {
   title: string;
-  xAxisData: (string | number)[];
-  seriesData: number[];
-  seriesName?: string;
-  yAxisName?: string;
+  labels: (string | number)[];
+  data: { name: string; data: number[]; color?: string }[];
 }
 
-const LineChart = ({
-  title,
-  xAxisData,
-  seriesData,
-  seriesName,
-  yAxisName,
-}: LineChartProps) => {
+const StackedBarChart = ({ title, labels, data }: StackedBarChartProps) => {
   const chartRef = useRef(null);
 
   useEffect(() => {
     if (chartRef.current) {
       const chartInstance = echarts.init(chartRef.current);
+      const seriesData = data.map((item) => ({
+        name: item.name,
+        type: "bar",
+        stack: "total",
+        data: item.data,
+        itemStyle: {
+          color: item.color,
+        },
+      }));
+
       const option = {
         title: {
           text: title,
@@ -35,25 +37,22 @@ const LineChart = ({
         },
         tooltip: {
           trigger: "axis",
+          axisPointer: {
+            type: "shadow",
+          },
         },
         xAxis: {
           type: "category",
-          data: xAxisData,
+          data: labels,
+          axisLabel: {
+            interval: 0,
+            rotate: 30,
+          },
         },
         yAxis: {
           type: "value",
-          name: yAxisName,
         },
-        series: [
-          {
-            name: seriesName,
-            type: "line",
-            data: seriesData,
-            itemStyle: {
-              color: "#8061ff",
-            },
-          },
-        ],
+        series: seriesData,
       };
 
       chartInstance.setOption(option);
@@ -63,9 +62,9 @@ const LineChart = ({
         chartInstance.dispose();
       };
     }
-  }, [title, xAxisData, seriesData, seriesName, yAxisName]);
+  }, [title, labels, data]);
 
   return <div ref={chartRef} style={{ height: 400, width: "100%" }} />;
 };
 
-export default LineChart;
+export default StackedBarChart;

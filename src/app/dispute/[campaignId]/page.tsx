@@ -38,6 +38,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { toast } from "react-toastify";
 import { useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_FILE_TYPES = [
@@ -67,7 +68,7 @@ const formSchema = z.object({
 export default function DisputeForm() {
   const [files, setFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -142,7 +143,7 @@ export default function DisputeForm() {
         if (key !== 'documents') {
           formData.append(key, value as string);
         }
-      });
+      })
       
       //Append files
       files.forEach((file) => {
@@ -155,18 +156,20 @@ export default function DisputeForm() {
       for (const [key, value] of formData.entries()) {
         console.log(`${key}:`, value);
       }
-
-      const response = await fetch('http://localhost:8000/user/submitDispute', {
-        method: 'POST',
-        body: formData,
-        
-      });
+      console.log(process);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/user/submitDispute`, {
+      method: 'POST',
+      body: formData
+  });
+  console.log('File uploaded:', response);
+    
       
       if (!response.ok) {
         throw new Error('Failed to submit dispute');
       }
 
       toast.success("Dispute submitted successfully");
+      router.push("/campaigns")
       setFiles([]); // Clear files after successful submission
       form.reset(); // Reset form
     } catch (error) {
@@ -212,7 +215,7 @@ export default function DisputeForm() {
                       <FormItem className="animate-in fade-in slide-in-from-left duration-700 delay-[600ms]">
                         <FormLabel>Project ID</FormLabel>
                         <FormControl>
-                          <Input {...field} disabled className="bg-muted/50" />
+                          <Input {...field} disabled className="bg-muted/50 text-white" />
                         </FormControl>
                       </FormItem>
                     )}
@@ -225,7 +228,7 @@ export default function DisputeForm() {
                       <FormItem className="animate-in fade-in slide-in-from-right duration-700 delay-[700ms]">
                         <FormLabel>Project Name</FormLabel>
                         <FormControl>
-                          <Input {...field} disabled className="bg-muted/50" name="" />
+                          <Input {...field} disabled className="bg-muted/50 text-white" name="" />
                         </FormControl>
                       </FormItem>
                     )}
@@ -239,7 +242,7 @@ export default function DisputeForm() {
                       <FormItem className="animate-in fade-in slide-in-from-left duration-700 delay-[800ms]">
                         <FormLabel>Email Address</FormLabel>
                         <FormControl>
-                          <Input {...field} type="email" disabled className="bg-muted/50" />
+                          <Input {...field} type="email" disabled className="bg-muted/50 text-white" />
                         </FormControl>
                       </FormItem>
                     )}
@@ -252,7 +255,7 @@ export default function DisputeForm() {
                       <FormItem className="animate-in fade-in slide-in-from-right duration-700 delay-[900ms]">
                         <FormLabel>Phone Number (Optional)</FormLabel>
                         <FormControl>
-                          <Input {...field} type="tel" className="transition-colors hover:border-primary" />
+                          <Input {...field} type="tel" className="transition-colors hover:border-primary text-white" />
                         </FormControl>
                       </FormItem>
                     )}
@@ -448,7 +451,7 @@ export default function DisputeForm() {
                         <FormControl>
                           <Checkbox
                             checked={field.value}
-                            onCheckedChange={field.onChange}
+                            onChange={field.onChange}
                             className="transition-colors data-[state=checked]:bg-primary"
                           />
                         </FormControl>
@@ -467,19 +470,8 @@ export default function DisputeForm() {
                     name="signature"
                     render={({ field }) => (
                       <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                            className="transition-colors data-[state=checked]:bg-primary"
-                          />
-                        </FormControl>
-                        <div className="space-y-1 leading-none">
-                          <FormLabel>Digital Signature</FormLabel>
-                          <FormDescription>
-                            I acknowledge that this submission serves as my digital signature.
-                          </FormDescription>
-                        </div>
+                        
+                       
                       </FormItem>
                     )}
                   />

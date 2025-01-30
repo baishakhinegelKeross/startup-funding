@@ -1,5 +1,4 @@
-'use client';
-
+'use client'
 import Image from "next/image";
 import Link from "next/link";
 import { CampaignInvestmentProps } from "./types";
@@ -8,9 +7,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { DollarSign, Eye } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({ campaignId }) => {
-    return (
+    const { user } = useAuth();
+    const router = useRouter();
+
+  const userRole = user?.role === 'admin' ? 'admin' : user?.role === 'fundraiser' ? 'founder' : user?.role === 'investor' ? 'investor' : undefined;
+  debugger;
+  console.log(userRole);  
+  return (
         <div className="min-h-screen bg-[#0a0b1e]">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
                 {/* Header Section */}
@@ -71,43 +79,113 @@ const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({ campaignId }) =
                             </div>
 
                             {/* Investment Form */}
+                            {(userRole == "investor" || userRole == undefined) &&
                             <div className="space-y-4">
+                                
                                 <div>
                                     <label className="block text-sm font-medium text-primary mb-2">
                                         INVESTMENT AMOUNT
                                     </label>
                                     <div className="relative">
-                                        <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                        <Input
-                                            type="number"
-                                            min="10"
-                                            className="pl-9 bg-background border-primary/10"
-                                            placeholder="Enter amount"
-                                            defaultValue={10}
-                                        />
+                                        <span className="absolute left-[14px] top-[14px] text-gray-500">$</span>
+                                        <input type="number" min="10"
+                                            id="amountInp"
+                                            className="m-0 w-full pl-8 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            placeholder="Enter amount" 
+                                            defaultValue={10} 
+                                            />
                                     </div>
                                     <p className="mt-1 text-sm text-muted-foreground">Minimum $10</p>
                                 </div>
 
                                 {/* Action Buttons */}
+                                
                                 <div className="space-y-3">
-                                    <Button
+                               {/*  {userRole == undefined ? 
+                                   ( <Button
                                         className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
                                         asChild
                                     >
-                                        <Link href={`/api/fundraiser/campaign/checkout/${campaignId}`}>
+                                      <Link href={`/login`}>
                                             INVEST NOW
                                         </Link>
+                                        
                                     </Button>
+                                   )
+                                    :
+                                    (<Button
+                                        onClick={async ()=>{
+                                            debugger
+                                            
+                                            const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/fundraiser/campaign/checkout/${campaignId}`,JSON.stringify({'amount':document.getElementById('amountInp').value}),{
+                                                headers: {
+                                                'Content-Type': 'application/json'
+                                                },
+                                                withCredentials:true
+                                
+                                            })
+                                            const data = res.data;
+                                            router.push(data.url)
+                                            //redirect(data.url)
+                                        }}
+                                        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                                        asChild
+                                    >
+                                            INVEST NOW
+                                        
+                                    </Button>)
+                                } */}
+
+{userRole === undefined ? (
+    <Button
+        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+        asChild
+    >
+        <Link href={`/login`}>
+            INVEST NOW
+        </Link>
+    </Button>
+) : (
+    <Button
+        onClick={async () => {
+            try {
+                const amount = document.getElementById('amountInp').value;
+                const response = await axios.post(
+                    `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/fundraiser/campaign/checkout/${campaignId}`,
+                    JSON.stringify({ amount }),
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        withCredentials: true,
+                    }
+                );
+                const data = response.data;
+                router.push(data.url);
+            } catch (error) {
+                console.error('Error during the request:', error);
+            }
+        }}
+        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+    >
+        INVEST NOW
+    </Button>
+)}
+
+                                    
+                                    {userRole != undefined && 
                                     <Button
                                         variant="secondary"
                                         className="w-full bg-secondary/50 hover:bg-secondary/70"
                                     >
                                         <Eye className="mr-2 h-4 w-4" />
-                                        WATCH FOR UPDATES
+                                        <Link href={`/dispute/${campaignId}`}>Report Dispute</Link>
                                     </Button>
+                                    }
                                 </div>
+                                  
                             </div>
+                            }
                         </CardContent>
                     </Card>
                 </div>

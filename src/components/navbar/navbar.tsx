@@ -85,10 +85,11 @@ const Navbar: React.FC = () => {
     
       return (
         <>
-          <NavLink className='cursor-pointer' to="/explore">Explore</NavLink>
-          {user?.role == "admin"?<NavLink to="/campaigns">Campaigns</NavLink>:null}
-          <NavLink to="/dashboard">Dashboard</NavLink>
-          {user?.role == "admin"? <NavLink to="/admin">Admin</NavLink>:null}
+          <NavLink className='cursor-pointer' to="/campaigns">Explore</NavLink>
+          {
+            user?.username && <NavLink to="/dashboard">Dashboard</NavLink>
+          }
+          
           { ! user?.username?<NavLink to="/login"> <Button className='bg-blue-600' variant="profilebtn">Login</Button></NavLink>:<TopMenuUser /> }
           
 
