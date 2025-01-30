@@ -1,44 +1,42 @@
-'use client'
+'use client';
+
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
-import {useRouter } from 'next/navigation'
-
-// interface Dispute {
-//   id: number | null;
-//   title: string | null;
-//   description: string | null;
-//   reportedBy: string | null;
-//   date: string | null;
-//   status: string | null;
-//   type: string | null;
-// }
+import { useRouter } from 'next/navigation';
+import { AlertCircle, CheckCircle2, Filter, RefreshCw, Search } from 'lucide-react';
 
 const filterOptions = {
-  status: ['Under Review', 
-    //'In Mediation', 
-    'Resolved', 
-    //'In Arbitration', 'Reported'
-    ],
-  type: ['Fraud', 'Mis Representation', 'Scope Disagreement','Quality Concerns','Technical Issues','Other'], // Replace with actual types
+  status: [
+    'Under Review',
+    'Resolved',
+  ],
+  type: [
+    'Fraud',
+    'Mis Representation',
+    'Scope Disagreement',
+    'Quality Concerns',
+    'Technical Issues',
+    'Other'
+  ],
 };
 
 export default function Home() {
   const [disputes, setDisputes] = useState<Object[]>([]);
   const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
-
-  const router = useRouter()
+  const [isFilterOpen, setIsFilterOpen] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchDisputes = async () => {
       try {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/admin/getAlldisputes`);
-        debugger
         setDisputes(response.data);
       } catch (e) {
         toast.error("Error while getting disputes");
@@ -48,33 +46,36 @@ export default function Home() {
   }, []);
 
   const handleViewDetails = (id: number) => {
-    toast.info(`Opening details for dispute #${id}`, {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-    });
-    
-    router.push(`/dispute-management/${id}`)
+    router.push(`/dispute-management/${id}`);
   };
 
   const getStatusColor = (status: string) => {
-    const colors = {
-      'Under Review': 'bg-blue-500',
-      //'In Mediation': 'bg-purple-500',
-      'Resolved': 'bg-green-500',
-    //   'In Arbitration': 'bg-orange-500',
-    //   'Reported': 'bg-yellow-500',
-    };
-    return colors[status as keyof typeof colors] || 'bg-gray-500';
+    switch (status) {
+      case 'Under Review':
+        return 'bg-amber-500/10 text-amber-500 hover:bg-amber-500/20';
+      case 'Resolved':
+        return 'bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20';
+      default:
+        return 'bg-gray-500/10 text-gray-500 hover:bg-gray-500/20';
+    }
   };
-  const capitalize = (str:String)=>{
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'Under Review':
+        return <AlertCircle className="w-4 h-4 mr-1.5" />;
+      case 'Resolved':
+        return <CheckCircle2 className="w-4 h-4 mr-1.5" />;
+      default:
+        return null;
+    }
+  };
+
+  const capitalize = (str: string) => {
     return str.split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(' ');
-  }
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+  };
 
   const filteredDisputes = disputes.filter((dispute) => {
     const statusMatch = selectedStatus.length === 0 || selectedStatus.includes(dispute.status || '');
@@ -85,111 +86,156 @@ export default function Home() {
   const handleClearFilters = () => {
     setSelectedStatus([]);
     setSelectedTypes([]);
-    // toast.success('Filters cleared');
   };
 
   return (
     <div className="min-h-screen bg-background p-8">
       <ToastContainer />
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold">Dispute Management</h1>
+      <div className=" mx-auto space-y-8">
+        <div className="flex flex-col space-y-4 md:flex-row md:justify-between md:items-center">
+          <div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+              Dispute Management
+            </h1>
+            <p className="text-gray-400 mt-2">
+              Manage and resolve user disputes efficiently
+            </p>
+          </div>
+          <div className="flex items-center gap-4">
+            <Button
+              variant="outline"
+              className="gap-2"
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+            >
+              <Filter className="w-4 h-4" />
+              Filters
+            </Button>
+            <Button
+              variant="outline"
+              className="gap-2"
+              onClick={handleClearFilters}
+            >
+              <RefreshCw className="w-4 h-4" />
+              Reset
+            </Button>
+          </div>
         </div>
 
         <div className="grid md:grid-cols-[300px_1fr] gap-6">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle>Filter Disputes</CardTitle>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleClearFilters}
-                className="text-sm text-gray-500 hover:text-gray-700"
-              >
-                Clear All
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                <div>
-                  <h3 className="font-medium mb-3">Status</h3>
-                  <div className="space-y-2">
-                    {filterOptions.status.map((status) => (
-                      <div key={status} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={status}
-                          checked={selectedStatus.includes(status)}
-                          onCheckedChange={(checked) => {
-                            setSelectedStatus(
-                              checked
-                                ? [...selectedStatus, status]
-                                : selectedStatus.filter((s) => s !== status)
-                            );
-                          }}
-                        />
-                        <label htmlFor={status} className="text-sm">
-                          {status}
+          {isFilterOpen && (
+            <Card className="h-fit bg-card/50 backdrop-blur border-primary/10">
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold">Filters</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="font-medium mb-3 text-primary">Status</h3>
+                    <div className="space-y-3">
+                      {filterOptions.status.map((status) => (
+                        <label
+                          key={status}
+                          className="flex items-center space-x-3 cursor-pointer group"
+                        >
+                          <Checkbox
+                            id={status}
+                            checked={selectedStatus.includes(status)}
+                            onCheckedChange={(checked) => {
+                              setSelectedStatus(
+                                checked
+                                  ? [...selectedStatus, status]
+                                  : selectedStatus.filter((s) => s !== status)
+                              );
+                            }}
+                            className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                          />
+                          <span className="text-sm text-gray-300 group-hover:text-white transition-colors">
+                            {status}
+                          </span>
                         </label>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
 
-                <div>
-                  <h3 className="font-medium mb-3">Type</h3>
-                  <div className="space-y-2">
-                    {filterOptions.type.map((type) => (
-                      <div key={type} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={type}
-                          checked={selectedTypes.includes(type)}
-                          onCheckedChange={(checked) => {
-                            setSelectedTypes(
-                              checked
-                                ? [...selectedTypes, type]
-                                : selectedTypes.filter((t) => t !== type)
-                            );
-                          }}
-                        />
-                        <label htmlFor={type} className="text-sm">
-                          {type}
+                  <div>
+                    <h3 className="font-medium mb-3 text-primary">Type</h3>
+                    <div className="space-y-3">
+                      {filterOptions.type.map((type) => (
+                        <label
+                          key={type}
+                          className="flex items-center space-x-3 cursor-pointer group"
+                        >
+                          <Checkbox
+                            id={type}
+                            checked={selectedTypes.includes(type)}
+                            onCheckedChange={(checked) => {
+                              setSelectedTypes(
+                                checked
+                                  ? [...selectedTypes, type]
+                                  : selectedTypes.filter((t) => t !== type)
+                              );
+                            }}
+                            className="data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                          />
+                          <span className="text-sm text-gray-300 group-hover:text-white transition-colors">
+                            {type}
+                          </span>
                         </label>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
 
           <div className="space-y-4">
             {filteredDisputes.length === 0 ? (
-              <Card>
-                <CardContent className="p-6 text-center text-gray-500">
-                  No disputes match the selected filters
+              <Card className="bg-card/50 backdrop-blur border-primary/10">
+                <CardContent className="p-12 text-center">
+                  <Search className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-400">No disputes match the selected filters</p>
                 </CardContent>
               </Card>
             ) : (
               filteredDisputes.map((dispute, index) => (
-                <Card key={index}>
+                <Card 
+                  key={index}
+                  className="bg-card/50 backdrop-blur border-primary/10 hover:bg-card/70 transition-colors"
+                >
                   <CardContent className="p-6">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="text-xl font-semibold mb-2">{dispute.title}</h3>
-                        <p className=" mb-4">{dispute.description}</p>
-                        <div className="flex items-center space-x-4 text-sm text-gray-500">
-                          <span>Reported by: {dispute.reportedBy}</span>
-                          <span>Date: {new Date(dispute.createdAt).toLocaleDateString()}</span>
-                          <span>Type: {capitalize(dispute.disputeType)}</span>
+                    <div className="flex flex-col md:flex-row justify-between md:items-start gap-4">
+                      <div className="flex-grow space-y-3">
+                        <h3 className="text-xl font-semibold text-white">
+                          {dispute.title}
+                        </h3>
+                        <p className="text-gray-400 line-clamp-2">
+                          {dispute.description}
+                        </p>
+                        <div className="flex flex-wrap gap-4 text-sm text-gray-400">
+                          <span className="flex items-center">
+                            Reported by: {dispute.reportedBy}
+                          </span>
+                          <span className="flex items-center">
+                            {new Date(dispute.createdAt).toLocaleDateString()}
+                          </span>
+                          <span className="flex items-center">
+                            Type: {capitalize(dispute.disputeType)}
+                          </span>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-4">
-                        <Badge variant="secondary" className={getStatusColor(dispute.status || '')}>
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                        <Badge 
+                          variant="secondary"
+                          className={`flex items-center ${getStatusColor(dispute.status || '')}`}
+                        >
+                          {getStatusIcon(dispute.status)}
                           {dispute.status}
                         </Badge>
                         <Button
                           variant="outline"
                           onClick={() => handleViewDetails(dispute.disputeId || 0)}
+                          className="w-full sm:w-auto"
                         >
                           View Details
                         </Button>
