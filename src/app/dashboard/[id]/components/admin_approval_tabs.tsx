@@ -55,6 +55,7 @@ import Classes from './../page.module.css'
 import { useRouter } from 'next/navigation'; 
 import { usePathname } from 'next/navigation';
 import { Separator } from "@/components/ui/separator"
+import Link from 'next/link';
 //import DBCollectionAccess from "@/lib/dbconnect";
 //import { redirect } from "next/navigation"
 
@@ -242,7 +243,13 @@ const AdminApprovalTabs:React.FC<ApprovalTabsProps> = ({campaignData, pitch, fun
         <div className="container mx-auto">
             <Card>
                 <CardHeader className="space-y-4">
+                    
                     <div className="flex justify-between items-center">
+                        <div>
+                        <Button>
+                            <Link href={'/dashboard'}>Back</Link>
+                        </Button>
+                        </div>
                         <CardTitle className="text-3xl font-bold">Campaign Review</CardTitle>
                         {getStatusBadge()}
                     </div>

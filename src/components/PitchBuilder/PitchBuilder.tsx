@@ -27,12 +27,14 @@ const PitchBuilder = () => {
       if (source.droppableId === "slide") {
         const newComponents = components.filter((_, index) => index !== source.index);
         setComponents(newComponents);
+        
       }
       return;
     }
 
     // Reordering within the slide
     if (source.droppableId === "slide" && destination.droppableId === "slide") {
+      console.log("components", components);
       const newComponents = Array.from(components);
       const [removed] = newComponents.splice(source.index, 1);
       newComponents.splice(destination.index, 0, removed);
