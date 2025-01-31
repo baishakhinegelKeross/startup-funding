@@ -26,10 +26,10 @@ const fetchCampaignData = async function(url: string) {
 export default async function CampaignDetails({ params }: PropsArgs): Promise<JSX.Element> {
     const {id} = await params;
     const fetchAPI_URL = `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/fundraiser/campaign/${id}`;
-    console.log('Campaign Id: ', id)
+    //console.log('Campaign Id: ', id)
 
     const fetchedCampaignData = await fetchCampaignData(fetchAPI_URL);
-    console.log('Fetched Campaign Data:- ', fetchedCampaignData);
+    //console.log('Fetched Campaign Data:- ', fetchedCampaignData);
 
     const filteredCampaignData = {
         title: fetchedCampaignData.title,

@@ -33,7 +33,7 @@ const QuestionAnswersPost: React.FC<QuestionAnswersPostProps> = ({posts})=>{
             {
                 posts.reply.length > 0 ? (
                     posts.reply.map((obj)=>(
-                        <div key={obj.id} className="ml-16">
+                        <div key={obj.userId} className="ml-16">
                             <div className="flex gap-4">
                                 <div className="flex-shrink-0">
                                     <div className="w-12 h-12 rounded-full relative bg-gray-200">
