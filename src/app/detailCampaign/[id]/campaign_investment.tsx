@@ -182,6 +182,7 @@ const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({ campaignId }) =
                                         <Link href={`/dispute/${campaignId}`}>Report Dispute</Link>
                                     </Button>
                                     }
+                                    
                                 </div>
                                   
                             </div>

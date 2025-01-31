@@ -136,6 +136,7 @@ export default function DisputeForm() {
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+
     try {
       const formData = new FormData();
 
@@ -156,7 +157,9 @@ export default function DisputeForm() {
       for (const [key, value] of formData.entries()) {
         console.log(`${key}:`, value);
       }
+      debugger
       console.log(process);
+      
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/user/submitDispute`, {
       method: 'POST',
       body: formData
