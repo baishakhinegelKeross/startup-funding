@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FileText, User, AlertCircle, Upload, MessageSquare, X } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,6 @@ import {
   FormMessage,
   FormDescription,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -38,8 +37,8 @@ const disputeResponseSchema = z.object({
   responses: z.any(),
   
   // Terms and Signature
-  termsAccepted: z.any(),//z.boolean().refine(val => val === true, "You must accept the terms"),
-  signatureConfirmed: z.any() //z.boolean().refine(val => val === true, "You must confirm the accuracy"),
+  termsAccepted: z.any(),
+  signatureConfirmed: z.any()
 });
 
 type DisputeResponse = z.infer<typeof disputeResponseSchema>;
@@ -106,10 +105,6 @@ export default function DisputeForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [questionFiles, setQuestionFiles] = useState<Record<string, File[]>>({});
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [activeQuestionId, setActiveQuestionId] = useState<string | null>(null);
-
- 
 
   const form = useForm<DisputeResponse>({
     resolver: zodResolver(disputeResponseSchema),
@@ -124,22 +119,13 @@ export default function DisputeForm({
     },
   });
 
-  const handleUploadClick = (questionId: string) => {
-    setActiveQuestionId(questionId);
-    fileInputRef.current?.click();
-  };
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (activeQuestionId && e.target.files?.length) {
-      const newFiles = Array.from(e.target.files);
+  const handleFileChange = (questionId: string, files: FileList | null) => {
+    if (files) {
+      const newFiles = Array.from(files);
       setQuestionFiles(prev => ({
         ...prev,
-        [activeQuestionId]: [...(prev[activeQuestionId] || []), ...newFiles]
+        [questionId]: [...(prev[questionId] || []), ...newFiles]
       }));
-    }
-    // Reset the input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
     }
   };
 
@@ -151,7 +137,6 @@ export default function DisputeForm({
   };
 
   async function onSubmit(values: DisputeResponse) {
-    debugger
     try {
       setIsSubmitting(true);
       const formData = new FormData();
@@ -160,34 +145,29 @@ export default function DisputeForm({
       Object.entries(mockDisputeData).forEach(([key, value]) => {
         formData.append(key, value);
       });
-      const responsesArray: { questionId: any; answer: any;  }[] = [];
+
       // Add responses and files
-      values.responses.forEach((response, index) => {
-        //const files = questionFiles[response.questionId] || [];
-        const responseObject = {
-          questionId: response.questionId,
-          answer: response.textAnswer || '',
-          //files: files,
-        };
-        responsesArray.push(responseObject);
-      });
+      const responsesArray = values.responses.map((response: any) => ({
+        questionId: response.questionId,
+        answer: response.textAnswer || '',
+      }));
 
       formData.append('responses', JSON.stringify(responsesArray));
+      
+      // Append files with their respective question IDs
+      Object.entries(questionFiles).forEach(([questionId, files]) => {
+        files.forEach((file, index) => {
+          formData.append(`question_${questionId}`, file);
+        });
+      });
+
       formData.append('termsAccepted', values.termsAccepted.toString());
       formData.append('signatureConfirmed', values.signatureConfirmed.toString());
-
-      // Log FormData contents for debugging
-      // for (let [key, value] of formData.entries()) {
-      //   console.log(`${key}:`, value);
-      // }
-      console.log(Array.from(formData.entries()));
-
-
-      const _disputeId = await (params).campaignId
-      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/user/submitCreatorResponse/${_disputeId}`, {
+      const responses = JSON.stringify(responsesArray)
+      const disputeId = await (params).campaignId;
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/user/submitCreatorResponse/${disputeId}?responses=${encodeURIComponent(responses)}`, {
         method: 'POST',
         body: formData,
-        
       });
       setSubmitSuccess(true);
     } catch (error) {
@@ -221,18 +201,6 @@ export default function DisputeForm({
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8" encType="multipart/form-data">
-            {/* Hidden file input */}
-            <input
-              type="file"
-              ref={fileInputRef}
-              className="hidden"
-              multiple
-              name="files"
-              id="chut"
-              onChange={handleFileSelect}
-              accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
-            />
-
             <FormSection icon={FileText} title="Project Information">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <ReadOnlyField label="Project ID" value={mockDisputeData.projectId} />
@@ -293,16 +261,14 @@ export default function DisputeForm({
                     <div className="space-y-2">
                       <div className="flex justify-between items-center">
                         <FormLabel className="text-sm">Supporting Documents</FormLabel>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleUploadClick(question.id)}
-                          className="flex items-center gap-2"
-                        >
-                          <Upload className="h-4 w-4" />
-                          Upload Files
-                        </Button>
+                        <input
+                          type="file"
+                          name={`question_${question.id}`}
+                          multiple
+                          onChange={(e) => handleFileChange(question.id, e.target.files)}
+                          accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
+                          className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
+                        />
                       </div>
 
                       {questionFiles[question.id]?.length > 0 && (
