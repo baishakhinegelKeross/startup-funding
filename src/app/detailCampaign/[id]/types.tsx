@@ -71,7 +71,21 @@ export interface KeyPointsProps{
 // campaign_investment.tsx : ST
 
 export interface CampaignInvestmentProps {
-    campaignId: string
+    campaignId: string,
+    data:{
+        title: string,
+        story: string,
+        image_url: string,
+        category: string,
+        goal_amount: number,
+        current_amount: number,
+        owner: string,
+        email: string,
+        stripeId: string,
+        transactions: string [],
+        end_date: Date,
+        date: Date
+    }
 }
 
 // campaign_investment.tsx : ED
@@ -194,3 +208,12 @@ export interface ImgEditorProps{
 }
 
 // img_editor.tsx : ED
+
+// amount.tsx : ST
+
+export interface CampaignAmountProps{
+    goal: string,
+    raised: string
+}
+
+// amount.tsx : ED
