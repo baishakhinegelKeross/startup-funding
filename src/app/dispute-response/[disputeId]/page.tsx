@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FileText, User, AlertCircle, Upload, MessageSquare, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -22,16 +22,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import axios from "axios";
 
 const disputeResponseSchema = z.object({
   // Basic Info (pre-filled)
-  projectId: z.string(),
-  projectName: z.string(),
-  creatorName: z.string(),
-  creatorEmail: z.string().email(),
-  disputeId: z.string(),
-  backerName: z.string(),
-  backerComplaint: z.string(),
+  projectId: z.any(),
+  projectName: z.any(),
+  creatorName: z.any(),
+  creatorEmail: z.any(),
+  disputeId: z.any(),
+  backerName: z.any(),
+  backerComplaint: z.any(),
   
   // Response Questions
   responses: z.any(),
@@ -43,42 +44,42 @@ const disputeResponseSchema = z.object({
 
 type DisputeResponse = z.infer<typeof disputeResponseSchema>;
 
-const mockDisputeQuestions = [
-  {
-    id: "q1",
-    question: "Please explain your perspective on the dispute in detail.",
-    description: "Provide a comprehensive explanation of your side of the dispute, including relevant dates and events.",
-    required: true,
-  },
-  {
-    id: "q2",
-    question: "What steps have you taken to address the backer's concerns?",
-    description: "Detail all communication and actions taken to resolve the situation.",
-    required: true,
-  },
-  {
-    id: "q3",
-    question: "Describe your proposed resolution to this dispute.",
-    description: "Outline your suggested solution and timeline for implementation.",
-    required: true,
-  },
-  {
-    id: "q4",
-    question: "What evidence can you provide to support your position?",
-    description: "Include any relevant documentation, communication records, or other supporting materials.",
-    required: true,
-  }
-];
+// const mockDisputeQuestions = [
+//   {
+//     id: "q1",
+//     question: "Please explain your perspective on the dispute in detail.",
+//     description: "Provide a comprehensive explanation of your side of the dispute, including relevant dates and events.",
+//     required: true,
+//   },
+//   {
+//     id: "q2",
+//     question: "What steps have you taken to address the backer's concerns?",
+//     description: "Detail all communication and actions taken to resolve the situation.",
+//     required: true,
+//   },
+//   {
+//     id: "q3",
+//     question: "Describe your proposed resolution to this dispute.",
+//     description: "Outline your suggested solution and timeline for implementation.",
+//     required: true,
+//   },
+//   {
+//     id: "q4",
+//     question: "What evidence can you provide to support your position?",
+//     description: "Include any relevant documentation, communication records, or other supporting materials.",
+//     required: true,
+//   }
+// ];
 
-const mockDisputeData = {
-  projectId: "PRJ-2024-001",
-  projectName: "Creative Project X",
-  creatorName: "John Doe",
-  creatorEmail: "john.doe@example.com",
-  disputeId: "DSP-2024-001",
-  backerName: "Jane Smith",
-  backerComplaint: "Delayed delivery and communication issues",
-};
+// const mockDisputeData = {
+//   projectId: "PRJ-2024-001",
+//   projectName: "Creative Project X",
+//   creatorName: "John Doe",
+//   creatorEmail: "john.doe@example.com",
+//   disputeId: "DSP-2024-001",
+//   backerName: "Jane Smith",
+//   backerComplaint: "Delayed delivery and communication issues",
+// };
 
 const FormSection = ({ children, icon: Icon, title }: { children: React.ReactNode; icon: any; title: string }) => (
   <div className="space-y-4 mb-8">
@@ -105,15 +106,37 @@ export default function DisputeForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [questionFiles, setQuestionFiles] = useState<Record<string, File[]>>({});
+  const [data, setData] = useState({ _details:{adminQueries:[]}});
+  
+
+  useEffect(()=>{
+    const fetchData = async()=>{
+      const disputeId = (await params).disputeId;
+      const response = await axios.get(`http://localhost:8000/user/getDisputeInfo/${disputeId}`)
+      setData(response.data)
+      }
+    fetchData()
+  },[])
+
+
+  const mockDisputeData = {
+  projectId: data._details.campaignId,
+  projectName: data._details.campaignName,
+  creatorName: "CREATOR",
+  creatorEmail: "creator.example@example.com",
+  disputeId: "DSP-2024-001",
+  backerName: data._details.rasiedBy,
+  backerComplaint: data._details.desiredOutcome  ,
+};
 
   const form = useForm<DisputeResponse>({
     resolver: zodResolver(disputeResponseSchema),
     defaultValues: {
       ...mockDisputeData,
-      responses: mockDisputeQuestions.map(q => ({
-        questionId: q.id,
-        textAnswer: "",
-      })),
+      // responses: data._details.adminQueries.map(q => ({
+      //   questionId: q.id,
+      //   textAnswer: "",
+      // })),
       termsAccepted: false,
       signatureConfirmed: false,
     },
@@ -137,6 +160,7 @@ export default function DisputeForm({
   };
 
   async function onSubmit(values: DisputeResponse) {
+    debugger
     try {
       setIsSubmitting(true);
       const formData = new FormData();
@@ -147,7 +171,7 @@ export default function DisputeForm({
       });
 
       // Add responses and files
-      const responsesArray = values.responses.map((response: any) => ({
+      const responsesArray = data.creatorResponse.map((response: any) => ({
         questionId: response.questionId,
         answer: response.textAnswer || '',
       }));
@@ -164,7 +188,7 @@ export default function DisputeForm({
       formData.append('termsAccepted', values.termsAccepted.toString());
       formData.append('signatureConfirmed', values.signatureConfirmed.toString());
       const responses = JSON.stringify(responsesArray)
-      const disputeId = await (params).campaignId;
+      const disputeId = await (params).disputeId;
       await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/user/submitCreatorResponse/${disputeId}?responses=${encodeURIComponent(responses)}`, {
         method: 'POST',
         body: formData,
@@ -216,21 +240,21 @@ export default function DisputeForm({
             </FormSection>
 
             <FormSection icon={AlertCircle} title="Dispute Details">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <ReadOnlyField label="Dispute ID" value={mockDisputeData.disputeId} />
                 <ReadOnlyField label="Backer Name" value={mockDisputeData.backerName} />
-              </div>
-              <ReadOnlyField label="Backer's Complaint" value={mockDisputeData.backerComplaint} />
+              </div> */}
+              <ReadOnlyField label="Backer's desired Outcome" value={mockDisputeData.backerComplaint} />
             </FormSection>
 
             <div className="space-y-8">
-              {mockDisputeQuestions.map((question, index) => (
+              {data._details.adminQueries.map((question, index) => (
                 <div key={question.id} className="p-6 bg-muted/30 rounded-lg border">
                   <div className="space-y-4">
                     <div className="flex justify-between items-start">
                       <div className="space-y-2">
                         <FormLabel className="text-base font-semibold flex items-center gap-2">
-                          {question.question}
+                          {question.text}
                           {question.required && (
                             <Badge variant="secondary" className="text-xs">Required</Badge>
                           )}
@@ -251,6 +275,26 @@ export default function DisputeForm({
                               {...field}
                               className="min-h-[100px] resize-y bg-background"
                               placeholder="Enter your response..."
+                              onChange={(e) => {
+                                const response = data._details.adminQueries.map(q => {
+                                    const rtnObj = { questionId: q.id };
+                                    if (q.id === question.id) {
+                                        rtnObj["textAnswer"] = e.target.value;
+                                        return rtnObj;
+                                    }
+                                    return {
+                                        ...rtnObj,
+                                        textAnswer: data.creatorResponse 
+                                            ? data.creatorResponse.filter(e => q.id === e.questionId)[0].textAnswer 
+                                            : 'n/a'
+                                    };
+                                });
+                                const latestData = { ...data, creatorResponse: response };
+                                setData(latestData);
+                            }}
+                            
+                              
+                             
                             />
                           </FormControl>
                           <FormMessage />
