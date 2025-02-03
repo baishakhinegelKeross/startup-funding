@@ -58,30 +58,35 @@ export default function DisputeResolutionForm({
   params: Promise<{ slug: string }>
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [data, setData] = useState<any>({ files: [], answers: {} });
+  const [data, setData] = useState<any>({ files: [], _details:{adminQueries: [] }});
   const [selectedEvidence, setSelectedEvidence] = useState(null);
 
-  const evidenceQuestions = [
-    {
-      id: "q1",
-      question: "Please provide details of the issue or concern.",
-      description: "Include specific dates, events, and any relevant context.",
-      required: true,
-    },
-    {
-      id: "q2",
-      question: "What attempts have been made to resolve this issue?",
-      description: "Detail any communication or actions taken thus far.",
-      required: true,
-    },
-    {
-      id: "q3",
-      question: "What is your proposed solution?",
-      description: "Describe your ideal resolution to this dispute.",
-      required: true,
+  // const evidenceQuestions = [
+  //   {
+  //     id: "q1",
+  //     question: "Please provide details of the issue or concern.",
+  //     description: "Include specific dates, events, and any relevant context.",
+  //     required: true,
+  //   },
+  //   {
+  //     id: "q2",
+  //     question: "What attempts have been made to resolve this issue?",
+  //     description: "Detail any communication or actions taken thus far.",
+  //     required: true,
+  //   },
+  //   {
+  //     id: "q3",
+  //     question: "What is your proposed solution?",
+  //     description: "Describe your ideal resolution to this dispute.",
+  //     required: true,
+  //   }
+  // ];
+  const evidenceQuestions = data._details.adminQueries.map(e =>{
+    return {
+      id:e.id,
+      question:e.text
     }
-  ];
-
+  })
   const handleEvidenceClick = (evidence:any) => {
     setSelectedEvidence(evidence);
   };
@@ -248,6 +253,10 @@ export default function DisputeResolutionForm({
                       {...field}
                       className="min-h-[100px] resize-y bg-background"
                       placeholder="Enter your response..."
+                      value={
+                        
+                        data._details.creatorResponse?data._details.creatorResponse.filter(e =>e.questionId ===question.id)[0].answer:'n/a'
+                      }
                     />
                   </FormControl>
                   <FormMessage />

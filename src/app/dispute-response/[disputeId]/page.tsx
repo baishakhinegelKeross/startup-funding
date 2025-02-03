@@ -26,13 +26,13 @@ import axios from "axios";
 
 const disputeResponseSchema = z.object({
   // Basic Info (pre-filled)
-  projectId: z.string(),
-  projectName: z.string(),
-  creatorName: z.string(),
-  creatorEmail: z.string().email(),
-  disputeId: z.string(),
-  backerName: z.string(),
-  backerComplaint: z.string(),
+  projectId: z.any(),
+  projectName: z.any(),
+  creatorName: z.any(),
+  creatorEmail: z.any(),
+  disputeId: z.any(),
+  backerName: z.any(),
+  backerComplaint: z.any(),
   
   // Response Questions
   responses: z.any(),
@@ -107,6 +107,7 @@ export default function DisputeForm({
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [questionFiles, setQuestionFiles] = useState<Record<string, File[]>>({});
   const [data, setData] = useState({ _details:{adminQueries:[]}});
+  
 
   useEffect(()=>{
     const fetchData = async()=>{
@@ -132,10 +133,10 @@ export default function DisputeForm({
     resolver: zodResolver(disputeResponseSchema),
     defaultValues: {
       ...mockDisputeData,
-      responses: data._details.adminQueries.map(q => ({
-        questionId: q.id,
-        textAnswer: "",
-      })),
+      // responses: data._details.adminQueries.map(q => ({
+      //   questionId: q.id,
+      //   textAnswer: "",
+      // })),
       termsAccepted: false,
       signatureConfirmed: false,
     },
@@ -159,6 +160,7 @@ export default function DisputeForm({
   };
 
   async function onSubmit(values: DisputeResponse) {
+    debugger
     try {
       setIsSubmitting(true);
       const formData = new FormData();
@@ -169,7 +171,7 @@ export default function DisputeForm({
       });
 
       // Add responses and files
-      const responsesArray = values.responses.map((response: any) => ({
+      const responsesArray = data.creatorResponse.map((response: any) => ({
         questionId: response.questionId,
         answer: response.textAnswer || '',
       }));
@@ -273,6 +275,26 @@ export default function DisputeForm({
                               {...field}
                               className="min-h-[100px] resize-y bg-background"
                               placeholder="Enter your response..."
+                              onChange={(e) => {
+                                const response = data._details.adminQueries.map(q => {
+                                    const rtnObj = { questionId: q.id };
+                                    if (q.id === question.id) {
+                                        rtnObj["textAnswer"] = e.target.value;
+                                        return rtnObj;
+                                    }
+                                    return {
+                                        ...rtnObj,
+                                        textAnswer: data.creatorResponse 
+                                            ? data.creatorResponse.filter(e => q.id === e.questionId)[0].textAnswer 
+                                            : 'n/a'
+                                    };
+                                });
+                                const latestData = { ...data, creatorResponse: response };
+                                setData(latestData);
+                            }}
+                            
+                              
+                             
                             />
                           </FormControl>
                           <FormMessage />
