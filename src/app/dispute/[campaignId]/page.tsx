@@ -177,8 +177,9 @@ export default function DisputeForm({
       
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/user/submitDispute`, {
       method: 'POST',
-      body: formData
-  });
+      body: formData,
+      credentials: 'include'
+    });
   console.log('File uploaded:', response);
     
       

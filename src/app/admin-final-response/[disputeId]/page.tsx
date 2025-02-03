@@ -309,7 +309,9 @@ export default function DisputeResolutionForm({
       formData.append('creatorEvidences', JSON.stringify(values.creatorEvidences));
       formData.append('action', action);
 
-      const response = await fetch('/api/disputes', {
+      const disputeId = (await params).disputeId;
+      
+      const response = await fetch(`/rejectDispute/${disputeId}`, {
         method: 'POST',
         body: formData,
       });
@@ -538,7 +540,7 @@ export default function DisputeResolutionForm({
                   Reject
                 </Button>
                 
-                <Button
+                {/* <Button
                   type="button"
                   variant="secondary"
                   className="flex-1"
@@ -547,7 +549,7 @@ export default function DisputeResolutionForm({
                 >
                   <Save className="w-4 h-4 mr-2" />
                   Save Draft
-                </Button>
+                </Button> */}
               </div>
             </form>
           </Form>

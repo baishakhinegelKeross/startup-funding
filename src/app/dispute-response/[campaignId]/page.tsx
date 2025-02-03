@@ -232,12 +232,12 @@ export default function DisputeForm({
               </div>
             </FormSection>
 
-            <FormSection icon={User} title="Creator Information">
+            {/* <FormSection icon={User} title="Creator Information">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <ReadOnlyField label="Creator Name" value={mockDisputeData.creatorName} />
                 <ReadOnlyField label="Email" value={mockDisputeData.creatorEmail} />
               </div>
-            </FormSection>
+            </FormSection> */}
 
             <FormSection icon={AlertCircle} title="Dispute Details">
               {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">

@@ -48,6 +48,7 @@ export default function DisputeReviewForm({
     const fetchData = async () => {
       try {
         const disputeId = (await params).disputeId;
+        debugger
         const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/admin/fetchDisputeInfo/${disputeId}`);
         debugger
         setData(response.data);
@@ -100,7 +101,7 @@ export default function DisputeReviewForm({
     // Handle form submission with comment and questions
     debugger
     const comments = commentsRef.current.value
-    const returnObj = { comments, questions }
+    const returnObj = { comments, questions,status:"Under Creator Review" }
     const disputeId = (await params).disputeId;
 
     try {
