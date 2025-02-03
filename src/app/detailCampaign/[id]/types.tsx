@@ -185,6 +185,25 @@ export interface QuestionAnswersPostProps{
     }
 }
 
+
+export interface CommentProps{
+    userId: string;
+    comment: string;
+    userPic: string;
+    userName: string;
+    userRole: string;
+    commentDate: string;
+}
+
+export interface ReplyCommentProps{
+    replyingToId: string;
+    userId: string;
+    replyComment: string;
+    userPic: string;
+    userName: string;
+    userRole: string;
+    replyDate: string;
+}
 // question_answers_posts.tsx : ED
 
 // text_editor.tsx : ST
