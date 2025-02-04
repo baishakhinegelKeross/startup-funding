@@ -37,7 +37,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { toast } from "react-toastify";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 
@@ -52,9 +52,9 @@ const ACCEPTED_FILE_TYPES = [
 ];
 
 const formSchema = z.object({
-  projectId: z.string(),
-  projectName: z.string(),
-  email: z.string().email(),
+  campaignId: z.string(),
+  campaignName: z.string(),
+  email: z.string().optional(),
   phone: z.string().optional(),
   disputeType: z.string(),
   issueDate: z.date(),
@@ -66,22 +66,36 @@ const formSchema = z.object({
   documents: z.array(z.instanceof(File)).optional(),
 });
 
-export default function DisputeForm() {
+export default function DisputeForm({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
   const [files, setFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [campaignData,setCampaignData] = useState({})
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      projectId: "PRJ-001",
-      projectName: "Example Project",
-      email: "user@example.com",
+      campaignId: '',
+      campaignName:'' ,
+      email: 'backer.email@example.com',
       termsAccepted: false,
       signature: false,
       documents: [],
     },
   });
 
+  useEffect(()=>{
+    const fetchCampaignData = async ()=>{
+      debugger
+      const _params = decodeURIComponent((await params).campaignId)
+      setCampaignData({campaignId:_params.split("-")[1],campaignName:_params.split("-")[0]})
+    }
+    fetchCampaignData()
+  },[])
+  
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(event.target.files || []);
     
@@ -137,10 +151,12 @@ export default function DisputeForm() {
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    debugger
+    const _values = {...values,campaignName:campaignData.campaignName,campaignId:campaignData.campaignId}
     try {
       const formData = new FormData();
 
-      Object.entries(values).forEach(([key, value]) => {
+      Object.entries(_values).forEach(([key, value]) => {
         if (key !== 'documents') {
           formData.append(key, value as string);
         }
@@ -157,11 +173,14 @@ export default function DisputeForm() {
       for (const [key, value] of formData.entries()) {
         console.log(`${key}:`, value);
       }
+      debugger
       console.log(process);
+      
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/user/submitDispute`, {
       method: 'POST',
-      body: formData
-  });
+      body: formData,
+      credentials: 'include'
+    });
   console.log('File uploaded:', response);
     
       

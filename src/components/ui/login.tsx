@@ -23,6 +23,7 @@ import {
 import { Input } from "@/components/ui/input"
 import axios from "axios"
 import Link from "next/link"
+import { useAuth } from "@/lib/auth-context"
 
 const formSchema = z.object({
   username: z.string().min(1, {
@@ -34,7 +35,7 @@ const formSchema = z.object({
 })
 
 export default function ProfileForm() {
-  const { isLoggedIn, setIsLoggedIn } = useContext(LoginContext)
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -58,6 +59,8 @@ export default function ProfileForm() {
 
       toast.success('Login Successful')
       window.location.href = '/'
+      setIsLoggedIn(true)
+
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Login failed')
     }

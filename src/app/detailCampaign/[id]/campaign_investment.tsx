@@ -220,13 +220,15 @@ const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({ campaignId, dat
                                             className="w-full bg-secondary/50 hover:bg-secondary/70"
                                         >
                                             <Eye className="mr-2 h-4 w-4" />
-                                            <Link href={`/dispute/${campaignId}`}>Report Dispute</Link>
+                                            <Link href={`/dispute/${data.title}-${campaignId}`}>Report Dispute</Link>
                                         </Button>
                                         }
+                                       
                                     </div>
                                     
                                 </div>
                                 }
+                               
                             </CardContent>
                         </Card>
                     </div>

@@ -33,7 +33,7 @@ export default function DisputeReviewForm({
   params: Promise<{ slug: string }>
 }) {
   const [selectedEvidence, setSelectedEvidence] = useState<DisputeEvidence | null>(null);
-  const [data, setData] = useState({ files: [] });
+  const [data, setData] = useState({ _details:{},files: [] });
   const [comment, setComment] = useState('');
   const [questions, setQuestions] = useState<Question[]>([]);
   const [newQuestion, setNewQuestion] = useState('');
@@ -48,7 +48,9 @@ export default function DisputeReviewForm({
     const fetchData = async () => {
       try {
         const disputeId = (await params).disputeId;
+        debugger
         const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/admin/fetchDisputeInfo/${disputeId}`);
+        debugger
         setData(response.data);
       } catch (e) {
         toast.error('Error while getting dispute details');
@@ -99,7 +101,7 @@ export default function DisputeReviewForm({
     // Handle form submission with comment and questions
     debugger
     const comments = commentsRef.current.value
-    const returnObj = { comments, questions }
+    const returnObj = { comments, questions,status:"Under Creator Review" }
     const disputeId = (await params).disputeId;
 
     try {
@@ -170,6 +172,13 @@ export default function DisputeReviewForm({
     );
   };
 
+  const capitalize = (str: string) => {
+    return str.split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+  };
+ 
+
   return (
     <div className="min-h-screen bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       <ToastContainer/>
@@ -190,13 +199,13 @@ export default function DisputeReviewForm({
                 icon={Mail} 
                 label="Backer Email" 
                 className="text-white"
-                value="john.doe@example.com"      
+                value="backer.info@example.com"      
               />
               <DisabledInput 
                 icon={Phone}
                 className="text-white" 
-                label="Contact Number" 
-                value="+1 (555) 123-4567" 
+                label="Raised By" 
+                value={data._details.rasiedBy}
               />
             </div>
           </FormSection>
@@ -207,38 +216,31 @@ export default function DisputeReviewForm({
                 icon={FileText}
                 className="text-white"
                 label="Project Name" 
-                value="Innovative Tech Project" 
+                value={data._details.campaignId} 
               />
               <DisabledInput 
                 icon={FileText} 
                 className="text-white"
                 label="Project ID" 
-                value="PRJ-2024-001" 
+                value={data._details.campaignName} 
               />
             </div>
           </FormSection>
 
           <FormSection title="Dispute Information">
             <div className="space-y-4">
-              <div>
-                <label className="text-sm text-gray-400">Dispute Type</label>
-                <Select disabled defaultValue="refund">
-                  <SelectTrigger className="bg-gray-800">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="refund">Refund Request</SelectItem>
-                    <SelectItem value="delivery">Delivery Issue</SelectItem>
-                    <SelectItem value="quality">Quality Concern</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            <DisabledInput 
+                icon={FileText} 
+                className="text-white"
+                label="Dispute Type" 
+                value={data._details.disputeType?capitalize(data._details.disputeType):'n/a'} 
+              />
               
               <DisabledInput 
                 icon={FileText} 
                 className="text-white"
                 label="Issued At" 
-                value="2024-03-20 14:30 UTC" 
+                value={new Date(data._details.createdAt).toDateString()} 
               />
               
               <div>
@@ -246,7 +248,16 @@ export default function DisputeReviewForm({
                 <Textarea 
                   disabled 
                   className="bg-gray-800 h-32 text-white"
-                  value="The product received does not match the description provided in the project. Multiple features are missing and the quality is subpar."
+                  value={data._details.description}
+                />
+              </div>
+              <div>
+                <label className="text-sm text-gray-400">Desired Outcome</label>
+                <Textarea 
+                  disabled 
+                  className="bg-gray-800 h-32 text-white"
+                  value={data._details.desiredOutcome
+                  }
                 />
               </div>
             </div>

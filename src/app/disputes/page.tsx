@@ -10,10 +10,13 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { useRouter } from 'next/navigation';
 import { AlertCircle, CheckCircle2, Filter, RefreshCw, Search } from 'lucide-react';
+import { useAuth } from '@/lib/auth-context';
+import { encode } from 'punycode';
 
 const filterOptions = {
   status: [
-    'Under Review',
+    'Under Admin Review',
+    'Under Creator Review',
     'Resolved',
   ],
   type: [
@@ -32,11 +35,20 @@ export default function Home() {
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [isFilterOpen, setIsFilterOpen] = useState(true);
   const router = useRouter();
+  const { user } = useAuth();
+ 
+  //const [role,setRole] = useState(null)
+  const userRole = user?.role === 'admin' ? 'admin' : user?.role === 'fundraiser' ? 'founder' : user?.role === 'investor' ? 'investor' : undefined
 
   useEffect(() => {
     const fetchDisputes = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/admin/getAlldisputes`);
+        console.log('user role => '+userRole)
+        debugger
+        
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/user/getRoleWiseDisputes?role=${encodeURIComponent(userRole)}`, {
+          withCredentials: true,
+        });
         setDisputes(response.data);
       } catch (e) {
         toast.error("Error while getting disputes");
@@ -45,8 +57,14 @@ export default function Home() {
     fetchDisputes();
   }, []);
 
-  const handleViewDetails = (id: number) => {
-    router.push(`/dispute-management/${id}`);
+  const handleViewDetails = (id: number,status:String) => {
+    if(userRole=='admin' && status==='Under Admin Review')
+      router.push(`/dispute-management/${id}`);
+    else if(status==='Under Creator Review' && userRole=='admin' )
+      router.push(`/admin-final-response/${id}`);
+    else
+      router.push(`/dispute-response/${id}`);
+
   };
 
   const getStatusColor = (status: string) => {
@@ -140,9 +158,10 @@ export default function Home() {
                           <Checkbox
                             id={status}
                             checked={selectedStatus.includes(status)}
-                            onCheckedChange={(checked) => {
+                            onChange={(event) => {
+                              const isChecked = event.target.checked;
                               setSelectedStatus(
-                                checked
+                                isChecked
                                   ? [...selectedStatus, status]
                                   : selectedStatus.filter((s) => s !== status)
                               );
@@ -168,9 +187,10 @@ export default function Home() {
                           <Checkbox
                             id={type}
                             checked={selectedTypes.includes(type)}
-                            onCheckedChange={(checked) => {
+                            onChange={(event) => {
+                              const isChecked = event.target.checked;
                               setSelectedTypes(
-                                checked
+                                isChecked
                                   ? [...selectedTypes, type]
                                   : selectedTypes.filter((t) => t !== type)
                               );
@@ -207,7 +227,7 @@ export default function Home() {
                     <div className="flex flex-col md:flex-row justify-between md:items-start gap-4">
                       <div className="flex-grow space-y-3">
                         <h3 className="text-xl font-semibold text-white">
-                          {dispute.title}
+                          {dispute.title?dispute.title:`dispute#${dispute.disputeId}`}
                         </h3>
                         <p className="text-gray-400 line-clamp-2">
                           {dispute.description}
@@ -232,13 +252,13 @@ export default function Home() {
                           {getStatusIcon(dispute.status)}
                           {dispute.status}
                         </Badge>
-                        <Button
+                        {dispute.status!=="Resolved"?<Button
                           variant="outline"
-                          onClick={() => handleViewDetails(dispute.disputeId || 0)}
+                          onClick={() => handleViewDetails(dispute.disputeId || 0,dispute.status)}
                           className="w-full sm:w-auto"
-                        >
-                          View Details
-                        </Button>
+                        >View Details
+                        </Button>:null}
+                          
                       </div>
                     </div>
                   </CardContent>
