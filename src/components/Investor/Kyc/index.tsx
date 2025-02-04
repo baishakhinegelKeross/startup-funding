@@ -215,7 +215,7 @@ export default function KYCPage() {
             <Tabs value={tabs[currentTab]?.id}
               onValueChange={(value) => setCurrentTab(tabs.findIndex(tab => tab.id === value))}
               className="flex-1 overflow-hidden">
-              <TabsPanel tabs={tabs} activeTab={currentTab} onTabChange={setCurrentTab} isValid={ true} />
+              <TabsPanel tabs={tabs} activeTab={currentTab} onTabChange={setCurrentTab} isValid={true} />
 
               <div>
                 <TabsContent value="identification">
@@ -386,48 +386,50 @@ export default function KYCPage() {
                 </TabsContent>
 
                 <TabsContent value="accreditation">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Accredited Investor Verification</CardTitle>
-                      <CardDescription>
+                  <Card className="bg-dark-gray rounded shadow-md">
+                    <CardHeader className="py-4 px-6 bg-medium-gray">
+                      <CardTitle className="text-lg font-bold text-white">Accredited Investor Verification</CardTitle>
+                      <CardDescription className="text-sm text-light-gray">
                         Verify your status as an accredited investor to access exclusive investment opportunities.
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-6">
-                      <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">Qualification Criteria</h3>
+                    <CardContent className="p-6 space-y-8 text-gray-300">
+                      <section className="space-y-4">
+                        <h3 className="text-lg font-bold">Qualification Criteria</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <Card className="bg-muted">
-                            <CardHeader>
-                              <CardTitle className="text-base">Income Qualification</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                              <ul className="list-disc list-inside space-y-2 text-sm">
+                          <Card className="bg-dark-gray p-6 rounded shadow-md">
+                            <header className="py-2 px-4 bg-medium-gray border-b border-light-gray">
+                              <h5 className="text-lg font-bold">Income Qualification</h5>
+                            </header>
+                            <div className="p-4 space-y-2 text-sm">
+                              <ul className="list-disc list-inside">
                                 <li>Individual income > $200,000 in each of the past 2 years</li>
                                 <li>Joint income with spouse > $300,000 in each of the past 2 years</li>
                                 <li>Reasonable expectation of maintaining income levels</li>
                               </ul>
-                            </CardContent>
+                            </div>
                           </Card>
-                          <Card className="bg-muted">
-                            <CardHeader>
-                              <CardTitle className="text-base">Net Worth Qualification</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                              <ul className="list-disc list-inside space-y-2 text-sm">
+                          <Card className="bg-dark-gray p-6 rounded shadow-md">
+                            <header className="py-2 px-4 bg-medium-gray border-b border-light-gray">
+                              <h5 className="text-lg font-bold">Net Worth Qualification</h5>
+                            </header>
+                            <div className="p-4 space-y-2 text-sm">
+                              <ul className="list-disc list-inside">
                                 <li>Individual or joint net worth > $1 million</li>
                                 <li>Excluding primary residence</li>
                                 <li>Including assets and liabilities</li>
                               </ul>
-                            </CardContent>
+                            </div>
                           </Card>
                         </div>
-                      </div>
+                      </section>
 
-                      <div className="space-y-4">
-                        <h3 className="text-lg font-semibold">Document Upload</h3>
+                      <section className="space-y-4">
+                        <h3 className="text-lg font-bold">Document Upload</h3>
                         <div className="grid grid-cols-1 gap-4">
-                          <Button variant="outline" className="h-32" onClick={() => handleUploadClick('incomeProof')}>
+                          <Button variant="outline" className="bg-medium-gray py-2 px-6 border border-light-gray rounded hover:bg-dark-gray transition duration-300"
+                            onClick={() => handleUploadClick('incomeProof')}
+                            disabled={!canProceed}>
                             <div className="flex flex-col items-center space-y-2">
                               <Upload className="h-6 w-6" />
                               <input
@@ -436,12 +438,14 @@ export default function KYCPage() {
                                 style={{ display: 'none' }}
                                 onChange={(e) => handleFileChange(e, 'incomeProof')}
                               />
-                              {files.incomeProof && <p>{truncateFileName(files.incomeProof.name, 20)}</p>}
-                              <span>Upload Income Proof</span>
-                              <span className="text-xs text-muted-foreground">Tax returns, W-2s, or pay stubs</span>
+                              {files.incomeProof && <p className="text-gray-400">{truncateFileName(files.incomeProof.name, 20)}</p>}
+                              <span className="text-white">Upload Income Proof</span>
+                              <span className="text-sm text-light-gray">Tax returns, W-2s, or pay stubs</span>
                             </div>
                           </Button>
-                          <Button variant="outline" className="h-32" onClick={() => handleUploadClick('netWorthStatement')}>
+                          <Button variant="outline" className="bg-medium-gray py-2 px-6 border border-light-gray rounded hover:bg-dark-gray transition duration-300"
+                            onClick={() => handleUploadClick('netWorthStatement')}
+                            disabled={!canProceed}>
                             <div className="flex flex-col items-center space-y-2">
                               <Upload className="h-6 w-6" />
                               <input
@@ -450,16 +454,17 @@ export default function KYCPage() {
                                 style={{ display: 'none' }}
                                 onChange={(e) => handleFileChange(e, 'netWorthStatement')}
                               />
-                              {files.netWorthStatement && <p>{truncateFileName(files.netWorthStatement.name, 20)}</p>}
-                              <span>Upload Net Worth Statement</span>
-                              <span className="text-xs text-muted-foreground">Bank statements, investment accounts, or certification letter</span>
+                              {files.netWorthStatement && <p className="text-gray-400">{truncateFileName(files.netWorthStatement.name, 20)}</p>}
+                              <span className="text-white">Upload Net Worth Statement</span>
+                              <span className="text-sm text-light-gray">Bank statements, investment accounts, or certification letter</span>
                             </div>
                           </Button>
                         </div>
-                      </div>
+                      </section>
                     </CardContent>
                   </Card>
                 </TabsContent>
+
 
                 <TabsContent value="aml">
                   <Card>

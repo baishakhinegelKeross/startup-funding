@@ -110,7 +110,7 @@ export function GlobalChat() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 w-[400px] shadow-2xl z-50">
+    <div className="fixed bottom-6 right-4 w-[400px] shadow-2xl z-50">
       <Card className="h-[500px] flex flex-col bg-background border-muted-foreground/20">
         <CardHeader className="border-b border-border/50 bg-muted/50 p-4">
           <div className="flex items-center justify-between">
