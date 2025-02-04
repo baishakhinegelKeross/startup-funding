@@ -41,6 +41,7 @@ export default function RootLayout({
           <Navbar />
           {children}
           <GlobalChat />
+        </body>
           <footer className="flex items-center border-t border-gray-200 bg-gray-800  fixed bottom-0  z-50 w-full">
             <div className="container  px-4">
               <div className="flex flex-col lg:flex-row items-center justify-between">
@@ -127,7 +128,7 @@ export default function RootLayout({
               </div>
             </div>
           </footer>
-        </body>
+        
 
       </AuthProvider>
     </html>
