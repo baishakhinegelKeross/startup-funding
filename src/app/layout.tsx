@@ -64,7 +64,7 @@ export default function RootLayout({
                     >
                       <svg
                         id="ikonBottomLogo"
-                        className="inline-block h-4 w-auto fill-current text-white"
+                        className="inline-block h-2.5 w-auto fill-current text-white"
                         viewBox="0 0 112 17"
                       >
                         <path
