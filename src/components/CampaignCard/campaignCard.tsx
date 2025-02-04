@@ -25,6 +25,8 @@ export default function CampaignCard({ campaign, onDonate }: CampaignCardProps) 
   const progress = (campaign.amount_raised / campaign.goal_amount) * 100;
   const daysLeft = Math.ceil((new Date(campaign.end_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
   const path = `../detailCampaign/${campaign._id}`;
+  
+
 
   return (
     <article

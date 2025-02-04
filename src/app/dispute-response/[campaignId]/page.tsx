@@ -111,7 +111,7 @@ export default function DisputeForm({
 
   useEffect(()=>{
     const fetchData = async()=>{
-      const disputeId = (await params).disputeId;
+      const disputeId = (await params).campaignId;
       const response = await axios.get(`http://localhost:8000/user/getDisputeInfo/${disputeId}`)
       setData(response.data)
       }
@@ -352,7 +352,7 @@ export default function DisputeForm({
                     <FormControl>
                       <Checkbox
                         checked={field.value}
-                        onCheckedChange={field.onChange}
+                        onChange={field.onChange}
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
@@ -372,7 +372,7 @@ export default function DisputeForm({
                     <FormControl>
                       <Checkbox
                         checked={field.value}
-                        onCheckedChange={field.onChange}
+                        onChange={field.onChange}
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
