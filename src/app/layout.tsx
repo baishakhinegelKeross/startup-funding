@@ -28,14 +28,18 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      {/* Optionally include a <head> here if needed */}
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <AuthProvider>
+     
+
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+           <AuthProvider>
           <Navbar />
           {children}
           <GlobalChat />
-          <footer className="flex items-center border-t border-gray-200 bg-gray-800 fixed bottom-0 z-50 w-full">
-            <div className="container px-4">
+        
+          <footer className="flex items-center border-t border-gray-200 bg-gray-800  fixed bottom-0  z-50 w-full">
+            <div className="container  px-4">
               <div className="flex flex-col lg:flex-row items-center justify-between">
                 <div className="text-center lg:text-left mb-4 lg:mb-0">
                   <div className="text-sm text-gray-400">
@@ -71,8 +75,10 @@ export default function RootLayout({
               </div>
             </div>
           </footer>
-        </AuthProvider>
-      </body>
+          </AuthProvider>
+          </body>
+
+      
     </html>
   );
 }

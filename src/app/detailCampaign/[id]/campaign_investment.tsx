@@ -10,11 +10,13 @@ import { useAuth } from "@/lib/auth-context";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
+
 const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({ campaignId, data }) => {
     const { user } = useAuth();
     const router = useRouter();
     const userRole = user?.role === 'admin' ? 'admin' : user?.role === 'fundraiser' ? 'founder' : user?.role === 'investor' ? 'investor' : undefined;
-    
+    //const [disputemodalOpen,setDisputemodalOpen] = useState(false)
+
     const getFundStatus = function(percentage: number){
         let status = 'Fully Funded';
 
@@ -50,6 +52,7 @@ const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({ campaignId, dat
             <div className="bg-[#0a0b1e]">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
                     {/* Header Section */}
+                    {/* {disputemodalOpen?<DisputeForm/>:null} */}
                     <div className="space-y-4 mb-12">
                         <Badge
                             variant="secondary"
@@ -215,13 +218,43 @@ const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({ campaignId, dat
 
                                         
                                         {userRole != undefined && 
-                                        <Button
-                                            variant="secondary"
-                                            className="w-full bg-secondary/50 hover:bg-secondary/70"
-                                        >
-                                            <Eye className="mr-2 h-4 w-4" />
-                                            <Link href={`/dispute/${data.title}-${campaignId}`}>Report Dispute</Link>
-                                        </Button>
+                                            // <Dialog>
+                                            //     <DialogTrigger asChild>
+                                            //         <Button
+                                            //             variant="secondary"
+                                            //             className="w-full bg-secondary/50 hover:bg-secondary/70"
+                                            //             onClick={()=>{
+                                            //                 //router.push(`/dispute/${data.title}-${campaignId}`)
+                                            //             }}
+
+                                            //         >
+                                            //             <Eye className="mr-2 h-4 w-4" />
+                                            //             Report Dispute
+                                            //             {/* <Link href={`/dispute/${data.title}-${campaignId}`}>Report Dispute</Link> */}
+                                            //         </Button>
+                                            //     </DialogTrigger>
+                                            //     <DialogContent className="w-screen-[50%]">
+                                            //         <DialogHeader>
+                                            //             <DialogTitle>Report Dispute</DialogTitle>
+                                            //             <DialogDescription className="overflow-auto vh-50">
+                                            //                 <DisputeForm />
+                                            //             </DialogDescription>
+                                            //         </DialogHeader>
+                                            //     </DialogContent>
+                                            // </Dialog>
+                                            <Link href={`/dispute/${data.title}-${campaignId}`}>
+                                                <Button
+                                                    variant="secondary"
+                                                    className="w-full bg-secondary/50 hover:bg-secondary/70 mt-2"
+
+
+                                                >
+                                                    <Eye className="mr-2 h-4 w-4" />
+                                                    Report Dispute
+
+                                                </Button>
+                                            </Link>
+                                        
                                         }
                                        
                                     </div>

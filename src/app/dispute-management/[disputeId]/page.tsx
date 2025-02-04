@@ -325,7 +325,15 @@ export default function DisputeReviewForm({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button 
+                  <Button onClick={()=>{
+                    const reject = async()=>{
+                      const disputeId = (await params).disputeId;
+                      await fetch(`/rejectDispute/${disputeId}`, {
+                      method: 'POST',
+                      body: new FormData(),
+                    })}
+                    reject()
+                  }}
                     variant="destructive"
                     className="w-full sm:w-auto"
                   >
