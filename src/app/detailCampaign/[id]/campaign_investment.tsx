@@ -236,7 +236,7 @@ const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({ campaignId, dat
                 </div>
 
                 {/* Gradient Background Effect */}
-                <div className="fixed inset-0 -z-0">
+                <div className="fixed inset-0 -z-0 hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-purple-900/20 to-pink-900/20" />
                     <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent" />
                 </div>

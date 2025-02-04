@@ -46,6 +46,7 @@ export default function ProfileForm() {
   const router = useRouter()
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    debugger;
     try {
       const submittedData = {
         username: values.username,
@@ -62,6 +63,7 @@ export default function ProfileForm() {
       setIsLoggedIn(true)
 
     } catch (error: any) {
+      debugger;
       toast.error(error.response?.data?.message || 'Login failed')
     }
   }
