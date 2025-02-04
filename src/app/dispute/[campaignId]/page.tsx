@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, Upload, AlertCircle, X } from "lucide-react";
+import { Calendar as CalendarIcon, Upload, AlertCircle, X, CheckCircle2, Clock, FileText, MessageSquare, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
@@ -39,6 +39,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { toast } from "react-toastify";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Separator } from "@radix-ui/react-dropdown-menu";
 import { Dialog } from "@radix-ui/react-dialog";
 import { DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
@@ -209,40 +210,39 @@ export default function DisputeForm({
   ];
 
   return (
+    
     <div className="min-h-screen bg-background transition-colors duration-300">
       <div className="container mx-auto p-8 animate-in slide-in-from-bottom duration-700">
-
-      
-      <Card className="max-w-4xl mx-auto backdrop-blur-sm bg-card/95 shadow-xl transition-all duration-300 hover:shadow-2xl">
-                <CardHeader className="space-y-4">
-                  <CardTitle className="text-4xl font-bold text-center bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent animate-in fade-in slide-in-from-top duration-500">
-                    Dispute Resolution Center
-                  </CardTitle>
-                  <Alert className="animate-in fade-in slide-in-from-top duration-700 delay-300">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertTitle>Important</AlertTitle>
-                    <AlertDescription>
-                      Please provide detailed information to help us resolve your dispute efficiently.
-                    </AlertDescription>
-                  </Alert>
-                </CardHeader>
-                <CardContent className="space-y-8">
-                  <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8" encType="multipart/form-data">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-in fade-in slide-in-from-left duration-700 delay-500">
-                        {/* Project Details */}
-                        <FormField
-                          control={form.control}
-                          name="campaignId"
-                          render={({ field }) => (
-                            <FormItem className="animate-in fade-in slide-in-from-left duration-700 delay-[600ms]">
-                              <FormLabel>Campaign Id</FormLabel>
-                              <FormControl>
-                                <Input {...field} disabled className="bg-muted/50 text-white" value={campaignData.campaignId} />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
+        <Card className="max-w-4xl mx-auto backdrop-blur-sm bg-card/95 shadow-xl transition-all duration-300 hover:shadow-2xl">
+          <CardHeader className="space-y-4">
+            <CardTitle className="text-4xl font-bold text-center bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent animate-in fade-in slide-in-from-top duration-500">
+              Dispute Resolution Center
+            </CardTitle>
+            <Alert className="animate-in fade-in slide-in-from-top duration-700 delay-300">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Important</AlertTitle>
+              <AlertDescription>
+                Please provide detailed information to help us resolve your dispute efficiently.
+              </AlertDescription>
+            </Alert>
+          </CardHeader>
+          <CardContent className="space-y-8">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8" encType="multipart/form-data">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-in fade-in slide-in-from-left duration-700 delay-500">
+                  {/* Project Details */}
+                  <FormField
+                    control={form.control}
+                    name="campaignId"
+                    render={({ field }) => (
+                      <FormItem className="animate-in fade-in slide-in-from-left duration-700 delay-[600ms]">
+                        <FormLabel>Campaign Id</FormLabel>
+                        <FormControl>
+                          <Input {...field} disabled className="bg-muted/50 text-white" value={campaignData.campaignId}/>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
 
                         <FormField
                           control={form.control}
@@ -512,5 +512,6 @@ export default function DisputeForm({
       </Card>
     </div>
     </div>
+
   );
 }
