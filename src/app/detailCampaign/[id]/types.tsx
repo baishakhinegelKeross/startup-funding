@@ -167,22 +167,20 @@ export interface CommentPostProps {
 
 
 export interface QuestionAnswersPostProps{
-    posts: {
+    userId: string;
+    comment: string;
+    userPic: string;
+    userName: string;
+    userRole: string;
+    commentDate: string;
+    reply: {
         userId: string;
-        comment: string;
+        replyComment: string;
         userPic: string;
         userName: string;
         userRole: string;
-        commentDate: string;
-        reply: {
-            userId: string;
-            replyComment: string;
-            userPic: string;
-            userName: string;
-            userRole: string;
-            replyDate: string;
-        }[];
-    }
+        replyDate: string;
+    }[];
 }
 
 

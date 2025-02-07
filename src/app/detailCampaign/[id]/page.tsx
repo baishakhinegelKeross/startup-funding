@@ -29,7 +29,7 @@ export default async function CampaignDetails({ params }: PropsArgs): Promise<JS
     //console.log('Campaign Id: ', id)
 
     const fetchedCampaignData = await fetchCampaignData(fetchAPI_URL);
-    //console.log('Fetched Campaign Data:- ', fetchedCampaignData);
+    console.log('Fetched Campaign Data:- ', fetchedCampaignData);
 
     const filteredCampaignData = {
         title: fetchedCampaignData.title,

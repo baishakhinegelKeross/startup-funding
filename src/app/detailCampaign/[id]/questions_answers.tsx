@@ -7,16 +7,22 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { MessageSquare } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { RefObject, useRef, useState, useEffect } from 'react';
-//import { useAuth } from '@/lib/auth-context';
+import { RefObject, useRef, useState, useEffect, createContext } from 'react';
+import { useAuth } from '@/lib/auth-context';
 import axios from 'axios';
 import { QuestionAnswersPostProps } from "./types";
 
+type userContextType = {
+    currentUserId: string
+}
+
+export const userContext = createContext<userContextType | null>(null); 
+
 export default function QnA(){
-    //const { user } = useAuth();
-    //const userId = user?.id;
+    const { user } = useAuth();
+    const authUserId = user?.id;
     const inputRef = useRef<HTMLInputElement>(null);
-    const [comment, setComment] = useState<QuestionAnswersPostProps[]>([]);
+    const [comment, setComment] = useState<QuestionAnswersPostProps[]>([]); 
     // const posts = [
     //     {
     //         userId: '679b2c770d0062fbc0b8494d',
@@ -37,6 +43,10 @@ export default function QnA(){
     //         ]
     //     }
     // ]
+
+    const userContextVal = {
+        currentUserId: authUserId ? authUserId : nanoid()
+    }
 
     const handleCommentPost = async function(userId: string | undefined, ref: RefObject<HTMLInputElement | null>){
         if(ref && ref.current){
@@ -88,9 +98,6 @@ export default function QnA(){
         fetchCommentsData();
     }, [])
 
-
-
-
     return(
         <div className="bg-[#0a0b1e] p-4">
             <div className="max-w-3xl mx-auto">
@@ -107,7 +114,7 @@ export default function QnA(){
                         <div className="flex justify-end mt-4">
                             <Button 
                                 className="px-6 bg-blue-600 hover:bg-blue-700 text-white"
-                                    onClick={()=>{ handleCommentPost('679b2c770d0062fbc0b8494d', inputRef) }}
+                                    onClick={()=>{ handleCommentPost(authUserId ? authUserId : '679b2c770d0062fbc0b8494d', inputRef) }}
                                 //onClick={()=>{ fetchCommentsData() }}
                             >
                                 <MessageSquare className="mr-2 h-4 w-4" />
@@ -134,18 +141,27 @@ export default function QnA(){
 
                 {/* Questions and Answers */}
                 <div className="space-y-6">
-                    
                     <div className="bg-white rounded-lg shadow-sm p-6">
-                        {
-                            comment.length > 0 ? (
-                                comment.map((obj)=>(
-                                    <QuestionAnswersPost key={obj.userId} posts={obj}></QuestionAnswersPost>
-                                ))
-                            ) : null
-                        }
-            
+                        <userContext.Provider value={userContextVal}>
+                            {
+                                comment.length > 0 ? (
+                                    comment.map((obj)=>(
+                                        <QuestionAnswersPost  
+                                            key={obj.userId}
+                                            userId={obj.userId}
+                                            comment={obj.comment}
+                                            userPic={obj.userPic}
+                                            userName={obj.userName}
+                                            userRole={obj.userRole}
+                                            commentDate={obj.commentDate}
+                                            reply={obj.reply}
+                                        >
+                                        </QuestionAnswersPost>
+                                    ))
+                                ) : null
+                            }
+                        </userContext.Provider>
                     </div>
-
                 </div>
             </div>
         </div>

@@ -23,13 +23,18 @@ const handleCreateCampaign = async (
 ) => {
   const newCampaign: Campaign = {
     ...campaignData,
-    amount_raised: 0,
+    //amount_raised: 0,
     createdAt: new Date(),
   };
+
+  console.log('Creating campaign:', newCampaign);
+
+  
   
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/fundraiser`,
+      //`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/fundraiser`,
+      `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/Campaign`,
       {
         method: "POST",
         credentials: "include", 

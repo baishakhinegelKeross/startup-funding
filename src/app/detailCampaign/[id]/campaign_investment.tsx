@@ -38,7 +38,7 @@ const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({ campaignId, dat
     const image = data.image_url ? data.image_url : "https://placehold.co/600x400?text=Campaign+Photo.png";
     const title = data.title ? data.title : "Campaign Title";
     const story = data.story ? data.story : "Campaign Story";
-    const raised = data.current_amount ? data.current_amount : 1;
+    const raised = data.current_amount ? data.current_amount : 0;
     const goal = data.goal_amount ? data.goal_amount : 1;
     const fundedPct = parseFloat(((raised/goal) * 100).toFixed(2));
     const fundStatus = getFundStatus(fundedPct);

@@ -73,8 +73,11 @@ const MyCampaignPage: React.FC = () => {
 
     console.log('Creating campaign:', newCampaign);
 
+    return;
+
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/fundraiser`, {
+      //const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/fundraiser`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/Campaign`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
