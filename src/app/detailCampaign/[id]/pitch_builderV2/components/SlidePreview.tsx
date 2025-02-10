@@ -71,7 +71,7 @@ export default function SlidePreview({ components }: SlidePreviewProps) {
         <div
           ref={provided.innerRef}
           {...provided.droppableProps}
-          className="bg-white p-8 rounded-lg shadow-lg min-h-[600px]"
+          className="bg-accent p-8 rounded-lg shadow-lg min-h-[600px]"
         >
           {components.map((component, index) => (
             <Draggable
