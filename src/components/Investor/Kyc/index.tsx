@@ -429,7 +429,7 @@ export default function KYCPage() {
                         <div className="grid grid-cols-1 gap-4">
                           <Button variant="outline" className="bg-medium-gray py-2 px-6 border border-light-gray rounded hover:bg-dark-gray transition duration-300"
                             onClick={() => handleUploadClick('incomeProof')}
-                            disabled={!canProceed}>
+                            >
                             <div className="flex flex-col items-center space-y-2">
                               <Upload className="h-6 w-6" />
                               <input
@@ -445,7 +445,7 @@ export default function KYCPage() {
                           </Button>
                           <Button variant="outline" className="bg-medium-gray py-2 px-6 border border-light-gray rounded hover:bg-dark-gray transition duration-300"
                             onClick={() => handleUploadClick('netWorthStatement')}
-                            disabled={!canProceed}>
+                            >
                             <div className="flex flex-col items-center space-y-2">
                               <Upload className="h-6 w-6" />
                               <input
