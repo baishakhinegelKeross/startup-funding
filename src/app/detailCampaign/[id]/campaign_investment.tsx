@@ -87,8 +87,8 @@ const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({ campaignId, dat
                                     />
                                 </div>
 
-                                <div className="mt-2">
-                                    <p className="text-lg">
+                                <div className="mt-2 ">
+                                    <p className="text-lg line-clamp-3">
                                         <q>
                                             {story}
                                         </q>
