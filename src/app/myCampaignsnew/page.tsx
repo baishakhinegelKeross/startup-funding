@@ -158,6 +158,7 @@ const MyCampaignsNew: React.FC = () => {
           onClose={() => setIsModalOpen(false)}
           onCreateCampaign={handleCreateCampaign}
           onBack={() => setIsModalOpen(false)}
+          currentUser={user}
         />
       )}
     </>

@@ -4,11 +4,11 @@ import { nanoid } from 'nanoid';
 import React, { useRef, useEffect, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import {
-    PlusCircle,
+    //PlusCircle,
     MinusCircle,
     AlertCircle,
     Save,
-    ArrowLeft,
+    //ArrowLeft,
     X,
     ChevronRight,
     ChevronLeft,
@@ -19,13 +19,13 @@ import {
     Link,
     DollarSign,
     Building2,
-    GraduationCap,
-    Briefcase,
+    //GraduationCap,
+    //Briefcase,
     Milestone,
     Scale,
-    BadgeDollarSign,
+    //BadgeDollarSign,
     FileText,
-    LineChart,
+    //LineChart,
     Wallet,
     Calendar
 } from 'lucide-react';
@@ -38,17 +38,21 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 //import { FormItem, FormMessage, FormDescription, FormLabel, FormField, FormControl } from '@/components/ui/form';
-import { Checkbox } from '@/components/ui/checkbox';
-import { ScrollArea } from '@/components/ui/scroll-area';
+//import { Checkbox } from '@/components/ui/checkbox';
+//import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
+//import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { useCampaignStore } from '@/store/campaign-store';
-import type { Startup, Currency, Campaign } from '@/types';
+import type { 
+    //Startup, 
+    Currency, 
+    Campaign 
+} from '@/types';
 import { cn } from '@/lib/utils';
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import PitchBuilder from '@/components/PitchBuilder/PitchBuilder';
+//import PitchBuilder from '@/components/PitchBuilder/PitchBuilder';
 import axios from 'axios';
 
 const CATEGORIES = [
@@ -67,19 +71,18 @@ const CURRENCIES: Currency[] = ['USD', 'EUR', 'GBP', 'JPY'];
 const TABS = [
     { id: 'details', label: 'Campaign Details', icon: Target },
     //{ id: 'additional', label: 'Additional Info', icon: Sparkles },
-    { id: 'team', label: 'Team', icon: Users },
     { id: 'pitch', label: 'Campaign Pitch', icon: AlertCircle },
-    
+    { id: 'business-concept', label: 'Business Concept', icon: Building2 },
     { id: 'market-analysis', label: 'Market Analysis', icon: Target },
+    { id: 'team', label: 'Team', icon: Users },
     //{ id: 'business-model', label: 'Business Model', icon: LineChart },
     //{ id: 'business-plan', label: 'Business Plan', icon: FileText },
-    //{ id: 'operational', label: 'Operational Plan', icon: Building2 },
     //{ id: 'management-team', label: 'Management Team', icon: Users },
-    //{ id: 'financial-projections', label: 'Financial Projections', icon: Wallet },
-    { id: 'funding-requirements', label: 'Funding Requirements', icon: BadgeDollarSign },
-    //{ id: 'legal-structure', label: 'Legal Structure', icon: Scale },
+    //{ id: 'funding-requirements', label: 'Funding Requirements', icon: BadgeDollarSign },
     { id: 'risks-milestones', label: 'Risks & Milestones', icon: Milestone },
-    { id: 'business-concept', label: 'Business Concept', icon: Building2 },
+    { id: 'financial-projections', label: 'Financial Projections', icon: Wallet },
+    { id: 'operational', label: 'Operational Plan', icon: Building2 },
+    { id: 'legal-structure', label: 'Legal Structure', icon: Scale }
 ];
 
 const MAX_FILE_SIZE = 5000000; // 5MB
@@ -87,6 +90,14 @@ const ACCEPTED_FILE_TYPES = [
     "application/pdf",
     "application/msword",
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+];
+
+const MAX_FILE_SIZE2 = 2000000; // 2MB
+const ACCEPTED_FILE_TYPES2 = [
+    ".png",
+    ".jpeg",
+    ".gif",
+    ".jpg"
 ];
 
 const formSchema = z.object({
@@ -100,12 +111,37 @@ const formSchema = z.object({
         position: z.string(),
         avatar: z.string().optional(),
         about: z.string().optional(),
+        linkedIn: z.string().optional(),
+        cv: z
+        .instanceof(FileList)
+        .refine((files) => files?.length === 1, "Please upload cv")
+        .refine(
+            (files) => files?.[0]?.size <= MAX_FILE_SIZE,
+            "Max file size is 5MB"
+        )
+        .refine(
+            (files) => ACCEPTED_FILE_TYPES.includes(files?.[0]?.type),
+            "Only .pdf, .doc, and .docx files are accepted"
+        )
+        .optional()
     })).optional(),
     // Existing Fields from CreateCampaignModalNew.tsx
     title: z.string().min(1, "Title is required"),
     story: z.string().min(10, "Story is required"),
-    imageUrl: z.string().url("Please enter a valid image URL"),
+    //imageUrl: z.string().url("Please enter a valid image URL"),
     //resourceUrl: z.string().url("Please enter a valid URL"),
+    imageUrl: z
+        .instanceof(FileList)
+        .refine((files) => files?.length === 1, "Please upload campaign image")
+        .refine(
+            (files) => files?.[0]?.size <= MAX_FILE_SIZE2,
+            "Max file size is 2MB"
+        )
+        .refine(
+            (files) => ACCEPTED_FILE_TYPES2.includes(files?.[0]?.type),
+            "Only .pdf, .doc, and .docx files are accepted"
+        )
+        .optional(),
     endDate: z.date(),
     category: z.enum([
         'CleanTech',
@@ -126,7 +162,7 @@ const formSchema = z.object({
     owner: z.object({
         name: z.string().min(1, "Owner name is required"),
         email: z.string().email("Invalid email address"),
-        stripeId: z.string().min(1, "Stripe ID is required"),
+        //stripeId: z.string().min(1, "Stripe ID is required"),
     }),
     publishedStatus: z.boolean().optional(),
 
@@ -169,9 +205,35 @@ const formSchema = z.object({
     //     )
     //     .optional(),
 
-    businessModelDoc: z.string().min(2, "Please upload business doc"),
+    //businessModelDoc: z.string().min(2, "Please upload business doc"),
 
-    businessPlanDoc: z.string().min(2, "Please upload business plan doc"),
+    //businessPlanDoc: z.string().min(2, "Please upload business plan doc"),
+
+    businessModelDoc: z
+        .instanceof(FileList)
+        .refine((files) => files?.length === 1, "Please upload business doc")
+        .refine(
+            (files) => files?.[0]?.size <= MAX_FILE_SIZE,
+            "Max file size is 5MB"
+        )
+        .refine(
+            (files) => ACCEPTED_FILE_TYPES.includes(files?.[0]?.type),
+            "Only .pdf, .doc, and .docx files are accepted"
+        )
+        .optional(),
+
+    businessPlanDoc: z
+        .instanceof(FileList)
+        .refine((files) => files?.length === 1, "Please upload business plan doc")
+        .refine(
+            (files) => files?.[0]?.size <= MAX_FILE_SIZE,
+            "Max file size is 5MB"
+        )
+        .refine(
+            (files) => ACCEPTED_FILE_TYPES.includes(files?.[0]?.type),
+            "Only .pdf, .doc, and .docx files are accepted"
+        )
+        .optional(),
 
     // Market Analysis
     targetMarket: z.string().min(10, "Please describe your target market"),
@@ -189,26 +251,26 @@ const formSchema = z.object({
     //marketingStrategy: z.string().min(10, "Please describe your marketing strategy"),
 
     // Operational Plan
-    //businessLocation: z.string().min(2, "Please specify your business location"),
-    //technologyNeeds: z.string().min(10, "Please list your technology needs"),
-    //supplyChain: z.string().min(10, "Please describe your supply chain"),
+    businessLocation: z.string().min(2, "Please specify your business location"),
+    technologyNeeds: z.string().min(10, "Please list your technology needs").optional(),
+    supplyChain: z.string().min(10, "Please describe your supply chain").optional(),
 
     // Management Team
     //teamMembers: z.string().min(10, "Please list key team members"),
     //rolesResponsibilities: z.string().min(10, "Please outline roles and responsibilities"),
 
     // Financial Projections
-    //startupCosts: z.string().min(1, "Please estimate your startup costs"),
-    //projectedRevenue: z.string().min(1, "Please provide projected revenue"),
-    //breakEvenPoint: z.string().min(1, "Please estimate break-even point"),
+    startupCosts: z.string().min(1, "Please estimate your startup costs"),
+    projectedRevenue: z.string().min(1, "Please provide projected revenue"),
+    breakEvenPoint: z.string().min(1, "Please estimate break-even point"),
 
     // Funding Requirements
-    fundingNeeded: z.string().min(1, "Please specify funding needed"),
-    useOfFunds: z.string().min(10, "Please detail use of funds"),
+    //fundingNeeded: z.string().min(1, "Please specify funding needed"),
+    //useOfFunds: z.string().min(10, "Please detail use of funds"),
 
     // Legal Structure
-    //businessEntity: z.string().min(2, "Please select business entity type"),
-    //licensesPermits: z.string().min(10, "Please list required licenses and permits"),
+    businessEntity: z.string().min(2, "Please select business entity type").optional(),
+    licensesPermits: z.string().min(10, "Please list required licenses and permits").optional(),
 
     // Risks and Challenges
     risksAndChallenges: z.string().min(10, "Please describe potential risks and challenges"),
@@ -285,33 +347,64 @@ const formSchema = z.object({
 
 // });
 
+interface User {
+    id: string;
+    username: string;
+    email: string;
+}
 
-
-export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
+export default function CreateCampaignForm({ onClose, onCreateCampaign, currentUser }: {
     onClose: () => void;
     onCreateCampaign: (campaignData: Omit<Campaign, "_id"  | "createdAt">) => Promise<void>;
+    currentUser: User | null
 }) {
     const [activeTab, setActiveTab] = useState(0);
     //const [activeTab, setActiveTab] = useState("details");
     const [showLeftScroll, setShowLeftScroll] = useState(false);
     const [showRightScroll, setShowRightScroll] = useState(false);
     const tabsContainerRef = useRef<HTMLDivElement>(null);
-    const { currentDraft, saveDraft } = useCampaignStore();
+    const { 
+        currentDraft, 
+        //saveDraft 
+    } = useCampaignStore();
     const [progress, setProgress] = useState(0);
-    const [saving, setSaving] = useState(false);
-    const [isMobileView, setIsMobileView] = useState(false);
+    const [
+        saving, 
+        //setSaving
+    ] = useState(false);
+    const [
+        isMobileView, 
+        setIsMobileView
+    ] = useState(false);
     const [category, setCategory] = useState("CleanTech");
     const [currencyType, setCurrencyType] = useState("USD");
 
+    const userName = currentUser?.username;
+    const userEmail = currentUser?.email;
+
     const {
         register,
-        handleSubmit,
+        //handleSubmit,
         control,
         watch,
-        setValue,
+        //setValue,
         formState: { errors, isValid },
-        reset,
-    } = useForm<z.infer<typeof formSchema> & { ourTeam: { name: string, position: string, avatar?: string, about?: string }[]; valuation: { currentValuation?: number, lastValuation?: number, currencyUnit?: 'USD' | 'EUR' | 'GBP' | 'JPY' | 'INR' } }>({
+        //reset,
+    } = useForm<z.infer<typeof formSchema> 
+    // & { 
+    //     ourTeam: { 
+    //         name: string, 
+    //         position: string, 
+    //         avatar?: string, 
+    //         about?: string 
+    //     }[]; 
+    //     valuation: { 
+    //         currentValuation?: number, 
+    //         lastValuation?: number, 
+    //         currencyUnit?: 'USD' | 'EUR' | 'GBP' | 'JPY' | 'INR' 
+    //     } 
+    // }
+    >({
         resolver: zodResolver(formSchema),
         // defaultValues: currentDraft || undefined,
     });
@@ -320,6 +413,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
     const handleFileSubmit = async function(formData: FormData){
         debugger;
         try {
+            console.log('Validation errors: ', errors);
             console.log(formData);
             formData.forEach((value, key) => {
                 console.log(key + ': ' + value);
@@ -351,7 +445,12 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
         }
     }
 
-    console.log(errors);
+    //debugger;
+    //console.log("Current User: ", currentUser);
+
+    //console.log(errors);
+
+    console.log("-- Rendered --");
 
     const formValues = watch();
 
@@ -464,23 +563,23 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
         scrollToTab(TABS[activeTab].id);
     }, [activeTab]);
 
-    const {
-        fields: highlightFields,
-        append: appendHighlight,
-        remove: removeHighlight,
-    } = useFieldArray({
-        control,
-        name: 'highlights' as const,
-    });
+    // const {
+    //     fields: highlightFields,
+    //     append: appendHighlight,
+    //     remove: removeHighlight,
+    // } = useFieldArray({
+    //     control,
+    //     name: 'highlights' as const,
+    // });
 
-    const {
-        fields: additionalHighlightFields,
-        append: appendAdditionalHighlight,
-        remove: removeAdditionalHighlight,
-    } = useFieldArray({
-        control,
-        name: 'additionalHighlights' as const,
-    });
+    // const {
+    //     fields: additionalHighlightFields,
+    //     append: appendAdditionalHighlight,
+    //     remove: removeAdditionalHighlight,
+    // } = useFieldArray({
+    //     control,
+    //     name: 'additionalHighlights' as const,
+    // });
     const {
         fields: teamFields,
         append: appendTeamMember,
@@ -530,7 +629,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
             //end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
             //image_url: data.imageUrl,
             owner: data.owner,
-            stripeId: data.owner.stripeId,
+            //stripeId: data.owner.stripeId,
             currencyType: currencyType,
             category: category
         };
@@ -541,20 +640,20 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
         //reset();
     };
 
-    const handleSaveDraft = async () => {
-        setSaving(true);
-        await saveDraft({
-            ...formValues,
-            highlights: formValues.highlights?.map((highlight) => ({ description: highlight.description, id: highlight.id })),
-            additionalHighlights: formValues.additionalHighlights?.map((highlight) => ({
-                text: highlight,
-                title: "", // Provide appropriate default value or mapping
-                description: "" // Provide appropriate default value or mapping
-            })),
-            draftId: crypto.randomUUID(),
-        });
-        setSaving(false);
-    };
+    // const handleSaveDraft = async () => {
+    //     setSaving(true);
+    //     await saveDraft({
+    //         ...formValues,
+    //         highlights: formValues.highlights?.map((highlight) => ({ description: highlight.description, id: highlight.id })),
+    //         additionalHighlights: formValues.additionalHighlights?.map((highlight) => ({
+    //             text: highlight,
+    //             title: "", // Provide appropriate default value or mapping
+    //             description: "" // Provide appropriate default value or mapping
+    //         })),
+    //         draftId: crypto.randomUUID(),
+    //     });
+    //     setSaving(false);
+    // };
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-background/80 backdrop-blur-sm animate-in fade-in-0">
@@ -787,7 +886,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
                                         <Label>Image URL <span className="text-destructive">*</span></Label>
                                         <div className="relative">
                                             <Link className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                                            <Input
+                                            {/* <Input
                                                 {...register('imageUrl', {
                                                     required: 'Image URL is required',
                                                     pattern: {
@@ -797,7 +896,17 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
                                                 })}
                                                 className="pl-9 text-white"
                                                 placeholder="https://example.com/image"
+                                            /> */}
+                                            <Input 
+                                                {...register('imageUrl', {
+                                                    required: 'please upload campaign image'
+                                                })}
+                                                type='file'
+                                                name='file'
+                                                className='pl-9'
+                                                placeholder='Upload campaign image'
                                             />
+                                            
                                         </div>
                                         {errors.imageUrl && (
                                             <p className="text-sm text-destructive">{errors.imageUrl?.message as string}</p>
@@ -813,6 +922,8 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
                                                         {...register('owner.name', { required: 'Owner name is required' })}
                                                         placeholder="Enter owner name"
                                                         className='text-white'
+                                                        defaultValue={userName}
+                                                        disabled
                                                     />
                                                     {errors.owner?.name && (
                                                         <p className="text-sm text-destructive">{errors.owner.name.message}</p>
@@ -832,6 +943,8 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
                                                         })}
                                                         className='text-white'
                                                         placeholder="Enter owner email"
+                                                        defaultValue={userEmail}
+                                                        disabled
                                                     />
                                                     {errors.owner?.email && (
                                                         <p className="text-sm text-destructive">{errors.owner.email.message}</p>
@@ -840,7 +953,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
                                             </div>
 
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                <div className="mt-4 space-y-2">
+                                                {/* <div className="mt-4 space-y-2">
                                                     <Label>Stripe ID <span className="text-destructive">*</span></Label>
                                                     <Input
                                                         {...register('owner.stripeId', { required: 'Stripe ID is required' })}
@@ -849,7 +962,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
                                                     {errors.owner?.stripeId && (
                                                         <p className="text-sm text-destructive">{errors.owner.stripeId.message}</p>
                                                     )}
-                                                </div>
+                                                </div> */}
                                                 <div className="space-y-2">
                                                     <Label>End Date <span className="text-destructive">*</span></Label>
                                                     <div className="relative">
@@ -879,13 +992,13 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
                                         </CardContent>
                                     </Card>
 
-                                    <div className="flex items-center space-x-2">
+                                    {/* <div className="flex items-center space-x-2">
                                         <Checkbox
                                             id="publishedStatus"
                                             {...register('publishedStatus')}
                                         />
                                         <Label htmlFor="publishedStatus">Publish campaign immediately</Label>
-                                    </div>
+                                    </div> */}
                                 </TabsContent>
 
                                 {/* <TabsContent value="additional" className="mt-0 space-y-6">
@@ -1117,12 +1230,37 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
                                                         </div>
                                                     </div>
 
-                                                    <div className="space-y-2">
+                                                    <div className="space-y-2 mb-6">
                                                         <Label>About</Label>
                                                         <Textarea
                                                             {...register(`ourTeam.${index}.about` as const)}
                                                             className="min-h-[100px]"
                                                             placeholder="Enter team member description"
+                                                        />
+                                                    </div>
+
+                                                    <div className="space-y-2 mb-6">
+                                                        <Label>LinkedIn Profile</Label>
+                                                        <Input
+                                                            {...register(`ourTeam.${index}.linkedIn` as const,{
+                                                                pattern: {
+                                                                value: /^https?:\/\/.+/,
+                                                                message: 'Please enter a valid linkedIn URL',
+                                                            }
+                                                            })}
+                                                            className="pl-9"
+                                                            placeholder="Enter avatar URL"
+                                                        />
+                                                    </div>
+
+                                                    <div className="space-y-2">
+                                                        <Label>CV</Label>
+                                                        <Input
+                                                            {...register(`ourTeam.${index}.cv` as const)}
+                                                            type='file'
+                                                            name='file'
+                                                            className="pl-9"
+                                                            placeholder="Upload CV"
                                                         />
                                                     </div>
                                                 </CardContent>
@@ -1203,18 +1341,22 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
                                                 <div>
                                                     <Label>Business Model Document</Label>
                                                     <Input
+                                                        {...register('businessModelDoc')}
                                                         type="file"
                                                         name='file'
-                                                        accept=".pdf,.doc,.docx"
+                                                        //accept=".pdf,.doc,.docx"
+                                                        accept={ACCEPTED_FILE_TYPES.join(',')}
                                                     />
                                                     <p>Upload your detailed business model (PDF, DOC, DOCX - Max 5MB)</p>
                                                 </div>
                                                 <div>
                                                     <Label>Business Plan Document</Label>
                                                     <Input
+                                                        {...register('businessPlanDoc')}
                                                         type="file"
                                                         name='file'
-                                                        accept=".pdf,.doc,.docx"
+                                                        //accept=".pdf,.doc,.docx"
+                                                        accept={ACCEPTED_FILE_TYPES.join(',')}
                                                     />
                                                     <p>Upload your complete business plan (PDF, DOC, DOCX - Max 5MB)</p>
                                                 </div>
@@ -1351,7 +1493,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
                                 </TabsContent> */}
 
 
-                                {/* <TabsContent value="operational" className="space-y-6">
+                                <TabsContent value="operational" className="space-y-6">
                                     <Card>
                                         <CardContent className="pt-6">
                                             <div className="space-y-2">
@@ -1361,7 +1503,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
                                                 </div>
                                                 <Separator />
                                                 <div>
-                                                    <Label>Business Location</Label>
+                                                    <Label>Business Location <span className="text-destructive">*</span></Label>
                                                     <Input placeholder="Where will your business operate?" />
                                                 </div>
                                                 <div>
@@ -1381,7 +1523,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
                                             </div>
                                         </CardContent>
                                     </Card>
-                                </TabsContent> */}
+                                </TabsContent>
 
 
                                 {/* <TabsContent value="management-team" className="space-y-6">
@@ -1413,7 +1555,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
                                 </TabsContent> */}
 
 
-                                {/* <TabsContent value="financial-projections" className="space-y-6">
+                                <TabsContent value="financial-projections" className="space-y-6">
                                     <Card>
                                         <CardContent className="pt-6">
                                             <div className="space-y-2">
@@ -1423,7 +1565,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
                                                 </div>
                                                 <Separator />
                                                 <div>
-                                                    <Label>Startup Costs (USD)</Label>
+                                                    <Label>Startup Costs (USD) <span className="text-destructive">*</span></Label>
                                                     <div className="relative">
                                                         <DollarSign className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                                                         <Input
@@ -1434,7 +1576,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <Label>Projected Annual Revenue (USD)</Label>
+                                                    <Label>Projected Annual Revenue (USD) <span className="text-destructive">*</span></Label>
                                                     <div className="relative">
                                                         <DollarSign className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                                                         <Input
@@ -1445,7 +1587,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <Label>Break-even Point (months)</Label>
+                                                    <Label>Break-even Point (months) <span className="text-destructive">*</span></Label>
                                                     <div className="relative">
                                                         <Input
                                                             type="number"
@@ -1457,10 +1599,10 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
                                             </div>
                                         </CardContent>
                                     </Card>
-                                </TabsContent> */}
+                                </TabsContent>
 
 
-                                <TabsContent value="funding-requirements" className="space-y-6">
+                                {/* <TabsContent value="funding-requirements" className="space-y-6">
                                     <Card>
                                         <CardContent className="pt-6">
                                             <div className="space-y-2">
@@ -1498,10 +1640,10 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
                                             </div>
                                         </CardContent>
                                     </Card>
-                                </TabsContent>
+                                </TabsContent> */}
 
 
-                                {/* <TabsContent value="legal-structure" className="space-y-6">
+                                <TabsContent value="legal-structure" className="space-y-6">
                                     <Card>
                                         <CardContent className="pt-6">
                                             <div className="space-y-2">
@@ -1534,7 +1676,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
                                             </div>
                                         </CardContent>
                                     </Card>
-                                </TabsContent> */}
+                                </TabsContent>
 
 
                                 <TabsContent value="risks-milestones" className="space-y-6">
@@ -1573,14 +1715,14 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
                                                         className="min-h-[100px]"
                                                     />
                                                 </div>
-                                                <div>
+                                                {/* <div>
                                                     <Label>Metrics for Success</Label>
                                                     <Textarea
                                                         {...register('metricsForSuccess', { required: 'Title is required' })}
                                                         placeholder="Define how you'll measure success"
                                                         className="min-h-[100px]"
                                                     />
-                                                </div>
+                                                </div> */}
                                             </div>
                                         </CardContent>
                                     </Card>
@@ -1591,7 +1733,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign }: {
                                 <Button
                                     type="button"
                                     variant="outline"
-                                    onClick={handleSaveDraft}
+                                    //onClick={handleSaveDraft}
                                     disabled={saving}
                                     className="h-11 sm:h-10 gap-2 w-full sm:w-auto"
                                 >
