@@ -36,8 +36,8 @@ const getIcon = (type: string) => {
 export default function ComponentList() {
   return (
     <div className="space-y-4 component-list">
-      <div className="p-4 bg-white rounded-lg shadow-lg">
-        <h2 className="text-xl font-bold mb-4">Components</h2>
+      <div className="p-4 bg-accent rounded-lg shadow-lg">
+        <h2 className="text-xl font-bold mb-4">Component</h2>
         <StrictModeDroppable droppableId="component-list" isDropDisabled>
           {(provided) => (
             <div
@@ -56,7 +56,7 @@ export default function ComponentList() {
                       ref={provided.innerRef}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
-                      className={`flex items-center gap-2 p-3 bg-gray-50 rounded-md cursor-move hover:bg-gray-100 transition-colors ${
+                      className={`flex items-center gap-2 p-3 bg-primary rounded-md cursor-move  transition-colors ${
                         snapshot.isDragging ? "shadow-lg" : ""
                       }`}
                     >
@@ -77,7 +77,7 @@ export default function ComponentList() {
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            className="p-4 bg-white rounded-lg shadow-lg border-2 border-dashed border-red-300 hover:border-red-500 transition-colors"
+            className="p-4  rounded-lg shadow-lg border-2 border-dashed border-red-300 hover:border-red-500 transition-colors"
           >
             <div className="flex items-center justify-center gap-2 text-red-500">
               <Trash2 className="w-6 h-6" />
