@@ -1,18 +1,17 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { ComponentItem } from "../types";
-import { useState, useRef } from "react";
-import { Upload } from "lucide-react";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { ComponentItem } from '../types';
+import { useState, useRef } from 'react';
+import { Upload } from 'lucide-react';
 
 interface EditDialogProps {
   component: ComponentItem | null;
@@ -21,24 +20,19 @@ interface EditDialogProps {
   onSave: (content: string) => void;
 }
 
-// Function to check if content contains an HTTP link
-const containsHttpLink = (content: string) => {
-  const regex = /(http:\/\/|https:\/\/)/;
-  return regex.test(content);
-}
-
 export default function EditDialog({
   component,
   isOpen,
   onClose,
   onSave,
 }: EditDialogProps) {
-  const [content, setContent] = useState(component?.content || "");
+  const [content, setContent] = useState(component?.content || '');
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSave = () => {
     onSave(content);
+    setContent('');
     onClose();
   };
 
@@ -68,7 +62,7 @@ export default function EditDialog({
           <DialogTitle>Edit {component.type}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">
-          {component.type === "image" ? (
+          {component.type === 'image' ? (
             <div className="space-y-4">
               <div className="flex items-center gap-4">
                 <Input
@@ -90,23 +84,22 @@ export default function EditDialog({
                   disabled={isUploading}
                 >
                   <Upload className="w-4 h-4 mr-2" />
-                  {isUploading ? "Uploading..." : "Upload"}
+                  {isUploading ? 'Uploading...' : 'Upload'}
                 </Button>
               </div>
-              {(content && containsHttpLink(content)) && (
+              {content && (
                 <div className="relative aspect-video">
-                  <Image
+                  <img
                     src={content}
                     alt="Preview"
-                    className="absolute inset-0 object-contain rounded-md"
-                    fill
+                    className="absolute inset-0 w-full h-full object-contain rounded-md"
                   />
                 </div>
               )}
             </div>
-          ) : component.type === "paragraph" ||
-            component.type === "unordered-list" ||
-            component.type === "ordered-list" ? (
+          ) : component.type === 'paragraph' ||
+            component.type === 'unordered-list' ||
+            component.type === 'ordered-list' ? (
             <Textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
