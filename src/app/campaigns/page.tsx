@@ -162,7 +162,7 @@ const MyCampaignPage: React.FC = () => {
         }
         const result = await response.json();
         console.log('result', result);
-        setClosingSoonCampaignData(result.recommendedCampaigns || []);
+        setClosingSoonCampaignData(result.willBeClosedCampaigns || []);
       } catch (err: any) {
         setClosingSoonError(err.message || String(err));
       } finally {
