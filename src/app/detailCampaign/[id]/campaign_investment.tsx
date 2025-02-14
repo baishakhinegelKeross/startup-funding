@@ -104,7 +104,7 @@ const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({ campaignId, dat
                                         <span className="text-sm text-muted-foreground">{fundedPct}%</span>
                                     </div>
                                     <div className="h-2 bg-muted rounded-full overflow-hidden">
-                                        <div className={`h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full ${fundProgress > 0 ? 'w-['+fundProgress+'%]' : 'w-0'}`}></div>
+                                        <div className={`h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full ${fundProgress > 1 ? 'w-['+fundProgress+'%]' : 'w-0'}`}></div>
                                     </div>
                                 </div>
 

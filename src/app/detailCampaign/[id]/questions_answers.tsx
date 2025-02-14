@@ -13,14 +13,19 @@ import axios from 'axios';
 import { QuestionAnswersPostProps } from "./types";
 
 type userContextType = {
-    currentUserId: string
+    currentUserId: string,
+    currentUserName: string,
+    currentUserRole: string
 }
 
 export const userContext = createContext<userContextType | null>(null); 
 
 export default function QnA(){
+    debugger
     const { user } = useAuth();
     const authUserId = user?.id;
+    const userName = user?.username;
+    const userRole = user?.role;
     const inputRef = useRef<HTMLInputElement>(null);
     const [comment, setComment] = useState<QuestionAnswersPostProps[]>([]); 
     // const posts = [
@@ -45,11 +50,14 @@ export default function QnA(){
     // ]
 
     const userContextVal = {
-        currentUserId: authUserId ? authUserId : nanoid()
+        currentUserId: authUserId ? authUserId : nanoid(),
+        currentUserName: userName ? userName : 'Test user',
+        currentUserRole: userRole ? userRole : 'Test role'
     }
 
     const handleCommentPost = async function(userId: string | undefined, ref: RefObject<HTMLInputElement | null>){
         if(ref && ref.current){
+            debugger;
             console.log(ref.current.value);
             const postURL = `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/QnA`;
     
@@ -57,8 +65,8 @@ export default function QnA(){
                 userId: userId ? userId : nanoid(),
                 comment: ref.current.value,
                 userPic: "/company_dummy_logo.jpg",
-                userName: "Dummy User 1",
-                userRole: "Dummy Role 1",
+                userName: userName ? userName : 'Test user',
+                userRole: userRole ? userRole : 'Test role',
                 commentDate: new Date().toLocaleString(),
                 reply: []
             };
@@ -125,7 +133,7 @@ export default function QnA(){
                 </Card>
 
                 {/* Sort Options */}
-                <div className="flex items-center justify-between">
+                {/* <div className="flex items-center justify-between">
                     <h2 className="text-lg font-semibold text-white">Recent Questions</h2>
                     <Select defaultValue="relevance">
                         <SelectTrigger className="w-[180px] bg-card/50 border-primary/10 text-white">
@@ -137,7 +145,7 @@ export default function QnA(){
                             <SelectItem value="votes">Most votes</SelectItem>
                         </SelectContent>
                     </Select>
-                </div>
+                </div> */}
 
                 {/* Questions and Answers */}
                 <div className="space-y-6">

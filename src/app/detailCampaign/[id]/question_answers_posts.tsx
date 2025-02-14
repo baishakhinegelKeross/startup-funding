@@ -8,10 +8,11 @@ import { QuestionAnswersPostProps } from "./types";
 
 const QuestionAnswersPost: React.FC<QuestionAnswersPostProps> = ({userId, comment, userPic, userName, userRole, commentDate, reply})=>{
     const inputRef = useRef<HTMLInputElement>(null);
-    const currentUserId = useContext(userContext);
+    const context  = useContext(userContext);
 
     const postReply = async (key: React.KeyboardEvent<HTMLInputElement>) => {
         if (key.key === 'Enter' && inputRef && inputRef.current) {
+            debugger;
 
             //console.log('Reply send:', inputRef.current.value);
 
@@ -19,11 +20,11 @@ const QuestionAnswersPost: React.FC<QuestionAnswersPostProps> = ({userId, commen
     
             const data = {
                 replyingToId: userId ? userId : '679b2c770d0062fbc0b8494d',
-                userId: currentUserId ? currentUserId : '679b2c770d0062fbc0b8494e',
+                userId: context?.currentUserId ? context.currentUserId : '679b2c770d0062fbc0b8494e',
                 replyComment: inputRef.current.value,
                 userPic: "/company_dummy_logo.jpg",
-                userName: "Dummy User 1",
-                userRole: "Dummy Role 1",
+                userName: context?.currentUserName ? context.currentUserName : "Test User",
+                userRole: context?.currentUserRole ? context.currentUserRole : "Test Role",
                 replyDate: new Date().toLocaleString()
             };
     
