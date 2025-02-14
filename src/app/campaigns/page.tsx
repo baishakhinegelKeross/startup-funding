@@ -38,7 +38,7 @@ const MyCampaignPage: React.FC = () => {
   const [recommendedLoading, setRecommendedLoading] = useState(true);
   const [recommendedError, setRecommendedError] = useState<string | null>(null);
   const [recommendedPage, setRecommendedPage] = useState(1);
-  const { user } = useAuth();
+  const { user } = useAuth(); // checking whether user is logged in or not 
   // --- Modal & Donation State (shared) ---
   const [selectedCampaignId, setSelectedCampaignId] = useState<string | null>(null);
   const [isDonationModalOpen, setIsDonationModalOpen] = useState(false);
@@ -184,9 +184,9 @@ const MyCampaignPage: React.FC = () => {
     const fetchRecommendedCampaigns = async () => {
       setRecommendedLoading(true);
       try {
-        
+
         const response = await fetch(
-          
+
           `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/campaigns/recomendations?page=${recommendedPage}&limit=4`,
           { method: 'GET', credentials: 'include' }
         );
@@ -195,8 +195,8 @@ const MyCampaignPage: React.FC = () => {
           throw new Error(`Error fetching recommended campaigns: ${errorText}`);
         }
         const result = await response.json();
-        console.log('result',result),
-        setRecommendedCampaignData(result.recommendedCampaigns || []);
+        console.log('result', result),
+          setRecommendedCampaignData(result.recommendedCampaigns || []);
       } catch (err: any) {
         setRecommendedError(err.message || String(err));
       } finally {
@@ -337,6 +337,53 @@ const MyCampaignPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-900 text-white py-10 px-4 sm:px-6 lg:px-8 mt-8">
 
+
+      {/* --- Recommended Campaigns Section --- */}
+      {user ? <section className="mb-12">
+        <div className="flex items-center justify-between border-b border-gray-700 pb-2 mb-4">
+          <div className="flex items-center gap-2">
+            <h2 className="text-2xl font-semibold">Recommended Campaigns</h2>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={handleRecommendedChevronLeft}
+              className="p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition-shadow duration-300 shadow-md"
+              aria-label="Scroll or load previous page"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+            <button
+              onClick={handleRecommendedChevronRight}
+              className="p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition-shadow duration-300 shadow-md"
+              aria-label="Scroll or load next page"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
+          </div>
+        </div>
+        {recommendedLoading ? (
+          <div className="p-4">
+            <h3 className="text-xl">Loading Recommended Campaigns...</h3>
+          </div>
+        ) : recommendedError ? (
+          <div className="p-4">
+            <h3 className="text-xl text-red-500">Error fetching recommended campaigns: {recommendedError}</h3>
+          </div>
+        ) : (
+          <div className="relative overflow-hidden">
+            <div
+              ref={recommendedScrollRef}
+              className="flex gap-6 overflow-x-auto scroll-smooth pb-4 hide-scrollbar"
+            >
+              {recommendedCampaignData.map((campaign) => (
+                <div key={campaign._id} className="flex-none w-[calc(25%-18px)] min-w-[300px]">
+                  <CampaignCard campaign={campaign} apiType="recommendedCampaigns" onDonate={handleDonate} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </section> : null}
 
       {/* --- Hot (Trending) Campaigns Section --- */}
       <section className="mb-12">
@@ -513,52 +560,7 @@ const MyCampaignPage: React.FC = () => {
       </section>
 
 
-      {/* --- Recommended Campaigns Section --- */}
-      <section className="mb-12">
-        <div className="flex items-center justify-between border-b border-gray-700 pb-2 mb-4">
-          <div className="flex items-center gap-2">
-            <h2 className="text-2xl font-semibold">Recommended Campaigns</h2>
-          </div>
-          <div className="flex gap-2">
-            <button
-              onClick={handleRecommendedChevronLeft}
-              className="p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition-shadow duration-300 shadow-md"
-              aria-label="Scroll or load previous page"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
-            <button
-              onClick={handleRecommendedChevronRight}
-              className="p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition-shadow duration-300 shadow-md"
-              aria-label="Scroll or load next page"
-            >
-              <ChevronRight className="w-6 h-6" />
-            </button>
-          </div>
-        </div>
-        {recommendedLoading ? (
-          <div className="p-4">
-            <h3 className="text-xl">Loading Recommended Campaigns...</h3>
-          </div>
-        ) : recommendedError ? (
-          <div className="p-4">
-            <h3 className="text-xl text-red-500">Error fetching recommended campaigns: {recommendedError}</h3>
-          </div>
-        ) : (
-          <div className="relative overflow-hidden">
-            <div
-              ref={recommendedScrollRef}
-              className="flex gap-6 overflow-x-auto scroll-smooth pb-4 hide-scrollbar"
-            >
-              {recommendedCampaignData.map((campaign) => (
-                <div key={campaign._id} className="flex-none w-[calc(25%-18px)] min-w-[300px]">
-                  <CampaignCard campaign={campaign} apiType="recommendedCampaigns" onDonate={handleDonate} />
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </section>
+
 
       {/* --- Modals --- */}
       {isModalOpen && (
