@@ -81,9 +81,15 @@ const DisputeForm = forwardRef(({ campaignData_ }: { campaignData_: CampaignData
 //   params: Promise<{ slug: string }>
 // }
   const [files, setFiles] = useState<File[]>([]);
+  // Initialize campaignData with default values to avoid undefined values in inputs
+  const [campaignData, setCampaignData] = useState<{ campaignId: string; campaignName: string }>({
+    campaignId: '',
+    campaignName: '',
+  });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [campaignData, setCampaignData] = useState({campaignName:campaignData_.campaignName,campaignId:campaignData_.campaignId})
   const router = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -160,8 +166,11 @@ const DisputeForm = forwardRef(({ campaignData_ }: { campaignData_: CampaignData
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    debugger
-    const _values = { ...values, campaignName: campaignData.campaignName, campaignId: campaignData.campaignId }
+    const _values = {
+      ...values,
+      campaignName: campaignData.campaignName,
+      campaignId: campaignData.campaignId,
+    };
     try {
       const formData = new FormData();
 
@@ -169,36 +178,25 @@ const DisputeForm = forwardRef(({ campaignData_ }: { campaignData_: CampaignData
         if (key !== 'documents') {
           formData.append(key, value as string);
         }
-      })
-
-      //Append files
-      files.forEach((file) => {
-        formData.append('files', file);
-
       });
 
-      debugger
-
-      for (const [key, value] of formData.entries()) {
-        console.log(`${key}:`, value);
-      }
-      debugger
-      console.log(process);
+      // Append files
+      files.forEach((file) => {
+        formData.append('files', file);
+      });
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/user/submitDispute`, {
         method: 'POST',
         body: formData,
-        credentials: 'include'
+        credentials: 'include',
       });
-      console.log('File uploaded:', response);
-
 
       if (!response.ok) {
         throw new Error('Failed to submit dispute');
       }
 
       toast.success("Dispute submitted successfully");
-      router.push("/campaigns")
+      router.push("/campaigns");
       setFiles([]); // Clear files after successful submission
       form.reset(); // Reset form
     } catch (error) {
@@ -217,7 +215,6 @@ const DisputeForm = forwardRef(({ campaignData_ }: { campaignData_: CampaignData
   ];
 
   return (
-    
     <div className="min-h-screen bg-background transition-colors duration-300">
       <div className="container mx-auto p-8 animate-in slide-in-from-bottom duration-700">
         <Card className="max-w-4xl mx-auto backdrop-blur-sm bg-card/95 shadow-xl transition-all duration-300 hover:shadow-2xl">
@@ -245,76 +242,76 @@ const DisputeForm = forwardRef(({ campaignData_ }: { campaignData_: CampaignData
                       <FormItem className="animate-in fade-in slide-in-from-left duration-700 delay-[600ms]">
                         <FormLabel>Campaign Id</FormLabel>
                         <FormControl>
-                          <Input {...field} disabled className="bg-muted/50 text-white" value={campaignData.campaignId}/>
+                          <Input {...field} disabled className="bg-muted/50 text-white" value={campaignData.campaignId} />
                         </FormControl>
                       </FormItem>
                     )}
                   />
 
-                        <FormField
-                          control={form.control}
-                          name="campaignName"
-                          render={({ field }) => (
-                            <FormItem className="animate-in fade-in slide-in-from-right duration-700 delay-[700ms]">
-                              <FormLabel>Campaign Name</FormLabel>
-                              <FormControl>
-                                <Input {...field} disabled className="bg-muted/50 text-white" value={campaignData.campaignName} />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
+                  <FormField
+                    control={form.control}
+                    name="campaignName"
+                    render={({ field }) => (
+                      <FormItem className="animate-in fade-in slide-in-from-right duration-700 delay-[700ms]">
+                        <FormLabel>Campaign Name</FormLabel>
+                        <FormControl>
+                          <Input {...field} disabled className="bg-muted/50 text-white" value={campaignData.campaignName} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
 
-                        {/* Backer Information */}
-                        <FormField
-                          control={form.control}
-                          name="email"
-                          render={({ field }) => (
-                            <FormItem className="animate-in fade-in slide-in-from-left duration-700 delay-[800ms]">
-                              <FormLabel>Email Address</FormLabel>
-                              <FormControl>
-                                <Input {...field} type="email" disabled className="bg-muted/50 text-white" />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
+                  {/* Backer Information */}
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem className="animate-in fade-in slide-in-from-left duration-700 delay-[800ms]">
+                        <FormLabel>Email Address</FormLabel>
+                        <FormControl>
+                          <Input {...field} type="email" disabled className="bg-muted/50 text-white" />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
 
-                        <FormField
-                          control={form.control}
-                          name="phone"
-                          render={({ field }) => (
-                            <FormItem className="animate-in fade-in slide-in-from-right duration-700 delay-[900ms]">
-                              <FormLabel>Phone Number (Optional)</FormLabel>
-                              <FormControl>
-                                <Input {...field} type="tel" className="transition-colors hover:border-primary text-white" />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem className="animate-in fade-in slide-in-from-right duration-700 delay-[900ms]">
+                        <FormLabel>Phone Number (Optional)</FormLabel>
+                        <FormControl>
+                          <Input {...field} type="tel" className="transition-colors hover:border-primary text-white" />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
 
-                        {/* Dispute Details */}
-                        <FormField
-                          control={form.control}
-                          name="disputeType"
-                          render={({ field }) => (
-                            <FormItem className="animate-in fade-in slide-in-from-left duration-700 delay-[1000ms]">
-                              <FormLabel>Dispute Type</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger className="transition-colors hover:border-primary">
-                                    <SelectValue placeholder="Select dispute type" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {disputeTypes.map((type) => (
-                                    <SelectItem key={type} value={type.toLowerCase()}>
-                                      {type}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </FormItem>
-                          )}
-                        />
+                  {/* Dispute Details */}
+                  <FormField
+                    control={form.control}
+                    name="disputeType"
+                    render={({ field }) => (
+                      <FormItem className="animate-in fade-in slide-in-from-left duration-700 delay-[1000ms]">
+                        <FormLabel>Dispute Type</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="transition-colors hover:border-primary">
+                              <SelectValue placeholder="Select dispute type" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {disputeTypes.map((type) => (
+                              <SelectItem key={type} value={type.toLowerCase()}>
+                                {type}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormItem>
+                    )}
+                  />
 
                         <FormField
                           control={form.control}
@@ -338,154 +335,153 @@ const DisputeForm = forwardRef(({ campaignData_ }: { campaignData_: CampaignData
 
                       </div>
 
-                      {/* Description */}
-                      <FormField
-                        control={form.control}
-                        name="description"
-                        render={({ field }) => (
-                          <FormItem className="animate-in fade-in slide-in-from-bottom duration-700 delay-[1200ms]">
-                            <FormLabel>Detailed Description</FormLabel>
-                            <FormControl>
-                              <Textarea
-                                placeholder="Please provide a detailed description of the issue..."
-                                className="min-h-[120px] transition-colors hover:border-primary resize-y"
-                                {...field}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
+                {/* Description */}
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem className="animate-in fade-in slide-in-from-bottom duration-700 delay-[1200ms]">
+                      <FormLabel>Detailed Description</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Please provide a detailed description of the issue..."
+                          className="min-h-[120px] transition-colors hover:border-primary resize-y"
+                          {...field}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
 
-                      {/* File Upload */}
-                      <div className="space-y-2 animate-in fade-in slide-in-from-bottom duration-700 delay-[1300ms]">
-                        <FormLabel>Supporting Evidence</FormLabel>
-                        <div
-                          className="border-2 border-dashed border-border rounded-lg p-6 text-center cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group"
-                          onDragOver={handleDragOver}
-                          onDrop={handleDrop}
-                          onClick={() => fileInputRef.current?.click()}
-                        >
-                          <input
-                            type="file"
-                            ref={fileInputRef}
-                            name="files"
-                            onChange={handleFileChange}
-                            className="hidden"
-                            multiple
-                            accept={ACCEPTED_FILE_TYPES.join(',')}
-                          />
-                          <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2 transition-transform group-hover:scale-110" />
-                          <p className="text-sm text-muted-foreground">
-                            Drag and drop files here or click to browse
-                          </p>
-                          <p className="text-xs text-muted-foreground mt-2">
-                            Supported formats: PDF, DOCX, JPG, PNG (Max 5MB)
-                          </p>
-                        </div>
+                {/* File Upload */}
+                <div className="space-y-2 animate-in fade-in slide-in-from-bottom duration-700 delay-[1300ms]">
+                  <FormLabel>Supporting Evidence</FormLabel>
+                  <div
+                    className="border-2 border-dashed border-border rounded-lg p-6 text-center cursor-pointer transition-all duration-300 hover:border-primary hover:bg-primary/5 group"
+                    onDragOver={handleDragOver}
+                    onDrop={handleDrop}
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      name="files"
+                      onChange={handleFileChange}
+                      className="hidden"
+                      multiple
+                      accept={ACCEPTED_FILE_TYPES.join(',')}
+                    />
+                    <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2 transition-transform group-hover:scale-110" />
+                    <p className="text-sm text-muted-foreground">
+                      Drag and drop files here or click to browse
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Supported formats: PDF, DOCX, JPG, PNG (Max 5MB)
+                    </p>
+                  </div>
 
-                        {/* File List */}
-                        {files.length > 0 && (
-                          <ScrollArea className="h-[150px] w-full border rounded-md p-4">
-                            <div className="space-y-2">
-                              {files.map((file, index) => (
-                                <div
-                                  key={index}
-                                  className="flex items-center justify-between p-2 bg-muted/50 rounded-md group"
-                                >
-                                  <div className="flex items-center space-x-2">
-                                    <span className="text-sm font-medium truncate max-w-[200px]">
-                                      {file.name}
-                                    </span>
-                                    <span className="text-xs text-muted-foreground">
-                                      ({(file.size / 1024 / 1024).toFixed(2)} MB)
-                                    </span>
-                                  </div>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="opacity-0 group-hover:opacity-100 transition-opacity"
-                                    onClick={() => removeFile(index)}
-                                  >
-                                    <X className="h-4 w-4" />
-                                  </Button>
-                                </div>
-                              ))}
+                  {/* File List */}
+                  {files.length > 0 && (
+                    <ScrollArea className="h-[150px] w-full border rounded-md p-4">
+                      <div className="space-y-2">
+                        {files.map((file, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center justify-between p-2 bg-muted/50 rounded-md group"
+                          >
+                            <div className="flex items-center space-x-2">
+                              <span className="text-sm font-medium truncate max-w-[200px]">
+                                {file.name}
+                              </span>
+                              <span className="text-xs text-muted-foreground">
+                                ({(file.size / 1024 / 1024).toFixed(2)} MB)
+                              </span>
                             </div>
-                          </ScrollArea>
-                        )}
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={() => removeFile(index)}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
                       </div>
+                    </ScrollArea>
+                  )}
+                </div>
 
-                      {/* Desired Outcome */}
-                      <FormField
-                        control={form.control}
-                        name="desiredOutcome"
-                        render={({ field }) => (
-                          <FormItem className="animate-in fade-in slide-in-from-bottom duration-700 delay-[1500ms]">
-                            <FormLabel>Desired Outcome</FormLabel>
-                            <FormControl>
-                              <Textarea
-                                placeholder="What resolution are you seeking?"
-                                className="min-h-[100px] transition-colors hover:border-primary resize-y"
-                                {...field}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-
-                      {/* Additional Notes */}
-                      <FormField
-                        control={form.control}
-                        name="additionalNotes"
-                        render={({ field }) => (
-                          <FormItem className="animate-in fade-in slide-in-from-bottom duration-700 delay-[1600ms]">
-                            <FormLabel>Additional Notes</FormLabel>
-                            <FormControl>
-                              <Textarea
-                                placeholder="Any additional information you'd like to provide..."
-                                className="transition-colors hover:border-primary resize-y"
-                                {...field}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-
-                      {/* Terms and Signature */}
-                      <div className="space-y-4 animate-in fade-in slide-in-from-bottom duration-700 delay-[1700ms]">
-                        <FormField
-                          control={form.control}
-                          name="termsAccepted"
-                          render={({ field }) => (
-                            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value}
-                                  onChange={field.onChange}
-                                  className="transition-colors data-[state=checked]:bg-primary"
-                                />
-                              </FormControl>
-                              <div className="space-y-1 leading-none">
-                                <FormLabel>Terms and Conditions</FormLabel>
-                                <FormDescription>
-                                  I agree to the terms and conditions of the dispute resolution process.
-                                </FormDescription>
-                              </div>
-                            </FormItem>
-                          )}
+                {/* Desired Outcome */}
+                <FormField
+                  control={form.control}
+                  name="desiredOutcome"
+                  render={({ field }) => (
+                    <FormItem className="animate-in fade-in slide-in-from-bottom duration-700 delay-[1500ms]">
+                      <FormLabel>Desired Outcome</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="What resolution are you seeking?"
+                          className="min-h-[100px] transition-colors hover:border-primary resize-y"
+                          {...field}
                         />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
 
-                        <FormField
-                          control={form.control}
-                          name="signature"
-                          render={({ field }) => (
-                            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-
-
-                            </FormItem>
-                          )}
+                {/* Additional Notes */}
+                <FormField
+                  control={form.control}
+                  name="additionalNotes"
+                  render={({ field }) => (
+                    <FormItem className="animate-in fade-in slide-in-from-bottom duration-700 delay-[1600ms]">
+                      <FormLabel>Additional Notes</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Any additional information you'd like to provide..."
+                          className="transition-colors hover:border-primary resize-y"
+                          {...field}
                         />
-                      </div>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                {/* Terms and Signature */}
+                <div className="space-y-4 animate-in fade-in slide-in-from-bottom duration-700 delay-[1700ms]">
+                  <FormField
+                    control={form.control}
+                    name="termsAccepted"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onChange={field.onChange}
+                            className="transition-colors data-[state=checked]:bg-primary"
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel>Terms and Conditions</FormLabel>
+                          <FormDescription>
+                            I agree to the terms and conditions of the dispute resolution process.
+                          </FormDescription>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="signature"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                        {/* If you need a signature field, add it here */}
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
                       <Button
                         type="submit"
@@ -500,7 +496,6 @@ const DisputeForm = forwardRef(({ campaignData_ }: { campaignData_: CampaignData
       </Card>
     </div>
     </div>
-
   );
 })
 export default DisputeForm

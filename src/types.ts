@@ -1,4 +1,5 @@
 export interface Campaign {
+    status: string;
     _id: string;
     title: string;
     story: string;
