@@ -279,7 +279,7 @@ export function GlobalChat() {
   if (!isOpen) {
     return (
       <Button
-        className="fixed bottom-4 right-4 rounded-full p-4 w-14 h-14 shadow-lg bg-blue-600 hover:bg-blue-700 text-white z-50"
+        className="fixed bottom-6 right-4 rounded-full p-4 w-14 h-14 shadow-lg bg-blue-600 hover:bg-blue-700 text-white z-50"
         onClick={() => setIsOpen(true)}
       >
         <Bot className="h-6 w-6" />

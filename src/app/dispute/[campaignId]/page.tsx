@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, Upload, AlertCircle, X } from "lucide-react";
+import { Calendar as CalendarIcon, Upload, AlertCircle, X, CheckCircle2, Clock, FileText, MessageSquare, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
@@ -37,8 +37,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { toast } from "react-toastify";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Separator } from "@radix-ui/react-dropdown-menu";
+import { Dialog } from "@radix-ui/react-dialog";
+import { DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_FILE_TYPES = [
@@ -51,9 +54,9 @@ const ACCEPTED_FILE_TYPES = [
 ];
 
 const formSchema = z.object({
-  projectId: z.string(),
-  projectName: z.string(),
-  email: z.string().email(),
+  campaignId: z.string(),
+  campaignName: z.string(),
+  email: z.string().optional(),
   phone: z.string().optional(),
   disputeType: z.string(),
   issueDate: z.date(),
@@ -65,25 +68,46 @@ const formSchema = z.object({
   documents: z.array(z.instanceof(File)).optional(),
 });
 
-export default function DisputeForm() {
+export default function DisputeForm({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const [files, setFiles] = useState<File[]>([]);
+  // Initialize campaignData with default values to avoid undefined values in inputs
+  const [campaignData, setCampaignData] = useState<{ campaignId: string; campaignName: string }>({
+    campaignId: '',
+    campaignName: '',
+  });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      projectId: "PRJ-001",
-      projectName: "Example Project",
-      email: "user@example.com",
+      campaignId: '',
+      campaignName: '',
+      email: 'backer.email@example.com',
       termsAccepted: false,
       signature: false,
       documents: [],
     },
   });
 
+  useEffect(() => {
+    const fetchCampaignData = async () => {
+      const _params = decodeURIComponent((await params).campaignId);
+      setCampaignData({
+        campaignId: _params.split("-")[1],
+        campaignName: _params.split("-")[0],
+      });
+    };
+    fetchCampaignData();
+  }, [params]);
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(event.target.files || []);
-    
+
     // Validate file size and type
     const validFiles = selectedFiles.filter(file => {
       if (file.size > MAX_FILE_SIZE) {
@@ -115,9 +139,9 @@ export default function DisputeForm() {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     const droppedFiles = Array.from(e.dataTransfer.files);
-    
+
     // Validate file size and type
     const validFiles = droppedFiles.filter(file => {
       if (file.size > MAX_FILE_SIZE) {
@@ -136,40 +160,37 @@ export default function DisputeForm() {
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    const _values = {
+      ...values,
+      campaignName: campaignData.campaignName,
+      campaignId: campaignData.campaignId,
+    };
     try {
       const formData = new FormData();
 
-      Object.entries(values).forEach(([key, value]) => {
+      Object.entries(_values).forEach(([key, value]) => {
         if (key !== 'documents') {
           formData.append(key, value as string);
         }
-      })
-      
-      //Append files
+      });
+
+      // Append files
       files.forEach((file) => {
         formData.append('files', file);
-        
       });
-      
-      debugger
 
-      for (const [key, value] of formData.entries()) {
-        console.log(`${key}:`, value);
-      }
-      console.log(process);
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/user/submitDispute`, {
-      method: 'POST',
-      body: formData
-  });
-  console.log('File uploaded:', response);
-    
-      
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/user/submitDispute`, {
+        method: 'POST',
+        body: formData,
+        credentials: 'include',
+      });
+
       if (!response.ok) {
         throw new Error('Failed to submit dispute');
       }
 
       toast.success("Dispute submitted successfully");
-      router.push("/campaigns")
+      router.push("/campaigns");
       setFiles([]); // Clear files after successful submission
       form.reset(); // Reset form
     } catch (error) {
@@ -210,12 +231,12 @@ export default function DisputeForm() {
                   {/* Project Details */}
                   <FormField
                     control={form.control}
-                    name="projectId"
+                    name="campaignId"
                     render={({ field }) => (
                       <FormItem className="animate-in fade-in slide-in-from-left duration-700 delay-[600ms]">
-                        <FormLabel>Project ID</FormLabel>
+                        <FormLabel>Campaign Id</FormLabel>
                         <FormControl>
-                          <Input {...field} disabled className="bg-muted/50 text-white" />
+                          <Input {...field} disabled className="bg-muted/50 text-white" value={campaignData.campaignId} />
                         </FormControl>
                       </FormItem>
                     )}
@@ -223,12 +244,12 @@ export default function DisputeForm() {
 
                   <FormField
                     control={form.control}
-                    name="projectName"
+                    name="campaignName"
                     render={({ field }) => (
                       <FormItem className="animate-in fade-in slide-in-from-right duration-700 delay-[700ms]">
-                        <FormLabel>Project Name</FormLabel>
+                        <FormLabel>Campaign Name</FormLabel>
                         <FormControl>
-                          <Input {...field} disabled className="bg-muted/50 text-white" name="" />
+                          <Input {...field} disabled className="bg-muted/50 text-white" value={campaignData.campaignName} />
                         </FormControl>
                       </FormItem>
                     )}
@@ -470,15 +491,14 @@ export default function DisputeForm() {
                     name="signature"
                     render={({ field }) => (
                       <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                        
-                       
+                        {/* If you need a signature field, add it here */}
                       </FormItem>
                     )}
                   />
                 </div>
 
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   className="w-full animate-in fade-in slide-in-from-bottom duration-700 delay-[1800ms] transition-all hover:scale-[1.02]"
                 >
                   Submit Dispute

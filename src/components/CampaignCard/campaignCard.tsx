@@ -4,27 +4,56 @@ import React, { useState } from 'react';
 import { Calendar, Target, Users, ChevronRight } from 'lucide-react';
 import { Campaign } from '@/types';
 import Link from 'next/link';
-import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
+
+import {getbadgeForCampaign} from '@/app/campaigns/page';
 
 interface CampaignCardProps {
   campaign: Campaign;
   onDonate: (campaignId: string) => void;
+  apiType?: string; // Add the apiType property
 }
 
-export default function CampaignCard({ campaign, onDonate }: CampaignCardProps) {
+export default function CampaignCard({ campaign,apiType, onDonate }: CampaignCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  console.log('apiType',apiType)
+
+  const getBadgeText = () => {
+    switch (apiType) {
+      case 'trendingCampaigns':
+    
+        return 'Trending Now';
+      case 'latestCampaigns':
+        return 'New Campaign';
+      case 'weeklyMoneyRaised':
+        return 'Top Raised This Week';
+      case 'willBeClosedCampaign':
+        return `${campaign.daysLeft} days left`;
+      default:
+        return ''; // Default fallback
+    }
+  };
+
+
 
   if (!campaign.amount_raised) {
     campaign.amount_raised = 0;
   }
   if (campaign.current_amount) {
     campaign.amount_raised = campaign.current_amount;
+   
   }
 
+  
+ // const getCampaignStatus = getbadgeForCampaign(campaign._id)
+ // const daysLeft_badge=  getCampaignStatus?getCampaignStatus.badgeInfo : 'n/a'
+  //console.log('daysLeft_badge',daysLeft_badge)
   const progress = (campaign.amount_raised / campaign.goal_amount) * 100;
   const daysLeft = Math.ceil((new Date(campaign.end_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
   const path = `../detailCampaign/${campaign._id}`;
+
+  // Show the "Done" badge if at least 1% is raised
+  const isDone = progress >= 1;
 
   return (
     <article
@@ -32,6 +61,15 @@ export default function CampaignCard({ campaign, onDonate }: CampaignCardProps) 
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
+      {/* Static "Done" Badge - Visible if at least 1% funded */}
+        <div className="absolute top-2 left-2">
+          <Badge className="bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-md shadow-md">
+           {/* {`${daysLeft_badge} days left`} */}
+           {getBadgeText()}
+          </Badge>
+        </div>
+     
+
       <div
         className="w-full h-[260px] bg-cover bg-center bg-no-repeat transition-transform duration-500 group-hover:scale-110"
         style={{
