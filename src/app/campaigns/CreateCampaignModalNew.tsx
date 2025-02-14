@@ -225,7 +225,7 @@ const formSchema = z.object({
     // })).optional(),
 
     // New Fields from CreateCampaignFields.tsx
-    pitch: z.string().min(10, "Please provide a detailed campaign pitch"),
+    pitch: z.any(),
 
     // Business Concept
     businessName: z.string(),
@@ -449,6 +449,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
     //const [currencyType, setCurrencyType] = useState("USD");
     // Store selected files in local state
     const [selectedFiles, setSelectedFiles] = useState<{ [key: string]: string }>({});
+    const [pitchComponents, setPitchComponents] = useState<any[] | undefined>(undefined)
         
     const userName = currentUser?.username;
     const userEmail = currentUser?.email;
@@ -516,7 +517,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
     //     });
     // }, [files, setValue]);
 
-    const buildFormData = (formValues: { title: string; story: string; image_url: string; end_date: Date; category: "CleanTech" | "FinTech" | "HealthTech" | "EdTech" | "AI/ML" | "Blockchain" | "IoT" | "Other"; goal_amount: number; currencyType: "USD" | "EUR" | "GBP" | "JPY"; owner: { name: string; email: string; }; businessName: string; businessIdea: string; valueProposition: string; businessModelDocName: string; businessModelPlanName: string; targetMarket: string; marketSize: string; competitiveAnalysis: string; businessLocation: string; startupCosts: string; projectedRevenue: string; breakEvenPoint: string; risksAndChallenges: string; keyMilestones: string; userId: string; pitch?: string | undefined; ourTeam?: { name: string; position: string; avatar?: string | undefined; about?: string | undefined; linkedIn?: string | undefined; cv?: File[] | undefined; }[] | undefined; image_url_?: File[] | undefined; published?: boolean | undefined; businessModelDoc?: File[] | undefined; businessPlanDoc?: File[] | undefined; technologyNeeds?: string | undefined; supplyChain?: string | undefined; businessEntity?: string | undefined; licensesPermits?: string | undefined; }) => {
+    const buildFormData = (formValues: { title: string; story: string; image_url: string; end_date: Date; category: "CleanTech" | "FinTech" | "HealthTech" | "EdTech" | "AI/ML" | "Blockchain" | "IoT" | "Other"; goal_amount: number; currencyType: "USD" | "EUR" | "GBP" | "JPY"; owner: { name: string; email: string; }; businessName: string; businessIdea: string; valueProposition: string; businessModelDocName: string; businessModelPlanName: string; targetMarket: string; marketSize: string; competitiveAnalysis: string; businessLocation: string; startupCosts: string; projectedRevenue: string; breakEvenPoint: string; risksAndChallenges: string; keyMilestones: string; userId: string; pitch?: any | undefined; ourTeam?: { name: string; position: string; avatar?: string | undefined; about?: string | undefined; linkedIn?: string | undefined; cv?: File[] | undefined; }[] | undefined; image_url_?: File[] | undefined; published?: boolean | undefined; businessModelDoc?: File[] | undefined; businessPlanDoc?: File[] | undefined; technologyNeeds?: string | undefined; supplyChain?: string | undefined; businessEntity?: string | undefined; licensesPermits?: string | undefined; }) => {
         const formData = new FormData();
 
         const files = [];
@@ -678,7 +679,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
             (field) => field.split('.').reduce((obj, key) => (obj as any)?.[key], formValues)
         );
 
-        setPitchComponents(getPitch())
+        setPitchComponents(getPitch() as any[])
 
         setProgress((completedFields.length / requiredFields.length) * 100);
     }, [formValues]);
@@ -793,11 +794,31 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
         trigger('category');
     }
 
+    const savePitchToSchema = async ()=>{
+        const response = await fetch(
+            
+            `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/pitch/createPitch`,
+            {
+              method: "POST",
+              credentials: "include", 
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(pitchComponents),
+            }
+          );
+        return response.data._id.toString()
+
+    }
+
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
         console.log(data);
         debugger;
 
-        //data.pitch = "I am a pitch";
+
+        const pitchId = await savePitchToSchema()
+
+        data.pitch = {pitchComponents: pitchComponents, pitchId: pitchId}
 
         const campaignData = {
             ...data,
@@ -1291,12 +1312,13 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
                                         <CardContent className="pt-6">
                                             <div className="space-y-2">
                                                 <Label>Campaign Pitch <span className="text-white">*</span></Label>
-                                                 <Textarea
+                                                 {/* <Textarea
                                                     {...register('pitch', { required: true })}
                                                     className="min-h-[400px] text-white bg-[#1e293b]"
                                                     placeholder="Enter your campaign pitch..."
-                                                /> 
+                                                />  */}
                                                 {/* <PitchBuilder /> */}
+                                                {<PitchbuilderV2/>}
                                             </div>
                                             {errors.pitch && (
                                                 <p className="text-sm text-destructive">{errors.pitch?.message as string}</p>
