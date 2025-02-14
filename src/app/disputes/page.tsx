@@ -58,6 +58,7 @@ export default function Home() {
   }, []);
 
   const handleViewDetails = (id: number,status:String) => {
+    debugger
     if(userRole=='admin' && status==='Under Admin Review')
       router.push(`/dispute-management/${id}`);
     else if(status==='Under Creator Review' && userRole=='admin' )

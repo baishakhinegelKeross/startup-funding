@@ -408,15 +408,54 @@ const LandingPage = () => {
                         </button>
 
                         {/* Page Indicators */}
-                        <div className="flex justify-center gap-2 mt-8">
+                        <div className="flex items-center justify-center gap-2 mt-12">
+                            <motion.div
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={prevPage}
+                                className="px-4 py-2 text-sm font-medium text-gray-400 hover:text-white transition-colors duration-300"
+                                aria-label="Previous page"
+                            >
+                                <ChevronLeft className="w-4 h-4" />
+                            </motion.div>
+
                             {Array.from({ length: totalPages }).map((_, index) => (
-                                <button
+                                <motion.div
                                     key={index}
                                     onClick={() => setCurrentPage(index)}
-                                    className={`w-2 h-2 rounded-full transition-colors ${currentPage === index ? 'bg-blue-500' : 'bg-gray-600'}`}
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className={`
+                  relative px-4 py-2 text-sm font-medium rounded-lg
+                  transition-all duration-300 
+                  ${currentPage === index
+                                            ? 'bg-gradient-to-r from-blue-500 to-blue-500 text-white shadow-lg shadow-blue-500/25'
+                                            : 'text-gray-400 hover:text-white hover:bg-gray-800'
+                                        }
+                `}
                                     aria-label={`Go to page ${index + 1}`}
-                                />
+                                >
+                                    {index + 1}
+                                    {currentPage === index && (
+                                        <motion.div
+                                            className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-500/20 to-blue-500/20 blur"
+                                            layoutId="pageHighlight"
+                                            initial={false}
+                                            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                        />
+                                    )}
+                                </motion.div>
                             ))}
+
+                            <motion.div
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={nextPage}
+                                className="px-4 py-2 text-sm font-medium text-gray-400 hover:text-white transition-colors duration-300"
+                                aria-label="Next page"
+                            >
+                                <ChevronRight className="w-4 h-4" />
+                            </motion.div>
                         </div>
                     </div>
                 </div>

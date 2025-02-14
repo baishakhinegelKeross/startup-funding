@@ -6,6 +6,7 @@ import MyInvestments from "@/components/Investor/MyInvestments/MyInvestment";
 import ProfileUpdate from "@/components/Investor/myProfile/myProfile";
 import authStore from "@/store/authStore";
 import AdminDashboard from "@/app/adminDashboard/page";
+import ListOfInvestor from "@/components/Investor/listOfInvester/index"
 import Fundraiser from "@/app/fundraiser/page";
 import Investor from "@/app/investor/page";
 
@@ -52,7 +53,7 @@ const sidebarState = new SidebarState();
 //   userRole: "investor";
 // }
 
-const Sidebar: React.FC = ({}) => {
+const Sidebar: React.FC = ({ }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   const [selectedSection, setSelectedSection] =
     useState<string>("My Investments");
@@ -84,7 +85,9 @@ const Sidebar: React.FC = ({}) => {
       case "Kyc":
         return <KycForm />;
       case "Dispute":
-          return <Home />;
+        return <Home />;
+      case "listOfInvestor":
+        return <ListOfInvestor />;
     }
   };
   const { user } = useAuth();
@@ -93,8 +96,8 @@ const Sidebar: React.FC = ({}) => {
     user?.role === "admin"
       ? "admin"
       : user?.role === "fundraiser"
-      ? "fundraiser"
-      : "investor";
+        ? "fundraiser"
+        : "investor";
 
   const menuItems = [
     //for Fundraiser
@@ -170,7 +173,7 @@ const Sidebar: React.FC = ({}) => {
     {
       title: "List Of Investar",
       icon: <Users className="h-5 w-5" />,
-      section: "Hi there",
+      section: "listOfInvestor",
       role: "admin",
     },
   ];
@@ -186,9 +189,8 @@ const Sidebar: React.FC = ({}) => {
       "bg-gradient-to-r from-cyan-700 to-cyan-600 text-white shadow-lg";
     const inactiveClass = "hover:bg-gray-700/20 text-gray-300 hover:text-white";
 
-    return `${baseClass} ${
-      section === selectedSection ? activeClass : inactiveClass
-    }`;
+    return `${baseClass} ${section === selectedSection ? activeClass : inactiveClass
+      }`;
   };
 
   return (
@@ -196,9 +198,8 @@ const Sidebar: React.FC = ({}) => {
     <div className="fixed inset-0 flex h-screen w-screen bg-gray-900">
 
       <div
-        className={`relative transition-all duration-300 ease-in-out ${
-          isSidebarOpen ? "w-72" : "w-20"
-        } bg-gray-800 border-r border-gray-700 flex flex-col h-full`}
+        className={`relative transition-all duration-300 ease-in-out ${isSidebarOpen ? "w-72" : "w-20"
+          } bg-gray-800 border-r border-gray-700 flex flex-col h-full`}
       >
         {/* Toggle Button */}
         <button
@@ -237,9 +238,8 @@ const Sidebar: React.FC = ({}) => {
             >
               {item.icon}
               <span
-                className={`${
-                  isSidebarOpen ? "opacity-100" : "opacity-0 w-0"
-                } transition-all duration-200 whitespace-nowrap`}
+                className={`${isSidebarOpen ? "opacity-100" : "opacity-0 w-0"
+                  } transition-all duration-200 whitespace-nowrap`}
               >
                 {item.title}
               </span>

@@ -9,12 +9,21 @@ import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/auth-context";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DialogClose, DialogTrigger } from "@radix-ui/react-dialog";
+import DisputeForm from "@/app/dispute/[campaignId]/page";
+import { useRef } from "react";
+
+
+
 
 const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({ campaignId, data }) => {
     const { user } = useAuth();
     const router = useRouter();
+    const submitBtnRef = useRef(null)
     const userRole = user?.role === 'admin' ? 'admin' : user?.role === 'fundraiser' ? 'founder' : user?.role === 'investor' ? 'investor' : undefined;
-    
+    //const [disputemodalOpen,setDisputemodalOpen] = useState(false)
+
     const getFundStatus = function(percentage: number){
         let status = 'Fully Funded';
 
@@ -50,6 +59,7 @@ const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({ campaignId, dat
             <div className="bg-[#0a0b1e]">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
                     {/* Header Section */}
+                    {/* {disputemodalOpen?<DisputeForm/>:null} */}
                     <div className="space-y-4 mb-12">
                         <Badge
                             variant="secondary"
@@ -84,8 +94,8 @@ const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({ campaignId, dat
                                     />
                                 </div>
 
-                                <div className="mt-2">
-                                    <p className="text-lg">
+                                <div className="mt-2 ">
+                                    <p className="text-lg line-clamp-3">
                                         <q>
                                             {story}
                                         </q>
@@ -215,13 +225,52 @@ const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({ campaignId, dat
 
                                         
                                         {userRole != undefined && 
-                                        <Button
-                                            variant="secondary"
-                                            className="w-full bg-secondary/50 hover:bg-secondary/70"
-                                        >
-                                            <Eye className="mr-2 h-4 w-4" />
-                                            <Link href={`/dispute/${data.title}-${campaignId}`}>Report Dispute</Link>
-                                        </Button>
+                                         <Dialog>
+                                         <DialogTrigger asChild>
+                                             <Button
+                                                 variant="secondary"
+                                                 className="w-full bg-secondary/50 hover:bg-secondary/70"
+                                                 onClick={()=>{
+                                                     //router.push(`/dispute/${data.title}-${campaignId}`)
+                                                 }}
+                                             >
+                                                 <Eye className="mr-2 h-4 w-4" />
+                                                 Report Dispute
+                                                 {/* <Link href={`/dispute/${data.title}-${campaignId}`}>Report Dispute</Link> */}
+                                             </Button>
+                                         </DialogTrigger>
+                                         <DialogContent className="w-full max-w-screen-lg mx-auto h-auto max-h-[80vh] overflow-y-auto bg-card/95 ">
+                                             <DialogHeader>
+                                                 <DialogTitle>Report Dispute</DialogTitle>
+                                                 <DialogDescription className="overflow-y-auto max-h-[60vh] scrollbar-none">
+                                                     <DisputeForm campaignData_={{campaignId:campaignId,campaignName:data.title}} ref={submitBtnRef} />
+                                                 </DialogDescription>
+                                             </DialogHeader>
+                                             <DialogFooter>
+                                                 <Button onClick={() => {
+                                                     submitBtnRef?.current.click()
+                                                 }}>
+                                                     Submit Dispute
+                                                 </Button>
+                                             </DialogFooter>
+                                         </DialogContent>
+                                     </Dialog>
+                                     
+                                      
+                                      
+                                                               // <Link href={`/dispute/${data.title}-${campaignId}`}>
+                                            //     <Button
+                                            //         variant="secondary"
+                                            //         className="w-full bg-secondary/50 hover:bg-secondary/70 mt-2"
+
+
+                                            //     >
+                                            //         <Eye className="mr-2 h-4 w-4" />
+                                            //         Report Dispute
+
+                                            //     </Button>
+                                            // </Link>
+                                        
                                         }
                                        
                                     </div>

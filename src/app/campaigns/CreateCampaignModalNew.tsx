@@ -61,8 +61,10 @@ import type {
 //import { cn } from '@/lib/utils';
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-//import PitchBuilder from '@/components/PitchBuilder/PitchBuilder';
+////import PitchBuilder from '@/components/PitchBuilder/PitchBuilder';
 import axios from 'axios';
+import PitchbuilderV2 from '../detailCampaign/[id]/pitch_builderV2/page';
+import { getPitch } from '../detailCampaign/[id]/pitch_builderV2/page';
 
 const CATEGORIES = [
     'CleanTech',
@@ -675,6 +677,8 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
         const completedFields = requiredFields.filter(
             (field) => field.split('.').reduce((obj, key) => (obj as any)?.[key], formValues)
         );
+
+        setPitchComponents(getPitch())
 
         setProgress((completedFields.length / requiredFields.length) * 100);
     }, [formValues]);

@@ -101,7 +101,7 @@ export function GlobalChat() {
   if (!isOpen) {
     return (
       <Button
-        className="fixed bottom-4 right-4 rounded-full p-4 w-14 h-14 shadow-lg bg-blue-600 hover:bg-blue-700 text-white z-50"
+        className="fixed bottom-6 right-4 rounded-full p-4 w-14 h-14 shadow-lg bg-blue-600 hover:bg-blue-700 text-white z-50"
         onClick={() => setIsOpen(true)}
       >
         <Bot className="h-6 w-6" />
@@ -110,7 +110,7 @@ export function GlobalChat() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 w-[400px] shadow-2xl z-50">
+    <div className="fixed bottom-6 right-4 w-[400px] shadow-2xl z-50">
       <Card className="h-[500px] flex flex-col bg-background border-muted-foreground/20">
         <CardHeader className="border-b border-border/50 bg-muted/50 p-4">
           <div className="flex items-center justify-between">

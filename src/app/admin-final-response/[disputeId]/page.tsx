@@ -310,11 +310,14 @@ export default function DisputeResolutionForm({
       formData.append('action', action);
 
       const disputeId = (await params).disputeId;
-      
-      const response = await fetch(`/rejectDispute/${disputeId}`, {
+
+      const response = action==='reject'?await fetch(`/rejectDispute/${disputeId}`, {
         method: 'POST',
         body: formData,
-      });
+      }) : await fetch(`/approveDispute/${disputeId}`, {
+        method: 'POST',
+        body: formData,
+      })
 
       if (!response.ok) {
         throw new Error('Failed to submit dispute');
@@ -351,7 +354,7 @@ export default function DisputeResolutionForm({
                       <FormItem>
                         <FormLabel>Dispute Title</FormLabel>
                         <FormControl>
-                          <Input {...field} disabled placeholder="Enter dispute title" className="bg-background" />
+                          <Input {...field} disabled placeholder="Enter dispute title" className="text-white bg-background" value={data._details.disputeId?`dispute#${data._details.disputeId}`:'n/a'} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -369,7 +372,9 @@ export default function DisputeResolutionForm({
                             {...field}
                             disabled
                             placeholder="Describe the dispute in detail"
-                            className="min-h-[100px] bg-background"
+                            className="min-h-[100px] bg-background text-white"
+
+                            value={data._details.description?data._details.description:'n/a'}
                           />
                         </FormControl>
                         <FormMessage />
@@ -388,7 +393,8 @@ export default function DisputeResolutionForm({
                             {...field}
                             disabled
                             placeholder="What outcome are you seeking?"
-                            className="min-h-[100px] bg-background"
+                            value={data._details.desiredOutcome?data._details.desiredOutcome:'n/a'}
+                            className="min-h-[100px] bg-background text-white"
                           />
                         </FormControl>
                         <FormMessage />
@@ -396,7 +402,7 @@ export default function DisputeResolutionForm({
                     )}
                   />
 
-                  <FormField
+                  {/* <FormField
                     control={form.control}
                     name="issuedDate"
                     render={({ field }) => (
@@ -436,7 +442,22 @@ export default function DisputeResolutionForm({
                         <FormMessage />
                       </FormItem>
                     )}
-                  />
+                  /> */}
+                  <FormField
+                      control={form.control}
+                      name="issuedDate"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Issue Date</FormLabel>
+                          <FormControl>
+                            <Input {...field} 
+                            value={new Date(data._details.createdAt).toLocaleDateString()}
+                            disabled type="text" placeholder="Issue Date" className="text-white bg-background" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                 </div>
               </FormSection>
 
@@ -450,7 +471,9 @@ export default function DisputeResolutionForm({
                         <FormItem>
                           <FormLabel>Backer Email</FormLabel>
                           <FormControl>
-                            <Input {...field} disabled type="email" placeholder="Enter backer's email" className="bg-background" />
+                            <Input {...field} 
+                            value={data._details.backer?data._details.backer.email:'n/a'}
+                            disabled type="email" placeholder="Enter backer's email" className="text-white bg-background" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -464,7 +487,9 @@ export default function DisputeResolutionForm({
                         <FormItem>
                           <FormLabel>Backer Name</FormLabel>
                           <FormControl>
-                            <Input {...field} disabled placeholder="Enter backer's name" className="bg-background" />
+                            <Input {...field} 
+                            value={data._details.backer?data._details.backer.username:'n/a'}
+                            disabled placeholder="Enter backer's name" className="bg-background text-white" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -486,9 +511,11 @@ export default function DisputeResolutionForm({
                     name="creatorName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Creator Name</FormLabel>
+                        <FormLabel>Creator email</FormLabel>
                         <FormControl>
-                          <Input {...field} disabled placeholder="Enter creator's name" className="bg-background" />
+                          <Input {...field} 
+                          value={data._details.creator?data._details.creator.email:'n/a'}
+                          disabled placeholder="Enter creator's name" className="bg-background text-white" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -500,9 +527,11 @@ export default function DisputeResolutionForm({
                     name="projectName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Project Name</FormLabel>
+                        <FormLabel>Campaign name</FormLabel>
                         <FormControl>
-                          <Input {...field} disabled placeholder="Enter project name" className="bg-background" />
+                          <Input {...field} 
+                          value={data._details.campaignName?data._details.campaignName:'n/a'}
+                          disabled placeholder="Enter campaign name" className="bg-background text-white" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
