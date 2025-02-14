@@ -37,7 +37,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { toast } from "react-toastify";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, forwardRef } from "react";
 import { useRouter } from "next/navigation";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { Dialog } from "@radix-ui/react-dialog";
@@ -68,18 +68,26 @@ const formSchema = z.object({
   documents: z.array(z.instanceof(File)).optional(),
 });
 
-export default function DisputeForm({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+interface CampaignData {
+  campaignId: string;
+  campaignName: string;
+  [key: string]: any;
+}
+
+const DisputeForm = forwardRef(({ campaignData_ }: { campaignData_: CampaignData },ref: any) =>{ 
+//   {
+//   params,
+// }: {
+//   params: Promise<{ slug: string }>
+// }
   const [files, setFiles] = useState<File[]>([]);
   // Initialize campaignData with default values to avoid undefined values in inputs
-  const [campaignData, setCampaignData] = useState<{ campaignId: string; campaignName: string }>({
-    campaignId: '',
-    campaignName: '',
-  });
+  // const [campaignData, setCampaignData] = useState<{ campaignId: string; campaignName: string }>({
+  //   campaignId: '',
+  //   campaignName: '',
+  // });
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [campaignData, setCampaignData] = useState({campaignName:campaignData_.campaignName,campaignId:campaignData_.campaignId})
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -94,16 +102,14 @@ export default function DisputeForm({
     },
   });
 
-  useEffect(() => {
-    const fetchCampaignData = async () => {
-      const _params = decodeURIComponent((await params).campaignId);
-      setCampaignData({
-        campaignId: _params.split("-")[1],
-        campaignName: _params.split("-")[0],
-      });
-    };
-    fetchCampaignData();
-  }, [params]);
+  // useEffect(() => {
+  //   const fetchCampaignData = async () => {
+  //     debugger
+  //     const _params = decodeURIComponent((await params).campaignId)
+  //     setCampaignData({ campaignId: _params.split("-")[1], campaignName: _params.split("-")[0] })
+  //   }
+  //   fetchCampaignData()
+  // }, [])
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(event.target.files || []);
@@ -307,47 +313,27 @@ export default function DisputeForm({
                     )}
                   />
 
-                  <FormField
-                    control={form.control}
-                    name="issueDate"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col animate-in fade-in slide-in-from-right duration-700 delay-[1100ms]">
-                        <FormLabel>Date of Issue</FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant={"outline"}
-                                className={cn(
-                                  "w-full pl-3 text-left font-normal transition-colors hover:border-primary",
-                                  !field.value && "text-muted-foreground"
-                                )}
-                              >
-                                {field.value ? (
-                                  format(field.value, "PPP")
-                                ) : (
-                                  <span>Pick a date</span>
-                                )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              disabled={(date) =>
-                                date > new Date() || date < new Date("1900-01-01")
-                              }
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
-                      </FormItem>
-                    )}
-                  />
-                </div>
+                        <FormField
+                          control={form.control}
+                          name="issueDate"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-col">
+                              <FormLabel>Date of Issue</FormLabel>
+                              <FormControl>
+                                <input
+                                  type="date"
+                                  value={field.value ? format(field.value, "yyyy-MM-dd") : ""}
+                                  onChange={(e) => field.onChange(new Date(e.target.value))}
+                                  max={new Date().toISOString().split("T")[0]}
+                                  min="1900-01-01"
+                                  className="w-full bg-transparent border-transparent text-white border-r-2"
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+
+                      </div>
 
                 {/* Description */}
                 <FormField
@@ -497,17 +483,23 @@ export default function DisputeForm({
                   />
                 </div>
 
-                <Button
-                  type="submit"
-                  className="w-full animate-in fade-in slide-in-from-bottom duration-700 delay-[1800ms] transition-all hover:scale-[1.02]"
-                >
-                  Submit Dispute
-                </Button>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
-      </div>
+                      <Button
+                        type="submit"
+                        ref={ref}
+                        className="hidden w-full animate-in fade-in slide-in-from-bottom duration-700 delay-[1800ms] transition-all hover:scale-[1.02]"
+                      >
+                        Submit Dispute form
+                      </Button>
+                    </form>
+                  </Form>
+                </CardContent>
+      </Card>
+    </div>
     </div>
   );
-}
+})
+export default DisputeForm
+
+
+
+

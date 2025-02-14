@@ -167,24 +167,41 @@ export interface CommentPostProps {
 
 
 export interface QuestionAnswersPostProps{
-    posts: {
-        id: string;
-        comment: string;
+    userId: string;
+    comment: string;
+    userPic: string;
+    userName: string;
+    userRole: string;
+    commentDate: string;
+    reply: {
+        userId: string;
+        replyComment: string;
         userPic: string;
         userName: string;
         userRole: string;
-        commentDate: string;
-        reply: {
-            id: string;
-            replyComment: string;
-            userPic: string;
-            userName: string;
-            userRole: string;
-            replyDate: string;
-        }[];
-    }
+        replyDate: string;
+    }[];
 }
 
+
+export interface CommentProps{
+    userId: string;
+    comment: string;
+    userPic: string;
+    userName: string;
+    userRole: string;
+    commentDate: string;
+}
+
+export interface ReplyCommentProps{
+    replyingToId: string;
+    userId: string;
+    replyComment: string;
+    userPic: string;
+    userName: string;
+    userRole: string;
+    replyDate: string;
+}
 // question_answers_posts.tsx : ED
 
 // text_editor.tsx : ST
