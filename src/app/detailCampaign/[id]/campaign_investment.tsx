@@ -47,7 +47,7 @@ const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({ campaignId, dat
     const image = data.image_url ? data.image_url : "https://placehold.co/600x400?text=Campaign+Photo.png";
     const title = data.title ? data.title : "Campaign Title";
     const story = data.story ? data.story : "Campaign Story";
-    const raised = data.current_amount ? data.current_amount : 1;
+    const raised = data.current_amount ? data.current_amount : 0;
     const goal = data.goal_amount ? data.goal_amount : 1;
     const fundedPct = parseFloat(((raised/goal) * 100).toFixed(2));
     const fundStatus = getFundStatus(fundedPct);
@@ -114,7 +114,7 @@ const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({ campaignId, dat
                                         <span className="text-sm text-muted-foreground">{fundedPct}%</span>
                                     </div>
                                     <div className="h-2 bg-muted rounded-full overflow-hidden">
-                                        <div className={`h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full w-[${fundProgress}%]`}></div>
+                                        <div className={`h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full ${fundProgress > 1 ? 'w-['+fundProgress+'%]' : 'w-0'}`}></div>
                                     </div>
                                 </div>
 
@@ -285,7 +285,7 @@ const CampaignInvestment: React.FC<CampaignInvestmentProps> = ({ campaignId, dat
                 </div>
 
                 {/* Gradient Background Effect */}
-                <div className="fixed inset-0 -z-0">
+                <div className="fixed inset-0 -z-0 hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-purple-900/20 to-pink-900/20" />
                     <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent" />
                 </div>

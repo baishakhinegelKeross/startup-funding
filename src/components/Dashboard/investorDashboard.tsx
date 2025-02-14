@@ -181,7 +181,7 @@ const Sidebar: React.FC = ({ }) => {
     setsidemenu(menuItems.filter((item) => item.role === userRole));
   }, [userRole]);
 
-  debugger;
+
   const getButtonClass = (section: string) => {
     const baseClass =
       "flex items-center w-full px-4 py-3 transition-all duration-200 ease-in-out rounded-lg gap-3";
