@@ -816,9 +816,9 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
         debugger;
 
 
-        const pitchId = await savePitchToSchema()
+        // const pitchId = await savePitchToSchema()
 
-        data.pitch = {pitchComponents: pitchComponents, pitchId: pitchId}
+        // data.pitch = {pitchComponents: pitchComponents, pitchId: pitchId}
 
         const campaignData = {
             ...data,
@@ -1318,7 +1318,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
                                                     placeholder="Enter your campaign pitch..."
                                                 />  */}
                                                 {/* <PitchBuilder /> */}
-                                                {<PitchbuilderV2/>}
+                                                {<PitchbuilderV2 pitch={pitchComponents}/>}
                                             </div>
                                             {errors.pitch && (
                                                 <p className="text-sm text-destructive">{errors.pitch?.message as string}</p>
