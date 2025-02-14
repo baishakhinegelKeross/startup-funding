@@ -56,6 +56,7 @@ import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import { Separator } from "@/components/ui/separator"
 import Link from 'next/link';
+import { useState } from 'react';
 //import DBCollectionAccess from "@/lib/dbconnect";
 //import { redirect } from "next/navigation"
 
@@ -82,12 +83,12 @@ type campaignData = {
 
 const AdminApprovalTabs:React.FC<ApprovalTabsProps> = ({campaignData, pitch, fundingNDetails, teamAndBackground, bussinessAndMarket, planningAndExecution, legalAndComplaince, contactInformation})=>{
     const router = useRouter();
+    const [currentTab, setCurrentTab] = useState("projectOverview");
     const currentPathName = usePathname();
     const status: string = "pending";
     const submittedAt = "28/1/2025, 11:48:35 am";
 
-    debugger;
-    console.log(campaignData);
+    //console.log(campaignData);
 
     const validation = function(){
         let isValid = true;
@@ -258,7 +259,7 @@ const AdminApprovalTabs:React.FC<ApprovalTabsProps> = ({campaignData, pitch, fun
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <Tabs defaultValue="projectOverview" className="w-full">
+                    <Tabs value={currentTab} defaultValue='projectOverview' className="w-full">
                         <TabsList className="grid w-full grid-cols-8">
                             <TabsTrigger className={Classes.tablist} value="projectOverview">Project Overview</TabsTrigger>
                             <TabsTrigger className={Classes.tablist}  value="fundingDetails">Funding Details</TabsTrigger>
@@ -357,7 +358,7 @@ const AdminApprovalTabs:React.FC<ApprovalTabsProps> = ({campaignData, pitch, fun
                                     </div>
                                 </CardContent>
                                 <CardFooter>
-                                    <Button>Next</Button>
+                                    <Button onClick={()=>{ setCurrentTab('fundingDetails') }}>Next</Button>
                                 </CardFooter>
                             </Card>
                         </TabsContent>
@@ -443,7 +444,8 @@ const AdminApprovalTabs:React.FC<ApprovalTabsProps> = ({campaignData, pitch, fun
                                     </div>
                                 </CardContent>
                                 <CardFooter>
-                                    <Button>Next</Button>
+                                    <Button onClick={()=>{ setCurrentTab('projectOverview') }} className='me-2'>Prev</Button>
+                                    <Button onClick={ ()=>{ setCurrentTab('teamAndBackground') }}>Next</Button>
                                 </CardFooter>
                             </Card>
                         </TabsContent>
@@ -599,7 +601,8 @@ const AdminApprovalTabs:React.FC<ApprovalTabsProps> = ({campaignData, pitch, fun
                                     </div>
                                 </CardContent>
                                 <CardFooter>
-                                    <Button>Next</Button>
+                                    <Button onClick={()=>{ setCurrentTab('fundingDetails') }} className='me-2'>Prev</Button>
+                                    <Button onClick={ ()=>{ setCurrentTab('bussinessAndMarket') }}>Next</Button>
                                 </CardFooter>
                             </Card>
                         </TabsContent>
@@ -774,7 +777,8 @@ const AdminApprovalTabs:React.FC<ApprovalTabsProps> = ({campaignData, pitch, fun
                                     </div>
                                 </CardContent>
                                 <CardFooter>
-                                    <Button>Next</Button>
+                                    <Button onClick={()=>{ setCurrentTab('teamAndBackground') }} className='me-2'>Prev</Button>
+                                    <Button onClick={ ()=>{ setCurrentTab('planningAndExecution') } }>Next</Button>
                                 </CardFooter>
                             </Card>
                         </TabsContent>
@@ -996,7 +1000,8 @@ const AdminApprovalTabs:React.FC<ApprovalTabsProps> = ({campaignData, pitch, fun
                                     </div>
                                 </CardContent>
                                 <CardFooter>
-                                    <Button>Next</Button>
+                                    <Button onClick={()=>{ setCurrentTab('bussinessAndMarket') }} className='me-2'>Prev</Button>
+                                    <Button onClick={ ()=>{ setCurrentTab('legalAndComplaince') } }>Next</Button>
                                 </CardFooter>
                             </Card>
                         </TabsContent>
@@ -1169,7 +1174,8 @@ const AdminApprovalTabs:React.FC<ApprovalTabsProps> = ({campaignData, pitch, fun
                                     </div>
                                 </CardContent>
                                 <CardFooter>
-                                    <Button>Next</Button>
+                                    <Button onClick={()=>{ setCurrentTab('planningAndExecution') }} className='me-2'>Prev</Button>
+                                    <Button onClick={ ()=>{ setCurrentTab('contactInformation') } }>Next</Button>
                                 </CardFooter>
                             </Card>
                         </TabsContent>
@@ -1286,7 +1292,8 @@ const AdminApprovalTabs:React.FC<ApprovalTabsProps> = ({campaignData, pitch, fun
                                     </div>
                                 </CardContent>
                                 <CardFooter>
-                                    <Button>Next</Button>
+                                    <Button onClick={()=>{ setCurrentTab('legalAndComplaince') }} className='me-2'>Prev</Button>
+                                    <Button onClick={ ()=>{ setCurrentTab('actions') } }>Next</Button>
                                 </CardFooter>
                             </Card>
                         </TabsContent>
@@ -1309,6 +1316,7 @@ const AdminApprovalTabs:React.FC<ApprovalTabsProps> = ({campaignData, pitch, fun
                                     </div>
                                 </CardContent>
                                 <CardFooter>
+                                    <Button onClick={()=>{ setCurrentTab('contactInformation') }} className='me-2'>Prev</Button>
                                     <Button className="me-2" onClick={()=>{ handleRequestChange(currentPathName)} }>Request Changes</Button>
                                     <Button onClick={()=>{ handleApproval(campaignData) }}>Approve</Button>
                                 </CardFooter>

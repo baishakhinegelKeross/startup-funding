@@ -82,10 +82,10 @@ const DisputeForm = forwardRef(({ campaignData_ }: { campaignData_: CampaignData
 // }
   const [files, setFiles] = useState<File[]>([]);
   // Initialize campaignData with default values to avoid undefined values in inputs
-  const [campaignData, setCampaignData] = useState<{ campaignId: string; campaignName: string }>({
-    campaignId: '',
-    campaignName: '',
-  });
+  // const [campaignData, setCampaignData] = useState<{ campaignId: string; campaignName: string }>({
+  //   campaignId: '',
+  //   campaignName: '',
+  // });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [campaignData, setCampaignData] = useState({campaignName:campaignData_.campaignName,campaignId:campaignData_.campaignId})
   const router = useRouter();
