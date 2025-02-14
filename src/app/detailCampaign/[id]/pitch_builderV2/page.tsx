@@ -8,7 +8,7 @@ import EditDialog from './components/EditDialog';
 import { Button } from '@/components/ui/button';
 import { Save, Sparkles } from 'lucide-react';
 import { ComponentItem, SlideComponent } from './types';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -24,6 +24,8 @@ export default function Home() {
   const [saveStatus, setSaveStatus] = useState<string>('');
   const [generatingPitch,setPitchGenerating] = useState<boolean>(false);
   const [pitch,setPitch] = useState<any>(null);
+
+  const closeBtnRef = useRef(null);
 
 
   components_ = components; //saving components to a global variable
@@ -217,6 +219,7 @@ export default function Home() {
   };
   const pitchGenerate = async () => {
     try {
+      console.log("closeBtnRef",closeBtnRef);
       setPitchGenerating(true);
       debugger
       const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_AI_URL}/pitchbuilder`, {
@@ -225,6 +228,8 @@ export default function Home() {
       console.log(response.data);
 
       setPitchGenerating(false);
+
+       closeBtnRef.current?.click();
       // let pitchcotent = {
       //   "pitch_deck_content": {
       //     "Business Model": {
@@ -373,7 +378,8 @@ export default function Home() {
       setComponents(requiredComponents as SlideComponent[]);
 
     } catch (error) {
-
+      console.log("closeBtnRef",closeBtnRef);
+      
       console.error('Error posting data:', error);
       setPitchGenerating(false);
     }
@@ -427,6 +433,11 @@ export default function Home() {
                     }}
                     className={generatingPitch?`disabled`:``}>{!generatingPitch?`Submit & Generate`:`Generating...`}</Button>
                   </DialogFooter>
+                  <DialogClose asChild>
+                    <Button type="button" variant="secondary"  className='hidden' ref={closeBtnRef}>
+                      Close
+                    </Button>
+                  </DialogClose>
                 </DialogContent>
               </Dialog>
               {/* <Button onClick={savePitch}>
