@@ -378,7 +378,7 @@ const LandingPage = () => {
                                                                 />
                                                             </div>
                                                             <div className="flex justify-between text-sm text-gray-400 mt-2">
-                                                                <span>₹{campaign.amount_raised.toLocaleString()} raised</span>
+                                                                <span>${campaign.amount_raised.toLocaleString()} raised</span>
                                                                 <span>{daysLeft} days left</span>
                                                             </div>
                                                         </div>

@@ -36,7 +36,7 @@ export default function ComponentList() {
   return (
     <div className="space-y-4">
       <div className="p-4 bg-accent rounded-lg shadow-lg">
-        <h2 className="text-xl font-bold mb-4">Components</h2>
+        <h2 className="text-xl font-bold mb-4">Component</h2>
         <StrictModeDroppable droppableId="component-list" isDropDisabled>
           {(provided) => (
             <div

@@ -98,7 +98,7 @@ export default function SignUpForm() {
       headers: { 'Content-Type': 'application/json' },
     }).then((response) => {
       toast.success('Account created successfully')
-      window.location.href = '/login'
+      window.location.href = '/quantmai/login'
     }).catch((error) => {
       toast.error(error.response?.data?.message || 'An error occurred');
     })
