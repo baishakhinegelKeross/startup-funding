@@ -59,7 +59,7 @@ export default function ProfileForm() {
       })
 
       toast.success('Login Successful')
-      window.location.href = '/'
+      window.location.href = '/quantmai'
       setIsLoggedIn(true)
 
     } catch (error: any) {

@@ -65,7 +65,7 @@ function UserDropdownMenu({username}: {username: string}) {
                         if (result.isConfirmed) {
                             axios.post(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/logout`,{}, { withCredentials: true, }).then((response) => {
                                 toast.success('Sucessfully LoggedOut')
-                                window.location.href = '/login'; 
+                                window.location.href = '/quantmai/login'; 
                                }).catch((error) => {  
                                debugger
                                     toast.error(error.response.data.error);

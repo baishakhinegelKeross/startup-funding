@@ -5,8 +5,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Bot, Send, Loader2, X, Maximize2, Minimize2 } from 'lucide-react';
-//import ReactMarkdown from 'react-markdown';
-import { ChatMessage } from './chat-message';
 
 interface Message {
   id: number;
@@ -50,8 +48,7 @@ export function GlobalChat() {
     setIsLoading(true);
 
     try {
-      //const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_AI_URL}/chat`, {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_AI_URL}/chat-new`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_AI_URL}/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -150,7 +147,7 @@ export function GlobalChat() {
   setIsLoading(true);
 
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_AI_URL}/chat-new`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_AI_URL}/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -197,7 +194,7 @@ export function GlobalChat() {
       const chunk = decoder.decode(value, { stream: true });
       // SSE chunks are formatted as "data: <content>\n\n"
       // Split stream by double newlines to get individual events
-      /* const events = chunk.split("\n\n").filter(event => event.trim() !== '');
+      const events = chunk.split("\n\n").filter(event => event.trim() !== '');
       for (const event of events) {
         // Only process lines that start with "data:"
         console.log("streamdata event=> ",event);
@@ -229,16 +226,7 @@ export function GlobalChat() {
             return updated;
           });
         }
-      } */
-        botResponse += chunk;
-        setMessages(prev => {
-          const updated = [...prev];
-          updated[updated.length - 1] = {
-            ...botMessage,
-            text: botResponse
-          };
-          return updated;
-        });
+      }
     }
 
     // Optionally, you can prettify the final response
@@ -260,8 +248,7 @@ export function GlobalChat() {
       return response;
     }
     
-    //const prettified = prettifyResponse(botResponse);
-    const prettified = botResponse;
+    const prettified = prettifyResponse(botResponse);
     // Final update with a prettified response
     setMessages(prev => {
       const updated = [...prev];
@@ -292,7 +279,7 @@ export function GlobalChat() {
   if (!isOpen) {
     return (
       <Button
-        className="fixed bottom-4 right-4 rounded-full p-4 w-14 h-14 shadow-lg bg-blue-600 hover:bg-blue-700 text-white z-50"
+        className="fixed bottom-6 right-4 rounded-full p-4 w-14 h-14 shadow-lg bg-blue-600 hover:bg-blue-700 text-white z-50"
         onClick={() => setIsOpen(true)}
       >
         <Bot className="h-6 w-6" />
@@ -332,7 +319,8 @@ export function GlobalChat() {
         <CardContent className="flex-1 flex flex-col p-0 overflow-y-auto">
           <ScrollArea className="flex-1">
             <div className="p-4 space-y-4">
-              {/* <div
+              {messages.map((message) => (
+                <div
                   key={message.id}
                   className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
@@ -343,18 +331,12 @@ export function GlobalChat() {
                         : 'bg-muted'
                     }`}
                   >
-                    <p className="text-sm whitespace-pre-line">
-                      <ReactMarkdown className="prose prose-neutral dark:prose-invert break-words prose-p:leading-relaxed prose-pre:p-0">
-                        {message.text}
-                      </ReactMarkdown>
-                      </p>
+                    <p className="text-sm whitespace-pre-line">{message.text}</p>
                     <span className="text-xs opacity-70 mt-1 block">
                       {message.timestamp.toLocaleTimeString()}
                     </span>
                   </div>
-                </div> */}
-              {messages.map((message) => (
-                <ChatMessage key={message.id} message={message} />
+                </div>
               ))}
               <div ref={scrollRef} />
             </div>
