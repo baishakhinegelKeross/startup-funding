@@ -71,6 +71,7 @@ export default function SlidePreview({ components, onEditComponent }: SlidePrevi
             size="sm"
             className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity"
             onClick={() => onEditComponent(component)}
+            type="button"
           >
             <Edit2 className="w-4 h-4 mr-2" />
             Edit

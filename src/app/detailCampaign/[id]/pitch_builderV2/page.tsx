@@ -16,14 +16,14 @@ import axios from 'axios';
 
 let components_ = new Array()
 
-export default function Home() {
+export default function Home({pitch: initialPitch}: any) {
   const [components, setComponents] = useState<SlideComponent[]>([]);
   const [editingComponent, setEditingComponent] =
     useState<ComponentItem | null>(null);
   const [editingIndex, setEditingIndex] = useState<number>(-1);
   const [saveStatus, setSaveStatus] = useState<string>('');
   const [generatingPitch,setPitchGenerating] = useState<boolean>(false);
-  const [pitch,setPitch] = useState<any>(null);
+  const [pitch, setPitch] = useState<any>(initialPitch ? initialPitch : "");
 
   const closeBtnRef = useRef(null);
 
