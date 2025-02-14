@@ -161,7 +161,8 @@ const MyCampaignPage: React.FC = () => {
           throw new Error(`Error fetching closing soon campaigns: ${errorText}`);
         }
         const result = await response.json();
-        setClosingSoonCampaignData(result.willBeClosedCampaigns || []);
+        console.log('result', result);
+        setClosingSoonCampaignData(result.recommendedCampaigns || []);
       } catch (err: any) {
         setClosingSoonError(err.message || String(err));
       } finally {
@@ -339,7 +340,7 @@ const MyCampaignPage: React.FC = () => {
 
 
       {/* --- Recommended Campaigns Section --- */}
-      {user ? <section className="mb-12">
+      { user && user?.role === 'investor' ? <section className="mb-12">
         <div className="flex items-center justify-between border-b border-gray-700 pb-2 mb-4">
           <div className="flex items-center gap-2">
             <h2 className="text-2xl font-semibold">Recommended Campaigns</h2>
@@ -376,8 +377,9 @@ const MyCampaignPage: React.FC = () => {
               className="flex gap-6 overflow-x-auto scroll-smooth pb-4 hide-scrollbar"
             >
               {recommendedCampaignData.map((campaign) => (
-                <div key={campaign._id} className="flex-none w-[calc(25%-18px)] min-w-[300px]">
-                  <CampaignCard campaign={campaign} apiType="recommendedCampaigns" onDonate={handleDonate} />
+                console.log('campaign', campaign.recommendedCampaigns),
+                <div key={campaign.recommendedCampaigns._id} className="flex-none w-[calc(25%-18px)] min-w-[300px]">
+                  <CampaignCard campaign={campaign.recommendedCampaigns} apiType="recommendedCampaigns" onDonate={handleDonate} />
                 </div>
               ))}
             </div>
