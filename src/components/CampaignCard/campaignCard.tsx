@@ -54,7 +54,7 @@ export default function CampaignCard({ campaign,apiType, onDonate }: CampaignCar
 
   // Show the "Done" badge if at least 1% is raised
   const isDone = progress >= 1;
-
+  console.log('isDone',isDone)
   return (
     <article
       className="relative h-[350px] rounded-xl shadow-xl overflow-hidden bg-[#161a35] transition-all duration-500 cursor-pointer group"

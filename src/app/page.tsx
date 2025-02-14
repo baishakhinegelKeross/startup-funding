@@ -54,12 +54,14 @@ const LandingPage = () => {
     useEffect(() => {
         const fetchCampaigns = async () => {
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/fundraiser`);
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/campaigns/hot`);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
+
                 const result = await response.json();
-                setCampaignData(result.filter(x => x.status === "active"));
+                console.log('Campaigns:', result);
+                setCampaignData(result?.hotCampaigns);
             } catch (error) {
                 console.error('Error fetching campaigns:', error);
             } finally {
