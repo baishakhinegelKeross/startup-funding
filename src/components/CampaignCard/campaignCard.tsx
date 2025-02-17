@@ -55,6 +55,7 @@ export default function CampaignCard({ campaign,apiType, onDonate }: CampaignCar
   // Show the "Done" badge if at least 1% is raised
   const isDone = progress >= 1;
   console.log('isDone',isDone)
+  debugger;
   return (
     <article
       className="relative h-[350px] rounded-xl shadow-xl overflow-hidden bg-[#161a35] transition-all duration-500 cursor-pointer group"
@@ -69,11 +70,11 @@ export default function CampaignCard({ campaign,apiType, onDonate }: CampaignCar
           </Badge>
         </div>
      
-
+      
       <div
         className="w-full h-[260px] bg-cover bg-center bg-no-repeat transition-transform duration-500 group-hover:scale-110"
         style={{
-          backgroundImage: `url('${campaign.image_url}')`,
+          backgroundImage: `url('${campaign.image_url.includes('.jpg') || campaign.image_url.includes('.png') ? 'http://192.168.0.108:8000/images/files-1739526970573-814629633.jpg' : campaign.image_url}')`,
         }}
       />
 

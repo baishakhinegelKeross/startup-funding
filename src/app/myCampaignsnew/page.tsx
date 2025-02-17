@@ -11,7 +11,7 @@ interface CampaignCard {
   title: string;
   company: string;
   fundedPercentage: number;
-  amount: string;   
+  amount: string;
   daysLeft: number;
   image_url: string;
   id: string;
@@ -29,15 +29,15 @@ const handleCreateCampaign = async (
 
   console.log('Creating campaign:', newCampaign);
 
-  
-  
+
+
   try {
     const response = await fetch(
       //`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/fundraiser`,
       `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/Campaign`,
       {
         method: "POST",
-        credentials: "include", 
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -66,7 +66,7 @@ const CampaignCard: React.FC<{ campaign: CampaignCard }> = ({ campaign }) => {
     <div className="flex flex-col h-[400px] bg-[#161a35] rounded-xl overflow-hidden shadow-xl transition-all duration-300 hover:translate-y-[-4px] hover:shadow-2xl">
       <div className="relative h-48 overflow-hidden">
         <img
-          src={campaign.image_url}
+          src='http://192.168.0.108:8000/images/files-1739526970573-814629633.jpg'
           alt={campaign.title}
           className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
         />
@@ -84,11 +84,11 @@ const CampaignCard: React.FC<{ campaign: CampaignCard }> = ({ campaign }) => {
         </div>
 
         <div className="space-y-4">
-          
+
 
           {userRole && (userRole === "admin" || userRole === "fundraiser") && (
             <Link
-              href={userRole === "admin" ? `/dashboard/${campaign._id}` : '../detailCampaign/679723880f75d7a5df4b0bb4'}
+              href={userRole === "admin" ? `/dashboard/${campaign._id}` : `../quantmai/detailCampaign/${campaign._id}`}
               className="flex items-center justify-center w-full py-2.5 px-4 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white rounded-lg font-medium transition-all group"
             >
               View Details
@@ -111,10 +111,14 @@ const MyCampaignsNew: React.FC = () => {
   useEffect(() => {
     const fetchCampaigns = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/fundraiser`);
+        debugger;
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/fundraiser`, {
+          method: 'GET',
+          credentials: 'include',
+        });
         if (!response.ok) {
           throw new Error('Network response was not ok');
-        }
+        } 
         const result = await response.json();
         setCampaignData(result);
       } catch (error: any) {
@@ -140,7 +144,7 @@ const MyCampaignsNew: React.FC = () => {
             </button>
           )}
         </div>
-  
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {campaignData
             .filter(campaign => campaign.status === 'pending')

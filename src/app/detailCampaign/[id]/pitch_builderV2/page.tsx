@@ -13,17 +13,21 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import axios from 'axios';
+import { on } from 'events';
 
 let components_ = new Array()
 
-export default function Home() {
-  const [components, setComponents] = useState<SlideComponent[]>([]);
+
+
+export default function Home({ onPitchSet,pitch_ }:any ) {
+  const [components, setComponents] = useState<SlideComponent[]>(pitch_?pitch_:[]);
+  
   const [editingComponent, setEditingComponent] =
     useState<ComponentItem | null>(null);
   const [editingIndex, setEditingIndex] = useState<number>(-1);
   const [saveStatus, setSaveStatus] = useState<string>('');
   const [generatingPitch,setPitchGenerating] = useState<boolean>(false);
-  const [pitch,setPitch] = useState<any>(null);
+  const [pitch, setPitch] = useState<any>('');
 
   const closeBtnRef = useRef(null);
 
@@ -41,6 +45,7 @@ export default function Home() {
         const newComponents = components.filter(
           (_, index) => index !== source.index
         );
+        onPitchSet(newComponents);
         setComponents(newComponents);
       }
       return;
@@ -51,6 +56,7 @@ export default function Home() {
       const newComponents = Array.from(components);
       const [removed] = newComponents.splice(source.index, 1);
       newComponents.splice(destination.index, 0, removed);
+      onPitchSet(newComponents);
       setComponents(newComponents);
       return;
     }
@@ -83,7 +89,7 @@ export default function Home() {
       newComponents.forEach((comp, index) => {
         comp.position = index;
       });
-
+      onPitchSet(newComponents);
       setComponents(newComponents);
       setEditingComponent(newComponent);
       //setEditingIndex(destination.index);
@@ -115,7 +121,7 @@ export default function Home() {
         content,
       };
     }
-
+    onPitchSet(newComponents);
     setComponents(newComponents);
     setEditingComponent(null);
     setEditingIndex(-1);
@@ -375,6 +381,7 @@ export default function Home() {
       let requiredComponents = Object.values(pitchcotent.pitch_deck_content);
       console.log("requiredComponents=> ", requiredComponents);
       requiredComponents = requiredComponents.sort((a: any, b: any) => a.position - b.position);
+      onPitchSet(requiredComponents as SlideComponent[]);
       setComponents(requiredComponents as SlideComponent[]);
 
     } catch (error) {
