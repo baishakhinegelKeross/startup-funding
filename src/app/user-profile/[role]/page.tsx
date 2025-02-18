@@ -232,6 +232,13 @@ export default function App() {
 
         router.push("/user-profile/investor/kyc");
     }
+    function handleKYCVerificationforFundraiser() {
+        // Implement your KYC verification logic here
+       
+
+        router.push("/user-profile/kYCVerificationforFundraiser");
+    }
+
 
     return (
         <div className="min-h-screen bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072')] bg-cover bg-center py-8 px-4 sm:px-6 lg:px-8">
@@ -453,6 +460,35 @@ export default function App() {
                             )}
 
 
+                            {/* //ekyc section for fundraiser */}
+                            {userRole?.role === "fundraiser" && (
+                                <div className="space-y-1 p-4 bg-gray-800/30 rounded-lg border border-gray-600/50">
+                                    <div className="flex items-center justify-between">
+                                        <div className="space-y-1">
+                                            <h3 className="text-white font-medium flex items-center gap-2">
+                                                <CircleAlert className="h-4 w-4 text-yellow-500" />
+                                                Identity Verification (e-KYC)
+                                            </h3>
+                                            <p className="text-sm text-gray-400">
+                                                Complete your identity verification to unlock all features
+                                            </p>
+                                        </div>
+                                        <Button
+                                            type="button"
+                                            onClick={handleKYCVerificationforFundraiser}
+                                            className="bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-2"
+                                        >
+                                            <Shield className="h-4 w-4" />
+                                            Verify Identity
+                                        </Button>
+                                    </div>
+                                    {profileData.kycVerified && (
+                                        <Badge className="mt-2 bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+                                            Verified
+                                        </Badge>
+                                    )}
+                                </div>
+                            )}
 
                             {/* Submit Button */}
                             <div className="flex justify-end">
