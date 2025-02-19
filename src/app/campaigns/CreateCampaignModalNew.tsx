@@ -455,6 +455,11 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
     const userEmail = currentUser?.email;
     const userId = currentUser?.id;
 
+    const pitchSet = (pitchComponents: React.SetStateAction<any[] | undefined>)=>{
+        debugger
+        setPitchComponents(pitchComponents)
+    }
+
     const {
         register,
         //handleSubmit,
@@ -678,8 +683,9 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
         const completedFields = requiredFields.filter(
             (field) => field.split('.').reduce((obj, key) => (obj as any)?.[key], formValues)
         );
-
-        setPitchComponents(getPitch() as any[])
+        
+        
+        //setPitchComponents(getPitch() as any[])
 
         setProgress((completedFields.length / requiredFields.length) * 100);
     }, [formValues]);
@@ -847,6 +853,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
         console.log(campaignData);
 
         onCreateCampaign(campaignData);
+        onClose()
         //reset();
     };
 
@@ -925,7 +932,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
                                 <TabsContent key="details" value="details" className="mt-0 space-y-6">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
-                                            <Label>Campaign Title <span className="text-white">*</span></Label>
+                                            <Label>Campaign Title <span className="text-destructive">*</span></Label>
                                             <Input
                                                 {...register('title'
                                                     //, { required: true }
@@ -939,7 +946,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
                                         </div>
 
                                         <div className="space-y-2">
-                                            <Label>Category <span className="text-white">*</span></Label>
+                                            <Label>Category <span className="text-destructive">*</span></Label>
                                             <Select
                                                 // onValueChange={(value) => {
                                                 //     setValue('category', value as 'CleanTech' | 'FinTech' | 'HealthTech' | 'EdTech' | 'AI/ML' | 'Blockchain' | 'IoT' | 'Other');
@@ -967,7 +974,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
                                     </div>
 
                                     <div className="space-y-2">
-                                        <Label>Story <span className="text-white">*</span></Label>
+                                        <Label>Story <span className="text-destructive">*</span></Label>
                                         <Textarea
                                             {...register('story'
                                                 //, { required: true }
@@ -982,7 +989,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
-                                            <Label>Goal Amount <span className="text-white">*</span></Label>
+                                            <Label>Goal Amount <span className="text-destructive">*</span></Label>
                                             <div className="relative">
                                                 <DollarSign className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                                                 <Input
@@ -1004,7 +1011,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
                                         </div>
 
                                         <div className="space-y-2">
-                                            <Label>Currency Type <span className="text-white">*</span></Label>
+                                            <Label>Currency Type <span className="text-destructive">*</span></Label>
                                             <Select
                                                 //value={currencyType}
                                                 onValueChange={handleOnValueChange2}
@@ -1030,7 +1037,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
                                     </div>
 
                                     <div className="space-y-2">
-                                        <Label>Image URL <span className="text-white">*</span></Label>
+                                        <Label>Image URL <span className="text-destructive">*</span></Label>
                                         <div className="relative grid grid-cols-2">
                                             <Link className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                                             {/* <Input
@@ -1071,7 +1078,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
                                         <CardContent className="pt-6">
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                 <div className="space-y-2">
-                                                    <Label>Owner Name <span className="text-white">*</span></Label>
+                                                    <Label>Owner Name <span className="text-destructive">*</span></Label>
                                                     <Input
                                                         {...register('owner.name'
                                                             //, { required: true }
@@ -1087,7 +1094,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
                                                 </div>
 
                                                 <div className="space-y-2">
-                                                    <Label>Owner Email <span className="text-white">*</span></Label>
+                                                    <Label>Owner Email <span className="text-destructive">*</span></Label>
                                                     <Input
                                                         type="email"
                                                         {...register('owner.email'
@@ -1122,7 +1129,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
                                                     )}
                                                 </div> */}
                                                 <div className="space-y-2">
-                                                    <Label>End Date <span className="text-white">*</span></Label>
+                                                    <Label>End Date <span className="text-destructive">*</span></Label>
                                                     <div className="relative">
                                                         <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                                                         <Input
@@ -1219,7 +1226,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
 
                                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                                         <div className="space-y-2">
-                                                            <Label>Name <span className="text-white">*</span></Label>
+                                                            <Label>Name <span className="text-destructive">*</span></Label>
                                                             <Input
                                                                 {...register(`ourTeam.${index}.name` as const, {
                                                                     required: true,
@@ -1235,7 +1242,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
                                                         </div>
 
                                                         <div className="space-y-2">
-                                                            <Label>Position <span className="text-white">*</span></Label>
+                                                            <Label>Position <span className="text-destructive">*</span></Label>
                                                             <Input
                                                                 {...register(`ourTeam.${index}.position` as const, {
                                                                     required: true,
@@ -1311,14 +1318,14 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
                                     <Card>
                                         <CardContent className="pt-6">
                                             <div className="space-y-2">
-                                                <Label>Campaign Pitch <span className="text-white">*</span></Label>
+                                                <Label>Campaign Pitch <span className="text-destructive">*</span></Label>
                                                  {/* <Textarea
                                                     {...register('pitch', { required: true })}
                                                     className="min-h-[400px] text-white bg-[#1e293b]"
                                                     placeholder="Enter your campaign pitch..."
                                                 />  */}
                                                 {/* <PitchBuilder /> */}
-                                                {<PitchbuilderV2 pitch={pitchComponents}/>}
+                                                {<PitchbuilderV2 onPitchSet={pitchSet} pitch_={pitchComponents}/>}
                                             </div>
                                             {errors.pitch && (
                                                 <p className="text-sm text-destructive">{errors.pitch?.message as string}</p>
@@ -1490,7 +1497,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
                                                 </div>
                                                 <Separator />
                                                 <div>
-                                                    <Label>Business Location <span className="text-white">*</span></Label>
+                                                    <Label>Business Location <span className="text-destructive">*</span></Label>
                                                     <Input {...register('businessLocation', {required: true})} placeholder="Where will your business operate?" className='text-white bg-[#1e293b]' />
                                                 </div>
                                                 {errors.businessLocation && (
@@ -1527,7 +1534,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
                                                 </div>
                                                 <Separator />
                                                 <div>
-                                                    <Label>Startup Costs (USD) <span className="text-white">*</span></Label>
+                                                    <Label>Startup Costs (USD) <span className="text-destructive">*</span></Label>
                                                     <div className="relative">
                                                         <DollarSign className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                                                         <Input
@@ -1542,7 +1549,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
                                                     )}
                                                 </div>
                                                 <div>
-                                                    <Label>Projected Annual Revenue (USD) <span className="text-white">*</span></Label>
+                                                    <Label>Projected Annual Revenue (USD) <span className="text-destructive">*</span></Label>
                                                     <div className="relative">
                                                         <DollarSign className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                                                         <Input
@@ -1557,7 +1564,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
                                                     )}
                                                 </div>
                                                 <div>
-                                                    <Label>Break-even Point (months) <span className="text-white">*</span></Label>
+                                                    <Label>Break-even Point (months) <span className="text-destructive">*</span></Label>
                                                     <div className="relative">
                                                         <Input
                                                             {...register('breakEvenPoint', {required: true})}
