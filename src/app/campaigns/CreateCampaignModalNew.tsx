@@ -172,7 +172,7 @@ const formSchema = z.object({
     //     )
     //     .optional(),
     //image_url_: z.array(imageSchema),
-    image_url_: imageSchema,
+    image_url_: z.array(imageSchema),
     image_url: z.string(),
     end_date: z.string().min(1, 'End date is required'),
     category: z.enum([
@@ -290,8 +290,8 @@ const formSchema = z.object({
     //     .optional(),
 
     // Market Analysis
-    businessModelDoc: fileSchema,
-    businessPlanDoc: fileSchema,
+    businessModelDoc: z.array(fileSchema),
+    businessPlanDoc: z.array(fileSchema),
     businessModelDocName: z.string().optional(),
     businessModelPlanName: z.string().optional(),
     targetMarket: z.string(),
@@ -454,6 +454,11 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
     const userName = currentUser?.username;
     const userEmail = currentUser?.email;
     const userId = currentUser?.id;
+
+    const pitchSet = (pitchComponents: React.SetStateAction<any[] | undefined>)=>{
+        debugger
+        setPitchComponents(pitchComponents)
+    }
 
     const pitchSet = (pitchComponents: React.SetStateAction<any[] | undefined>)=>{
         debugger
@@ -669,7 +674,7 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
             'projectedRevenue',
             'startupCosts',
             'businessLocation',
-            'pitch',
+            //'pitch',
             'goal_amount',
             'image_url_',
             'currencyType',
@@ -846,9 +851,9 @@ export default function CreateCampaignForm({ onClose, onCreateCampaign, currentU
             userId: userId
         };
 
-        campaignData.businessModelDocName = campaignData.businessModelDoc ? campaignData.businessModelDoc.name : '';
-        campaignData.businessModelPlanName = campaignData.businessPlanDoc ? campaignData.businessPlanDoc.name : '';
-        campaignData.image_url = campaignData.image_url_ ? campaignData.image_url_.name : '';
+        campaignData.businessModelDocName = campaignData.businessModelDoc ? campaignData.businessModelDoc[0].name : '';
+        campaignData.businessModelPlanName = campaignData.businessPlanDoc ? campaignData.businessPlanDoc[0].name : '';
+        campaignData.image_url = campaignData.image_url_ ? campaignData.image_url_[0].name : '';
 
         console.log(campaignData);
 

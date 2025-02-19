@@ -198,7 +198,7 @@ export default function KYCPage() {
   return (
     <div className="container mx-auto py-8 px-4 min-h-screen">
       <div className=" mx-auto space-y-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1  gap-8">
           <div className="lg:col-span-2 space-y-8">
             <div className="space-y-4">
               <h1 className="text-4xl font-bold tracking-tight">KYC & Compliance</h1>
@@ -424,43 +424,78 @@ export default function KYCPage() {
                         </div>
                       </section>
 
-                      <section className="space-y-4">
-                        <h3 className="text-lg font-bold">Document Upload</h3>
-                        <div className="grid grid-cols-1 gap-4">
-                          <Button variant="outline" className="bg-medium-gray py-2 px-6 border border-light-gray rounded hover:bg-dark-gray transition duration-300"
-                            onClick={() => handleUploadClick('incomeProof')}
-                            >
-                            <div className="flex flex-col items-center space-y-2">
-                              <Upload className="h-6 w-6" />
+                      <div className="grid gap-6">
+                        <div className="space-y-4">
+                          <Label>Document Upload</Label>
+                          <div className="grid gap-4">
+                            <Card className="p-4">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-4">
+                                  <Upload className="h-5 w-5 text-muted-foreground" />
+                                  <div>
+                                    <p className="font-medium">Income Proof</p>
+                                    <p className="text-sm text-muted-foreground">
+                                      Tax returns, W-2s, or pay stubs
+                                    </p>
+                                  </div>
+                                </div>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleUploadClick('incomeProof')}
+                                >
+                                  Upload
+                                </Button>
+                              </div>
+                              {/* Hidden file input for Income Proof */}
                               <input
                                 type="file"
+                                className="hidden"
                                 ref={fileInputRefs.incomeProof}
-                                style={{ display: 'none' }}
                                 onChange={(e) => handleFileChange(e, 'incomeProof')}
                               />
-                              {files.incomeProof && <p className="text-gray-400">{truncateFileName(files.incomeProof.name, 20)}</p>}
-                              <span className="text-white">Upload Income Proof</span>
-                              <span className="text-sm text-light-gray">Tax returns, W-2s, or pay stubs</span>
-                            </div>
-                          </Button>
-                          <Button variant="outline" className="bg-medium-gray py-2 px-6 border border-light-gray rounded hover:bg-dark-gray transition duration-300"
-                            onClick={() => handleUploadClick('netWorthStatement')}
-                            >
-                            <div className="flex flex-col items-center space-y-2">
-                              <Upload className="h-6 w-6" />
+                              {files.incomeProof && (
+                                <p className="text-sm text-green-500 mt-2">
+                                  Uploaded: {truncateFileName(files.incomeProof.name, 20)}
+                                </p>
+                              )}
+                            </Card>
+                            <Card className="p-4">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-4">
+                                  <Upload className="h-5 w-5 text-muted-foreground" />
+                                  <div>
+                                    <p className="font-medium">Net Worth Statement</p>
+                                    <p className="text-sm text-muted-foreground">
+                                      Bank statements, investment accounts, or certification letter
+                                    </p>
+                                  </div>
+                                </div>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleUploadClick('netWorthStatement')}
+                                >
+                                  Upload
+                                </Button>
+                              </div>
+                              {/* Hidden file input for Net Worth Statement */}
                               <input
                                 type="file"
+                                className="hidden"
                                 ref={fileInputRefs.netWorthStatement}
-                                style={{ display: 'none' }}
                                 onChange={(e) => handleFileChange(e, 'netWorthStatement')}
                               />
-                              {files.netWorthStatement && <p className="text-gray-400">{truncateFileName(files.netWorthStatement.name, 20)}</p>}
-                              <span className="text-white">Upload Net Worth Statement</span>
-                              <span className="text-sm text-light-gray">Bank statements, investment accounts, or certification letter</span>
-                            </div>
-                          </Button>
+                              {files.netWorthStatement && (
+                                <p className="text-sm text-green-500 mt-2">
+                                  Uploaded: {truncateFileName(files.netWorthStatement.name, 20)}
+                                </p>
+                              )}
+                            </Card>
+                          </div>
                         </div>
-                      </section>
+                      </div>
+
                     </CardContent>
                   </Card>
                 </TabsContent>
@@ -642,12 +677,12 @@ export default function KYCPage() {
             </div>
           </div>
 
-          <div className="lg:col-span-1">
+          {/* <div className="lg:col-span-1">
             <AIAssistant
               onSuggest={handleAISuggestion}
               currentSection={currentTab}
             />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

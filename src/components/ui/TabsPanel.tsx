@@ -116,7 +116,7 @@ const TabsPanel: React.FC<TabsPanelProps> = ({ tabs, activeTab, onTabChange, isV
                         onScroll={checkScroll}
                         style={{ scrollBehavior: 'smooth', WebkitOverflowScrolling: 'touch' }}
                     >
-                        <ul className="inline-flex min-w-full text-base font-medium text-center text-gray-500 rounded-lg shadow-sm dark:divide-gray-700 dark:text-gray-400 gap-2">
+                        <ul className="inline-flex min-w-full text-base font-medium text-center text-gray-500 rounded-lg shadow-sm dark:divide-gray-700 dark:text-gray-400 gap-4">
                             {tabs.map((tab, index) => {
                                 const Icon = tab.icon;
                                 const isFirst = index === 0;
